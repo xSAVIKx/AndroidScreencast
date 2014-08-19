@@ -2,7 +2,6 @@ package com.github.xsavikx.android.screencast;
 
 import java.io.IOException;
 
-import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
 import com.android.ddmlib.AndroidDebugBridge;
@@ -14,13 +13,25 @@ import com.github.xsavikx.android.screencast.ui.JFrameMain;
 import com.github.xsavikx.android.screencast.ui.JSplashScreen;
 
 public class Main extends SwingApplication {
+	public static void main(String args[]) throws IOException {
+		if (logger.isDebugEnabled()) {
+			logger.debug("main(String[]) - start");
+		}
+		boolean nativeLook = args.length == 0
+				|| !args[0].equalsIgnoreCase("nonativelook");
+		new Main(nativeLook);
+
+		if (logger.isDebugEnabled()) {
+			logger.debug("main(String[]) - end");
+		}
+	}
 	/**
 	 * Logger for this class
 	 */
-	private static final Logger logger = LogManager.getLogger(Main.class
-			.getName());
+	private static final Logger logger = Logger.getLogger(Main.class);
 	JFrameMain jf;
 	Injector injector;
+
 	IDevice device;
 
 	public Main(boolean nativeLook) throws IOException {
@@ -32,6 +43,33 @@ public class Main extends SwingApplication {
 		} finally {
 			jw.setVisible(false);
 			jw = null;
+		}
+	}
+
+	@Override
+	protected void close() {
+		if (logger.isDebugEnabled()) {
+			logger.debug("close() - start");
+		}
+
+		if (logger.isInfoEnabled()) {
+			logger.info("close() - Cleaning up...");
+		}
+		if (injector != null)
+			injector.close();
+
+		if (device != null) {
+			synchronized (device) {
+				AndroidDebugBridge.terminate();
+			}
+		}
+		if (logger.isInfoEnabled()) {
+			logger.info("close() - Cleaning done, exiting...");
+		}
+		super.close();
+
+		if (logger.isDebugEnabled()) {
+			logger.debug("close() - end");
 		}
 	}
 
@@ -113,45 +151,6 @@ public class Main extends SwingApplication {
 
 		if (logger.isDebugEnabled()) {
 			logger.debug("waitDeviceList(AndroidDebugBridge) - end");
-		}
-	}
-
-	protected void close() {
-		if (logger.isDebugEnabled()) {
-			logger.debug("close() - start");
-		}
-
-		if (logger.isInfoEnabled()) {
-			logger.info("Cleaning up...");
-		}
-		if (injector != null)
-			injector.close();
-
-		if (device != null) {
-			synchronized (device) {
-				AndroidDebugBridge.terminate();
-			}
-		}
-		if (logger.isInfoEnabled()) {
-			logger.info("Cleaning done, exiting...");
-		}
-		super.close();
-
-		if (logger.isDebugEnabled()) {
-			logger.debug("close() - end");
-		}
-	}
-
-	public static void main(String args[]) throws IOException {
-		if (logger.isDebugEnabled()) {
-			logger.debug("main(String[]) - start");
-		}
-		boolean nativeLook = args.length == 0
-				|| !args[0].equalsIgnoreCase("nonativelook");
-		new Main(nativeLook);
-
-		if (logger.isDebugEnabled()) {
-			logger.debug("main(String[]) - end");
 		}
 	}
 

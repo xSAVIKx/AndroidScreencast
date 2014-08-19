@@ -10,27 +10,28 @@ public class StreamUtils {
 
 	public static void transfert(InputStream is, OutputStream os) {
 		try {
-			while(true) {
+			while (true) {
 				int val = is.read();
-				if(val <= -1)
+				if (val <= -1)
 					break;
 				os.write(val);
 			}
-		} catch(IOException io) {
+		} catch (IOException io) {
 			throw new RuntimeException(io);
 		}
 	}
-	
-	public static void transfertResource(Class c, String resourceName, File output) {
+
+	public static void transfertResource(Class c, String resourceName,
+			File output) {
 		InputStream resStream = c.getResourceAsStream(resourceName);
-		if(resStream == null)
-			throw new RuntimeException("Cannot find resource "+resourceName);
+		if (resStream == null)
+			throw new RuntimeException("Cannot find resource " + resourceName);
 		try {
 			FileOutputStream fos = new FileOutputStream(output);
-			transfert(resStream,fos);
+			transfert(resStream, fos);
 			fos.close();
 			resStream.close();
-		} catch(Exception ex) {
+		} catch (Exception ex) {
 			throw new RuntimeException(ex);
 		}
 	}

@@ -6,7 +6,6 @@ import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Vector;
 
-import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
 import com.android.ddmlib.IDevice;
@@ -20,25 +19,12 @@ public class AndroidDevice {
 	/**
 	 * Logger for this class
 	 */
-	private static final Logger logger = LogManager
-			.getLogger(AndroidDevice.class.getName());
+	private static final Logger logger = Logger.getLogger(AndroidDevice.class);
 
 	IDevice device;
 
 	public AndroidDevice(IDevice device) {
 		this.device = device;
-	}
-
-	public void openUrl(String url) {
-		if (logger.isDebugEnabled()) {
-			logger.debug("openUrl(String) - start");
-		}
-
-		executeCommand("am start " + url);
-
-		if (logger.isDebugEnabled()) {
-			logger.debug("openUrl(String) - end");
-		}
 	}
 
 	public String executeCommand(String cmd) {
@@ -59,60 +45,6 @@ public class AndroidDevice {
 			logger.error("executeCommand(String)", ex);
 
 			throw new RuntimeException(ex);
-		}
-	}
-
-	public void pushFile(File localFrom, String remoteTo) {
-		if (logger.isDebugEnabled()) {
-			logger.debug("pushFile(File, String) - start");
-		}
-
-		try {
-			if (device.getSyncService() == null)
-				throw new RuntimeException("SyncService is null, ADB crashed ?");
-
-			device.getSyncService().pushFile(localFrom.getAbsolutePath(),
-					remoteTo, new NullSyncProgressMonitor());
-
-		} catch (Exception ex) {
-			logger.error("pushFile(File, String)", ex);
-
-			throw new RuntimeException(ex);
-		}
-
-		if (logger.isDebugEnabled()) {
-			logger.debug("pushFile(File, String) - end");
-		}
-	}
-
-	public void pullFile(String removeFrom, File localTo) {
-		if (logger.isDebugEnabled()) {
-			logger.debug("pullFile(String, File) - start");
-		}
-
-		// ugly hack to call the method without FileEntry
-		try {
-			if (device.getSyncService() == null)
-				throw new RuntimeException("SyncService is null, ADB crashed ?");
-
-			Method m = device
-					.getSyncService()
-					.getClass()
-					.getDeclaredMethod("doPullFile", String.class,
-							String.class, ISyncProgressMonitor.class);
-			m.setAccessible(true);
-			device.getSyncService();
-			m.invoke(device.getSyncService(), removeFrom,
-					localTo.getAbsolutePath(),
-					SyncService.getNullProgressMonitor());
-		} catch (Exception ex) {
-			logger.error("pullFile(String, File)", ex);
-
-			throw new RuntimeException(ex);
-		}
-
-		if (logger.isDebugEnabled()) {
-			logger.debug("pullFile(String, File) - end");
 		}
 	}
 
@@ -155,6 +87,72 @@ public class AndroidDevice {
 			logger.error("list(String)", ex);
 
 			throw new RuntimeException(ex);
+		}
+	}
+
+	public void openUrl(String url) {
+		if (logger.isDebugEnabled()) {
+			logger.debug("openUrl(String) - start");
+		}
+
+		executeCommand("am start " + url);
+
+		if (logger.isDebugEnabled()) {
+			logger.debug("openUrl(String) - end");
+		}
+	}
+
+	public void pullFile(String removeFrom, File localTo) {
+		if (logger.isDebugEnabled()) {
+			logger.debug("pullFile(String, File) - start");
+		}
+
+		// ugly hack to call the method without FileEntry
+		try {
+			if (device.getSyncService() == null)
+				throw new RuntimeException("SyncService is null, ADB crashed ?");
+
+			Method m = device
+					.getSyncService()
+					.getClass()
+					.getDeclaredMethod("doPullFile", String.class,
+							String.class, ISyncProgressMonitor.class);
+			m.setAccessible(true);
+			device.getSyncService();
+			m.invoke(device.getSyncService(), removeFrom,
+					localTo.getAbsolutePath(),
+					SyncService.getNullProgressMonitor());
+		} catch (Exception ex) {
+			logger.error("pullFile(String, File)", ex);
+
+			throw new RuntimeException(ex);
+		}
+
+		if (logger.isDebugEnabled()) {
+			logger.debug("pullFile(String, File) - end");
+		}
+	}
+
+	public void pushFile(File localFrom, String remoteTo) {
+		if (logger.isDebugEnabled()) {
+			logger.debug("pushFile(File, String) - start");
+		}
+
+		try {
+			if (device.getSyncService() == null)
+				throw new RuntimeException("SyncService is null, ADB crashed ?");
+
+			device.getSyncService().pushFile(localFrom.getAbsolutePath(),
+					remoteTo, new NullSyncProgressMonitor());
+
+		} catch (Exception ex) {
+			logger.error("pushFile(File, String)", ex);
+
+			throw new RuntimeException(ex);
+		}
+
+		if (logger.isDebugEnabled()) {
+			logger.debug("pushFile(File, String) - end");
 		}
 	}
 

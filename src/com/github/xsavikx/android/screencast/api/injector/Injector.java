@@ -10,105 +10,81 @@ import org.apache.log4j.Logger;
 import com.android.ddmlib.IDevice;
 
 public class Injector {
-	/**
-	 * @return true if there was a client running
-	 */
-	private static boolean killRunningAgent() {
-		if (logger.isDebugEnabled()) {
-			logger.debug("killRunningAgent() - start");
-		}
-
-		try {
-			Socket s = new Socket("127.0.0.1", PORT);
-			OutputStream os = s.getOutputStream();
-			os.write("quit\n".getBytes());
-			os.flush();
-			os.close();
-			s.close();
-
-			if (logger.isDebugEnabled()) {
-				logger.debug("killRunningAgent() - end");
-			}
-			return true;
-		} catch (Exception ex) {
-			logger.warn("killRunningAgent() - exception ignored", ex);
-
-			// ignor�
-		}
-
-		if (logger.isDebugEnabled()) {
-			logger.debug("killRunningAgent() - end");
-		}
-		return false;
-	}
-
-	/**
-	 * Logger for this class
-	 */
-	private static final Logger logger = Logger.getLogger(Injector.class);
-	private static final int PORT = 2436;
-	private static final String LOCAL_AGENT_JAR_LOCATION = "./MyInjectEventApp.jar";
-	private static final String REMOTE_AGENT_JAR_LOCATION = "/data/local/tmp/MyInjectEventApp.jar";
-	private static final String AGENT_MAIN_CLASS = "com.github.xsavikx.android.screencast.Main";
-
-	IDevice device;
-	public static Socket s;
-	OutputStream os;
-
-	class AgentRunningThread extends Thread {
-		private final IDevice device;
-
-		public AgentRunningThread(IDevice device) {
-			super("Agent runner");
-			this.device = device;
-		}
-
-		@Override
-		public void run() {
-			if (logger.isDebugEnabled()) {
-				logger.debug("run() - start");
-			}
-
-			try {
-				launchProg("" + PORT);
-			} catch (IOException e) {
-				logger.error("run()", e);
-
-				e.printStackTrace();
-			}
-
-			if (logger.isDebugEnabled()) {
-				logger.debug("run() - end");
-			}
-		}
-
-		private void launchProg(String cmdList) throws IOException {
-			if (logger.isDebugEnabled()) {
-				logger.debug("launchProg(String) - start");
-			}
-			String fullCmd = "su -c 'export CLASSPATH="
-					+ REMOTE_AGENT_JAR_LOCATION;
-			fullCmd += "; exec app_process /system/bin " + AGENT_MAIN_CLASS
-					+ " " + cmdList + "'";
-			if (logger.isInfoEnabled()) {
-				logger.info("launchProg(String) - String fullCmd=" + fullCmd);
-			}
-			device.executeShellCommand(fullCmd, new MultiLineReceiverPrinter());
-			// device.executeShellCommand("rm " + REMOTE_AGENT_JAR_LOCATION,
-			// new OutputStreamShellOutputReceiver(System.out));
-
-			if (logger.isDebugEnabled()) {
-				logger.debug("launchProg(String) - end");
-			}
-		}
-	}
-
 	class AgentInitThread extends Thread {
 		private final IDevice device;
 
 		public AgentInitThread(IDevice device, Socket s, OutputStream os) {
 			super("Agent Init");
 			this.device = device;
+		}
+
+		private void connectToAgent() {
+			if (logger.isDebugEnabled()) {
+				logger.debug("connectToAgent() - start");
+			}
+
+			for (int i = 0; i < 10; i++) {
+				try {
+					s = new Socket("127.0.0.1", PORT);
+					break;
+				} catch (Exception s) {
+					logger.error("connectToAgent()", s);
+
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e) {
+						logger.error("connectToAgent()", e);
+
+						if (logger.isDebugEnabled()) {
+							logger.debug("connectToAgent() - end");
+						}
+						return;
+					}
+				}
+			}
+			if (logger.isInfoEnabled()) {
+				logger.info("connectToAgent() - Connected to agent socket");
+			}
+			screencapture.start();
+			try {
+				os = s.getOutputStream();
+			} catch (IOException e) {
+				logger.error("connectToAgent()", e);
+
+				throw new RuntimeException(e);
+			}
+
+			if (logger.isDebugEnabled()) {
+				logger.debug("connectToAgent() - end");
+			}
+		}
+
+		private void init() throws UnknownHostException, IOException,
+				InterruptedException {
+			if (logger.isDebugEnabled()) {
+				logger.debug("init() - start");
+			}
+
+			device.createForward(PORT, PORT);
+
+			if (killRunningAgent())
+				if (logger.isInfoEnabled()) {
+					logger.info("init() - Old client closed");
+				}
+
+			uploadAgent();
+
+			Thread threadRunningAgent = new AgentRunningThread(device);
+			threadRunningAgent.start();
+			Thread.sleep(10000);
+			connectToAgent();
+			if (logger.isInfoEnabled()) {
+				logger.info("init() - Connected to agent!");
+			}
+
+			if (logger.isDebugEnabled()) {
+				logger.debug("init() - end");
+			}
 		}
 
 		@Override
@@ -166,76 +142,100 @@ public class Injector {
 				logger.debug("uploadAgent() - end");
 			}
 		}
+	}
 
-		private void init() throws UnknownHostException, IOException,
-				InterruptedException {
+	class AgentRunningThread extends Thread {
+		private final IDevice device;
+
+		public AgentRunningThread(IDevice device) {
+			super("Agent runner");
+			this.device = device;
+		}
+
+		private void launchProg(String cmdList) throws IOException {
 			if (logger.isDebugEnabled()) {
-				logger.debug("init() - start");
+				logger.debug("launchProg(String) - start");
 			}
-
-			device.createForward(PORT, PORT);
-
-			if (killRunningAgent())
-				if (logger.isInfoEnabled()) {
-					logger.info("init() - Old client closed");
-				}
-
-			uploadAgent();
-
-			Thread threadRunningAgent = new AgentRunningThread(device);
-			threadRunningAgent.start();
-			Thread.sleep(10000);
-			connectToAgent();
+			String fullCmd = "su -c 'export CLASSPATH="
+					+ REMOTE_AGENT_JAR_LOCATION;
+			fullCmd += "; exec app_process /system/bin " + AGENT_MAIN_CLASS
+					+ " " + cmdList + "'";
 			if (logger.isInfoEnabled()) {
-				logger.info("init() - Connected to agent!");
+				logger.info("launchProg(String) - String fullCmd=" + fullCmd);
 			}
+			device.executeShellCommand(fullCmd, new MultiLineReceiverPrinter());
+			// device.executeShellCommand("rm " + REMOTE_AGENT_JAR_LOCATION,
+			// new OutputStreamShellOutputReceiver(System.out));
 
 			if (logger.isDebugEnabled()) {
-				logger.debug("init() - end");
+				logger.debug("launchProg(String) - end");
 			}
 		}
 
-		private void connectToAgent() {
+		@Override
+		public void run() {
 			if (logger.isDebugEnabled()) {
-				logger.debug("connectToAgent() - start");
+				logger.debug("run() - start");
 			}
 
-			for (int i = 0; i < 10; i++) {
-				try {
-					s = new Socket("127.0.0.1", PORT);
-					break;
-				} catch (Exception s) {
-					logger.error("connectToAgent()", s);
-
-					try {
-						Thread.sleep(1000);
-					} catch (InterruptedException e) {
-						logger.error("connectToAgent()", e);
-
-						if (logger.isDebugEnabled()) {
-							logger.debug("connectToAgent() - end");
-						}
-						return;
-					}
-				}
-			}
-			if (logger.isInfoEnabled()) {
-				logger.info("connectToAgent() - Connected to agent socket");
-			}
-			screencapture.start();
 			try {
-				os = s.getOutputStream();
+				launchProg("" + PORT);
 			} catch (IOException e) {
-				logger.error("connectToAgent()", e);
+				logger.error("run()", e);
 
-				throw new RuntimeException(e);
+				e.printStackTrace();
 			}
 
 			if (logger.isDebugEnabled()) {
-				logger.debug("connectToAgent() - end");
+				logger.debug("run() - end");
 			}
 		}
 	}
+	/**
+	 * @return true if there was a client running
+	 */
+	private static boolean killRunningAgent() {
+		if (logger.isDebugEnabled()) {
+			logger.debug("killRunningAgent() - start");
+		}
+
+		try {
+			Socket s = new Socket("127.0.0.1", PORT);
+			OutputStream os = s.getOutputStream();
+			os.write("quit\n".getBytes());
+			os.flush();
+			os.close();
+			s.close();
+
+			if (logger.isDebugEnabled()) {
+				logger.debug("killRunningAgent() - end");
+			}
+			return true;
+		} catch (Exception ex) {
+			logger.warn("killRunningAgent() - exception ignored", ex);
+
+			// ignor�
+		}
+
+		if (logger.isDebugEnabled()) {
+			logger.debug("killRunningAgent() - end");
+		}
+		return false;
+	}
+	/**
+	 * Logger for this class
+	 */
+	private static final Logger logger = Logger.getLogger(Injector.class);
+	private static final int PORT = 2436;
+	private static final String LOCAL_AGENT_JAR_LOCATION = "./MyInjectEventApp.jar";
+
+	private static final String REMOTE_AGENT_JAR_LOCATION = "/data/local/tmp/MyInjectEventApp.jar";
+	private static final String AGENT_MAIN_CLASS = "com.github.xsavikx.android.screencast.Main";
+	IDevice device;
+
+	public static Socket s;
+
+	OutputStream os;
 
 	Thread agentInitThread;
 

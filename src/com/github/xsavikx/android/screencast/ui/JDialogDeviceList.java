@@ -22,6 +22,7 @@ import com.android.ddmlib.IDevice;
 
 public class JDialogDeviceList extends JDialog implements ActionListener {
 
+	private static final long serialVersionUID = -3719844308147203239L;
 	private static final String DEFAULT_HOST = "127.0.0.1";
 	private static final int DEFAULT_PORT = 1324;
 
@@ -42,6 +43,19 @@ public class JDialogDeviceList extends JDialog implements ActionListener {
 		setModal(true);
 		this.devices = devices;
 		initialize();
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent arg0) {
+		cancelled = arg0.getSource() == jbQuit;
+
+		setVisible(false);
+	}
+
+	public IDevice getDevice() {
+		if (cancelled)
+			return null;
+		return jlDevices.getSelectedValue();
 	}
 
 	private void initialize() {
@@ -91,17 +105,5 @@ public class JDialogDeviceList extends JDialog implements ActionListener {
 			}
 
 		});
-	}
-
-	public IDevice getDevice() {
-		if (cancelled)
-			return null;
-		return (IDevice) jlDevices.getSelectedValue();
-	}
-
-	public void actionPerformed(ActionEvent arg0) {
-		cancelled = arg0.getSource() == jbQuit;
-
-		setVisible(false);
 	}
 }

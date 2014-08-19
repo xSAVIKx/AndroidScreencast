@@ -28,16 +28,6 @@ import com.github.xsavikx.android.screencast.api.file.FileInfo;
 
 public class JFrameExplorer extends JFrame {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -5209265873286028854L;
-	JTree jt;
-	JSplitPane jSplitPane;
-	IDevice device;
-	JList<Object> jListFichiers;
-	Map<String, List<FileInfo>> cache = new LinkedHashMap<String, List<FileInfo>>();
-
 	private class FileTreeNode extends DefaultMutableTreeNode {
 		FileInfo fi;
 
@@ -47,7 +37,6 @@ public class JFrameExplorer extends JFrame {
 		}
 
 	}
-
 	private class FolderTreeNode extends LazyMutableTreeNode {
 
 		String name;
@@ -71,11 +60,23 @@ public class JFrameExplorer extends JFrame {
 			}
 		}
 
+		@Override
 		public String toString() {
 			return name;
 		}
 
 	}
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5209265873286028854L;
+	JTree jt;
+	JSplitPane jSplitPane;
+	IDevice device;
+
+	JList<Object> jListFichiers;
+
+	Map<String, List<FileInfo>> cache = new LinkedHashMap<String, List<FileInfo>>();
 
 	public JFrameExplorer(IDevice device) {
 		this.device = device;
@@ -88,6 +89,7 @@ public class JFrameExplorer extends JFrame {
 		jt.setRootVisible(true);
 		jt.addTreeSelectionListener(new TreeSelectionListener() {
 
+			@Override
 			public void valueChanged(TreeSelectionEvent e) {
 				TreePath tp = e.getPath();
 				if (tp == null)

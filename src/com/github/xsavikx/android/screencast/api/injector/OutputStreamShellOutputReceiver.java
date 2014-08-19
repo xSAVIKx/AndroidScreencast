@@ -13,10 +13,16 @@ public class OutputStreamShellOutputReceiver implements IShellOutputReceiver {
 		this.os = os;
 	}
 
-	public boolean isCancelled() {
-		return false;
+	@Override
+	public void addOutput(byte[] buf, int off, int len) {
+		try {
+			os.write(buf, off, len);
+		} catch (IOException ex) {
+			throw new RuntimeException(ex);
+		}
 	}
 
+	@Override
 	public void flush() {
 		try {
 			os.flush();
@@ -25,12 +31,9 @@ public class OutputStreamShellOutputReceiver implements IShellOutputReceiver {
 		}
 	}
 
-	public void addOutput(byte[] buf, int off, int len) {
-		try {
-			os.write(buf, off, len);
-		} catch (IOException ex) {
-			throw new RuntimeException(ex);
-		}
+	@Override
+	public boolean isCancelled() {
+		return false;
 	}
 
 }

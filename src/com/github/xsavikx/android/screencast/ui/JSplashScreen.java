@@ -1,24 +1,23 @@
 package com.github.xsavikx.android.screencast.ui;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JWindow;
 
 public class JSplashScreen extends JWindow {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	JLabel label;
 
 	public JSplashScreen(String text) {
-		label = new JLabel("Loading...", (int) JLabel.CENTER_ALIGNMENT);
+		label = new JLabel("Loading...", (int) Component.CENTER_ALIGNMENT);
 		initialize();
 		setText(text);
-	}
-
-	public void setText(String text) {
-		label.setText(text);
-		pack();
-		setLocationRelativeTo(null);
 	}
 
 	private void initialize() {
@@ -26,6 +25,12 @@ public class JSplashScreen extends JWindow {
 		label.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 		// createLineBorder(Color.BLACK));
 		add(label, BorderLayout.CENTER);
+	}
+
+	public void setText(String text) {
+		label.setText(text);
+		pack();
+		setLocationRelativeTo(null);
 	}
 
 }

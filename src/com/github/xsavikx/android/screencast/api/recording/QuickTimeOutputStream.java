@@ -2,108 +2,23 @@ package com.github.xsavikx.android.screencast.api.recording;
 
 import java.awt.image.BufferedImage;
 import java.awt.image.WritableRaster;
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Date;
 import java.util.LinkedList;
-import javax.imageio.*;
-import javax.imageio.stream.*;
+
+import javax.imageio.IIOImage;
+import javax.imageio.ImageIO;
+import javax.imageio.ImageWriteParam;
+import javax.imageio.ImageWriter;
+import javax.imageio.stream.FileImageOutputStream;
+import javax.imageio.stream.ImageOutputStream;
+import javax.imageio.stream.MemoryCacheImageOutputStream;
 
 public class QuickTimeOutputStream {
-
-	/**
-	 * Output stream of the QuickTimeOutputStream.
-	 */
-	private ImageOutputStream out;
-
-	/**
-	 * Supported video formats.
-	 */
-	public static enum VideoFormat {
-
-		RAW, JPG, PNG;
-	}
-
-	/**
-	 * Current video format.
-	 */
-	private VideoFormat videoFormat;
-	/**
-	 * Quality of JPEG encoded video frames.
-	 */
-	private float quality = 0.9f;
-	/**
-	 * Creation time of the movie output stream.
-	 */
-	private Date creationTime;
-	/**
-	 * Width of the video frames. All frames must have the same width. The value
-	 * -1 is used to mark unspecified width.
-	 */
-	private int imgWidth = -1;
-	/**
-	 * Height of the video frames. All frames must have the same height. The
-	 * value -1 is used to mark unspecified height.
-	 */
-	private int imgHeight = -1;
-	/**
-	 * The timeScale of the movie. A time value that indicates the time scale
-	 * for this media—that is, the number of time units that pass per second in
-	 * its time coordinate system.
-	 */
-	private int timeScale = 600;
-
-	/**
-	 * The states of the movie output stream.
-	 */
-	private static enum States {
-
-		STARTED, FINISHED, CLOSED;
-	}
-
-	/**
-	 * The current state of the movie output stream.
-	 */
-	private States state = States.FINISHED;
-
-	/**
-	 * QuickTime stores media data in samples. A sample is a single element in a
-	 * sequence of time-ordered data. Samples are stored in the mdat atom.
-	 */
-	private static class Sample {
-
-		/**
-		 * Offset of the sample relative to the start of the QuickTime file.
-		 */
-		long offset;
-		/** Data length of the sample. */
-		long length;
-		/**
-		 * The duration of the sample in time scale units.
-		 */
-		int duration;
-
-		/**
-		 * Creates a new sample.
-		 * 
-		 * @param duration
-		 * @param offset
-		 * @param length
-		 */
-		public Sample(int duration, long offset, long length) {
-			this.duration = duration;
-			this.offset = offset;
-			this.length = length;
-		}
-	}
-
-	/**
-	 * List of video frames.
-	 */
-	private LinkedList<Sample> videoFrames;
-	/**
-	 * This atom holds the movie frames.
-	 */
-	private WideDataAtom mdatAtom;
 
 	/**
 	 * Atom base class.
@@ -179,6 +94,7 @@ public class QuickTimeOutputStream {
 		 * 
 		 * @throws java.io.IOException
 		 */
+		@Override
 		public void finish() throws IOException {
 			if (!finished) {
 				if (size() > 0xffffffffL) {
@@ -202,6 +118,7 @@ public class QuickTimeOutputStream {
 			}
 		}
 
+		@Override
 		public long size() {
 			long length = 8;
 			for (Atom child : children) {
@@ -232,23 +149,6 @@ public class QuickTimeOutputStream {
 			data = new DataAtomOutputStream(new FilterImageOutputStream(out));
 		}
 
-		public DataAtomOutputStream getOutputStream() {
-			if (finished) {
-				throw new IllegalStateException("DataAtom is finished");
-			}
-			return data;
-		}
-
-		/**
-		 * Returns the offset of this atom to the beginning of the random access
-		 * file
-		 * 
-		 * @return
-		 */
-		public long getOffset() {
-			return offset;
-		}
-
 		@Override
 		public void finish() throws IOException {
 			if (!finished) {
@@ -276,12 +176,72 @@ public class QuickTimeOutputStream {
 			}
 		}
 
+		/**
+		 * Returns the offset of this atom to the beginning of the random access
+		 * file
+		 * 
+		 * @return
+		 */
+		public long getOffset() {
+			return offset;
+		}
+
+		public DataAtomOutputStream getOutputStream() {
+			if (finished) {
+				throw new IllegalStateException("DataAtom is finished");
+			}
+			return data;
+		}
+
 		@Override
 		public long size() {
 			return 8 + data.size();
 		}
 	}
+	/**
+	 * QuickTime stores media data in samples. A sample is a single element in a
+	 * sequence of time-ordered data. Samples are stored in the mdat atom.
+	 */
+	private static class Sample {
 
+		/**
+		 * Offset of the sample relative to the start of the QuickTime file.
+		 */
+		long offset;
+		/** Data length of the sample. */
+		long length;
+		/**
+		 * The duration of the sample in time scale units.
+		 */
+		int duration;
+
+		/**
+		 * Creates a new sample.
+		 * 
+		 * @param duration
+		 * @param offset
+		 * @param length
+		 */
+		public Sample(int duration, long offset, long length) {
+			this.duration = duration;
+			this.offset = offset;
+			this.length = length;
+		}
+	}
+	/**
+	 * The states of the movie output stream.
+	 */
+	private static enum States {
+
+		STARTED, FINISHED, CLOSED;
+	}
+	/**
+	 * Supported video formats.
+	 */
+	public static enum VideoFormat {
+
+		RAW, JPG, PNG;
+	}
 	/**
 	 * WideDataAtom can grow larger then 4 gigabytes.
 	 */
@@ -302,23 +262,6 @@ public class QuickTimeOutputStream {
 			out.writeLong(0); // make room for the atom header
 			out.writeLong(0); // make room for the atom header
 			data = new DataAtomOutputStream(new FilterImageOutputStream(out));
-		}
-
-		public DataAtomOutputStream getOutputStream() {
-			if (finished) {
-				throw new IllegalStateException("Atom is finished");
-			}
-			return data;
-		}
-
-		/**
-		 * Returns the offset of this atom to the beginning of the random access
-		 * file
-		 * 
-		 * @return
-		 */
-		public long getOffset() {
-			return offset;
 		}
 
 		@Override
@@ -348,12 +291,81 @@ public class QuickTimeOutputStream {
 			}
 		}
 
+		/**
+		 * Returns the offset of this atom to the beginning of the random access
+		 * file
+		 * 
+		 * @return
+		 */
+		public long getOffset() {
+			return offset;
+		}
+
+		public DataAtomOutputStream getOutputStream() {
+			if (finished) {
+				throw new IllegalStateException("Atom is finished");
+			}
+			return data;
+		}
+
 		@Override
 		public long size() {
 			long size = 8 + data.size();
 			return (size > 0xffffffffL) ? size + 8 : size;
 		}
 	}
+	/**
+	 * Output stream of the QuickTimeOutputStream.
+	 */
+	private ImageOutputStream out;
+
+	/**
+	 * Current video format.
+	 */
+	private VideoFormat videoFormat;
+
+	/**
+	 * Quality of JPEG encoded video frames.
+	 */
+	private float quality = 0.9f;
+
+	/**
+	 * Creation time of the movie output stream.
+	 */
+	private Date creationTime;
+
+	/**
+	 * Width of the video frames. All frames must have the same width. The value
+	 * -1 is used to mark unspecified width.
+	 */
+	private int imgWidth = -1;
+	/**
+	 * Height of the video frames. All frames must have the same height. The
+	 * value -1 is used to mark unspecified height.
+	 */
+	private int imgHeight = -1;
+
+	/**
+	 * The timeScale of the movie. A time value that indicates the time scale
+	 * for this media—that is, the number of time units that pass per second in
+	 * its time coordinate system.
+	 */
+	private int timeScale = 600;
+
+	/**
+	 * The current state of the movie output stream.
+	 */
+	private States state = States.FINISHED;
+
+	/**
+	 * List of video frames.
+	 */
+	private LinkedList<Sample> videoFrames;
+
+	/**
+	 * This atom holds the movie frames.
+	 */
+	private WideDataAtom mdatAtom;
 
 	/**
 	 * Creates a new output stream with the specified image videoFormat and
@@ -383,76 +395,28 @@ public class QuickTimeOutputStream {
 	}
 
 	/**
-	 * Sets the time scale for this media, that is, the number of time units
-	 * that pass per second in its time coordinate system.
-	 * <p>
-	 * The default value is 600.
+	 * Closes the movie file as well as the stream being filtered.
 	 * 
-	 * @param newValue
+	 * @exception IOException
+	 *                if an I/O error has occurred
 	 */
-	public void setTimeScale(int newValue) {
-		if (newValue <= 0) {
-			throw new IllegalArgumentException("timeScale must be greater 0");
+	public void close() throws IOException {
+		if (state == States.STARTED) {
+			finish();
 		}
-		this.timeScale = newValue;
-	}
-
-	/**
-	 * Returns the time scale of this media.
-	 * 
-	 * @return time scale
-	 */
-	public int getTimeScale() {
-		return timeScale;
-	}
-
-	/**
-	 * Sets the compression quality of the video track. A value of 0 stands for
-	 * "high compression is important" a value of 1 for
-	 * "high image quality is important".
-	 * <p>
-	 * Changing this value affects frames which are subsequently written to the
-	 * QuickTimeOutputStream. Frames which have already been written are not
-	 * changed.
-	 * <p>
-	 * This value has no effect on videos encoded with the PNG format.
-	 * <p>
-	 * The default value is 0.9.
-	 * 
-	 * @param newValue
-	 */
-	public void setVideoCompressionQuality(float newValue) {
-		this.quality = newValue;
-	}
-
-	/**
-	 * Returns the video compression quality.
-	 * 
-	 * @return video compression quality
-	 */
-	public float getVideoCompressionQuality() {
-		return quality;
-	}
-
-	/**
-	 * Sets the dimension of the video track.
-	 * <p>
-	 * You need to explicitly set the dimension, if you add all frames from
-	 * files or input streams.
-	 * <p>
-	 * If you add frames from buffered images, then QuickTimeOutputStream can
-	 * determine the video dimension from the image width and height.
-	 * 
-	 * @param width
-	 * @param height
-	 */
-	public void setVideoDimension(int width, int height) {
-		if (width < 1 || height < 1) {
-			throw new IllegalArgumentException(
-					"width and height must be greater zero.");
+		if (state != States.CLOSED) {
+			out.close();
+			state = States.CLOSED;
 		}
-		this.imgWidth = width;
-		this.imgHeight = height;
+	}
+
+	/**
+	 * Check to make sure that this stream has not been closed
+	 */
+	private void ensureOpen() throws IOException {
+		if (state == States.CLOSED) {
+			throw new IOException("Stream closed");
+		}
 	}
 
 	/**
@@ -466,184 +430,6 @@ public class QuickTimeOutputStream {
 			writeProlog();
 			mdatAtom = new WideDataAtom("mdat");
 			state = States.STARTED;
-		}
-	}
-
-	/**
-	 * Writes a frame to the video track.
-	 * <p>
-	 * If the dimension of the video track has not been specified yet, it is
-	 * derived from the first buffered image added to the QuickTimeOutputStream.
-	 *
-	 * @param image
-	 *            The frame image.
-	 * @param duration
-	 *            The duration of the frame in time scale units.
-	 * 
-	 * @throws IllegalArgumentException
-	 *             if the duration is less than 1, or if the dimension of the
-	 *             frame does not match the dimension of the video track.
-	 * @throws IOException
-	 *             if writing the image failed.
-	 */
-	public void writeFrame(BufferedImage image, int duration)
-			throws IOException {
-		if (duration <= 0) {
-			throw new IllegalArgumentException("duration must be greater 0");
-		}
-		ensureOpen();
-		ensureStarted();
-
-		// Get the dimensions of the first image
-		if (imgWidth == -1) {
-			imgWidth = image.getWidth();
-			imgHeight = image.getHeight();
-		} else {
-			// The dimension of the image must match the dimension of the video
-			// track
-			if (imgWidth != image.getWidth() || imgHeight != image.getHeight()) {
-				throw new IllegalArgumentException("Dimensions of image["
-						+ videoFrames.size() + "] (width=" + image.getWidth()
-						+ ", height=" + image.getHeight()
-						+ ") differs from image[0] (width=" + imgWidth
-						+ ", height=" + imgHeight);
-			}
-		}
-
-		long offset = out.getStreamPosition();
-
-		switch (videoFormat) {
-		case RAW: {
-			WritableRaster raster = image.getRaster();
-			int[] raw = new int[imgWidth * 3]; // holds a scanline of raw image
-												// data with 3 channels of 32
-												// bit data
-			byte[] bytes = new byte[imgWidth * 3]; // holds a scanline of raw
-													// image data with 3
-													// channels of 8 bit data
-			for (int y = 0; y < imgHeight; y++) {
-				raster.getPixels(0, y, imgWidth, 1, raw);
-				for (int k = 0, n = imgWidth * 3; k < n; k++) {
-					bytes[k] = (byte) raw[k];
-				}
-				mdatAtom.getOutputStream().write(bytes);
-			}
-			break;
-		}
-		case JPG: {
-			ImageWriter iw = (ImageWriter) ImageIO.getImageWritersByMIMEType(
-					"image/jpeg").next();
-			ImageWriteParam iwParam = iw.getDefaultWriteParam();
-			iwParam.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
-			iwParam.setCompressionQuality(quality);
-			MemoryCacheImageOutputStream imgOut = new MemoryCacheImageOutputStream(
-					mdatAtom.getOutputStream());
-			iw.setOutput(imgOut);
-			IIOImage img = new IIOImage(image, null, null);
-			iw.write(null, img, iwParam);
-			iw.dispose();
-			break;
-		}
-		case PNG:
-		default: {
-			ImageWriter iw = (ImageWriter) ImageIO.getImageWritersByMIMEType(
-					"image/png").next();
-			ImageWriteParam iwParam = iw.getDefaultWriteParam();
-			MemoryCacheImageOutputStream imgOut = new MemoryCacheImageOutputStream(
-					mdatAtom.getOutputStream());
-			iw.setOutput(imgOut);
-			IIOImage img = new IIOImage(image, null, null);
-			iw.write(null, img, iwParam);
-			iw.dispose();
-			break;
-		}
-		}
-		long length = out.getStreamPosition() - offset;
-		videoFrames.add(new Sample(duration, offset, length));
-	}
-
-	/**
-	 * Writes a frame from a file to the video track.
-	 * <p>
-	 * This method does not inspect the contents of the file. The contents has
-	 * to match the video format. For example, it is your responsibility to only
-	 * add JPG files if you have chosen the JPEG video format.
-	 * <p>
-	 * If you add all frames from files or from input streams, then you have to
-	 * explicitly set the dimension of the video track before you call finish()
-	 * or close().
-	 *
-	 * @param file
-	 *            The file which holds the image data.
-	 * @param duration
-	 *            The duration of the frame in time scale units.
-	 * 
-	 * @throws IllegalStateException
-	 *             if the duration is less than 1.
-	 * @throws IOException
-	 *             if writing the image failed.
-	 */
-	public void writeFrame(File file, int duration) throws IOException {
-
-		try (FileInputStream in = new FileInputStream(file);) {
-			writeFrame(in, duration);
-		}
-	}
-
-	/**
-	 * Writes a frame to the video track.
-	 * <p>
-	 * This method does not inspect the contents of the input stream. The
-	 * contents has to match the video format. For example, it is your
-	 * responsibility to only add JPG files if you have chosen the JPEG video
-	 * format.
-	 * <p>
-	 * If you add all frames from files or from input streams, then you have to
-	 * explicitly set the dimension of the video track before you call finish()
-	 * or close().
-	 *
-	 * @param in
-	 *            The input stream which holds the image data.
-	 * @param duration
-	 *            The duration of the frame in time scale units.
-	 * 
-	 * @throws IllegalArgumentException
-	 *             if the duration is less than 1.
-	 * @throws IOException
-	 *             if writing the image failed.
-	 */
-	public void writeFrame(InputStream in, int duration) throws IOException {
-		if (duration <= 0) {
-			throw new IllegalArgumentException("duration must be greater 0");
-		}
-		ensureOpen();
-		ensureStarted();
-
-		long offset = out.getStreamPosition();
-		try (OutputStream mdatOut = mdatAtom.getOutputStream();) {
-			byte[] buf = new byte[512];
-			int len;
-			while ((len = in.read(buf)) != -1) {
-				mdatOut.write(buf, 0, len);
-			}
-			long length = out.getStreamPosition() - offset;
-			videoFrames.add(new Sample(duration, offset, length));
-		}
-	}
-
-	/**
-	 * Closes the movie file as well as the stream being filtered.
-	 * 
-	 * @exception IOException
-	 *                if an I/O error has occurred
-	 */
-	public void close() throws IOException {
-		if (state == States.STARTED) {
-			finish();
-		}
-		if (state != States.CLOSED) {
-			out.close();
-			state = States.CLOSED;
 		}
 	}
 
@@ -673,32 +459,76 @@ public class QuickTimeOutputStream {
 	}
 
 	/**
-	 * Check to make sure that this stream has not been closed
+	 * Returns the time scale of this media.
+	 * 
+	 * @return time scale
 	 */
-	private void ensureOpen() throws IOException {
-		if (state == States.CLOSED) {
-			throw new IOException("Stream closed");
-		}
+	public int getTimeScale() {
+		return timeScale;
 	}
 
-	private void writeProlog() throws IOException {
-		/*
-		 * File type atom
-		 * 
-		 * typedef struct { magic brand; bcd4 versionYear; bcd2 versionMonth;
-		 * bcd2 versionMinor; magic[4] compatibleBrands; } ftypAtom;
-		 */
-		DataAtom ftypAtom = new DataAtom("ftyp");
-		DataAtomOutputStream d = ftypAtom.getOutputStream();
-		d.writeType("qt  "); // brand
-		d.writeBCD4(2005); // versionYear
-		d.writeBCD2(3); // versionMonth
-		d.writeBCD2(0); // versionMinor
-		d.writeType("qt  "); // compatibleBrands
-		d.writeInt(0); // compatibleBrands (0 is used to denote no value)
-		d.writeInt(0); // compatibleBrands (0 is used to denote no value)
-		d.writeInt(0); // compatibleBrands (0 is used to denote no value)
-		ftypAtom.finish();
+	/**
+	 * Returns the video compression quality.
+	 * 
+	 * @return video compression quality
+	 */
+	public float getVideoCompressionQuality() {
+		return quality;
+	}
+
+	/**
+	 * Sets the time scale for this media, that is, the number of time units
+	 * that pass per second in its time coordinate system.
+	 * <p>
+	 * The default value is 600.
+	 * 
+	 * @param newValue
+	 */
+	public void setTimeScale(int newValue) {
+		if (newValue <= 0) {
+			throw new IllegalArgumentException("timeScale must be greater 0");
+		}
+		this.timeScale = newValue;
+	}
+
+	/**
+	 * Sets the compression quality of the video track. A value of 0 stands for
+	 * "high compression is important" a value of 1 for
+	 * "high image quality is important".
+	 * <p>
+	 * Changing this value affects frames which are subsequently written to the
+	 * QuickTimeOutputStream. Frames which have already been written are not
+	 * changed.
+	 * <p>
+	 * This value has no effect on videos encoded with the PNG format.
+	 * <p>
+	 * The default value is 0.9.
+	 * 
+	 * @param newValue
+	 */
+	public void setVideoCompressionQuality(float newValue) {
+		this.quality = newValue;
+	}
+
+	/**
+	 * Sets the dimension of the video track.
+	 * <p>
+	 * You need to explicitly set the dimension, if you add all frames from
+	 * files or input streams.
+	 * <p>
+	 * If you add frames from buffered images, then QuickTimeOutputStream can
+	 * determine the video dimension from the image width and height.
+	 * 
+	 * @param width
+	 * @param height
+	 */
+	public void setVideoDimension(int width, int height) {
+		if (width < 1 || height < 1) {
+			throw new IllegalArgumentException(
+					"width and height must be greater zero.");
+		}
+		this.imgWidth = width;
+		this.imgHeight = height;
 	}
 
 	private void writeEpilog() throws IOException {
@@ -1694,5 +1524,187 @@ public class QuickTimeOutputStream {
 		}
 		//
 		moovAtom.finish();
+	}
+
+	/**
+	 * Writes a frame to the video track.
+	 * <p>
+	 * If the dimension of the video track has not been specified yet, it is
+	 * derived from the first buffered image added to the QuickTimeOutputStream.
+	 *
+	 * @param image
+	 *            The frame image.
+	 * @param duration
+	 *            The duration of the frame in time scale units.
+	 * 
+	 * @throws IllegalArgumentException
+	 *             if the duration is less than 1, or if the dimension of the
+	 *             frame does not match the dimension of the video track.
+	 * @throws IOException
+	 *             if writing the image failed.
+	 */
+	public void writeFrame(BufferedImage image, int duration)
+			throws IOException {
+		if (duration <= 0) {
+			throw new IllegalArgumentException("duration must be greater 0");
+		}
+		ensureOpen();
+		ensureStarted();
+
+		// Get the dimensions of the first image
+		if (imgWidth == -1) {
+			imgWidth = image.getWidth();
+			imgHeight = image.getHeight();
+		} else {
+			// The dimension of the image must match the dimension of the video
+			// track
+			if (imgWidth != image.getWidth() || imgHeight != image.getHeight()) {
+				throw new IllegalArgumentException("Dimensions of image["
+						+ videoFrames.size() + "] (width=" + image.getWidth()
+						+ ", height=" + image.getHeight()
+						+ ") differs from image[0] (width=" + imgWidth
+						+ ", height=" + imgHeight);
+			}
+		}
+
+		long offset = out.getStreamPosition();
+
+		switch (videoFormat) {
+		case RAW: {
+			WritableRaster raster = image.getRaster();
+			int[] raw = new int[imgWidth * 3]; // holds a scanline of raw image
+												// data with 3 channels of 32
+												// bit data
+			byte[] bytes = new byte[imgWidth * 3]; // holds a scanline of raw
+													// image data with 3
+													// channels of 8 bit data
+			for (int y = 0; y < imgHeight; y++) {
+				raster.getPixels(0, y, imgWidth, 1, raw);
+				for (int k = 0, n = imgWidth * 3; k < n; k++) {
+					bytes[k] = (byte) raw[k];
+				}
+				mdatAtom.getOutputStream().write(bytes);
+			}
+			break;
+		}
+		case JPG: {
+			ImageWriter iw = ImageIO.getImageWritersByMIMEType(
+					"image/jpeg").next();
+			ImageWriteParam iwParam = iw.getDefaultWriteParam();
+			iwParam.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
+			iwParam.setCompressionQuality(quality);
+			MemoryCacheImageOutputStream imgOut = new MemoryCacheImageOutputStream(
+					mdatAtom.getOutputStream());
+			iw.setOutput(imgOut);
+			IIOImage img = new IIOImage(image, null, null);
+			iw.write(null, img, iwParam);
+			iw.dispose();
+			break;
+		}
+		case PNG:
+		default: {
+			ImageWriter iw = ImageIO.getImageWritersByMIMEType(
+					"image/png").next();
+			ImageWriteParam iwParam = iw.getDefaultWriteParam();
+			MemoryCacheImageOutputStream imgOut = new MemoryCacheImageOutputStream(
+					mdatAtom.getOutputStream());
+			iw.setOutput(imgOut);
+			IIOImage img = new IIOImage(image, null, null);
+			iw.write(null, img, iwParam);
+			iw.dispose();
+			break;
+		}
+		}
+		long length = out.getStreamPosition() - offset;
+		videoFrames.add(new Sample(duration, offset, length));
+	}
+
+	/**
+	 * Writes a frame from a file to the video track.
+	 * <p>
+	 * This method does not inspect the contents of the file. The contents has
+	 * to match the video format. For example, it is your responsibility to only
+	 * add JPG files if you have chosen the JPEG video format.
+	 * <p>
+	 * If you add all frames from files or from input streams, then you have to
+	 * explicitly set the dimension of the video track before you call finish()
+	 * or close().
+	 *
+	 * @param file
+	 *            The file which holds the image data.
+	 * @param duration
+	 *            The duration of the frame in time scale units.
+	 * 
+	 * @throws IllegalStateException
+	 *             if the duration is less than 1.
+	 * @throws IOException
+	 *             if writing the image failed.
+	 */
+	public void writeFrame(File file, int duration) throws IOException {
+
+		try (FileInputStream in = new FileInputStream(file);) {
+			writeFrame(in, duration);
+		}
+	}
+
+	/**
+	 * Writes a frame to the video track.
+	 * <p>
+	 * This method does not inspect the contents of the input stream. The
+	 * contents has to match the video format. For example, it is your
+	 * responsibility to only add JPG files if you have chosen the JPEG video
+	 * format.
+	 * <p>
+	 * If you add all frames from files or from input streams, then you have to
+	 * explicitly set the dimension of the video track before you call finish()
+	 * or close().
+	 *
+	 * @param in
+	 *            The input stream which holds the image data.
+	 * @param duration
+	 *            The duration of the frame in time scale units.
+	 * 
+	 * @throws IllegalArgumentException
+	 *             if the duration is less than 1.
+	 * @throws IOException
+	 *             if writing the image failed.
+	 */
+	public void writeFrame(InputStream in, int duration) throws IOException {
+		if (duration <= 0) {
+			throw new IllegalArgumentException("duration must be greater 0");
+		}
+		ensureOpen();
+		ensureStarted();
+
+		long offset = out.getStreamPosition();
+		try (OutputStream mdatOut = mdatAtom.getOutputStream();) {
+			byte[] buf = new byte[512];
+			int len;
+			while ((len = in.read(buf)) != -1) {
+				mdatOut.write(buf, 0, len);
+			}
+			long length = out.getStreamPosition() - offset;
+			videoFrames.add(new Sample(duration, offset, length));
+		}
+	}
+
+	private void writeProlog() throws IOException {
+		/*
+		 * File type atom
+		 * 
+		 * typedef struct { magic brand; bcd4 versionYear; bcd2 versionMonth;
+		 * bcd2 versionMinor; magic[4] compatibleBrands; } ftypAtom;
+		 */
+		DataAtom ftypAtom = new DataAtom("ftyp");
+		DataAtomOutputStream d = ftypAtom.getOutputStream();
+		d.writeType("qt  "); // brand
+		d.writeBCD4(2005); // versionYear
+		d.writeBCD2(3); // versionMonth
+		d.writeBCD2(0); // versionMinor
+		d.writeType("qt  "); // compatibleBrands
+		d.writeInt(0); // compatibleBrands (0 is used to denote no value)
+		d.writeInt(0); // compatibleBrands (0 is used to denote no value)
+		d.writeInt(0); // compatibleBrands (0 is used to denote no value)
+		ftypAtom.finish();
 	}
 }

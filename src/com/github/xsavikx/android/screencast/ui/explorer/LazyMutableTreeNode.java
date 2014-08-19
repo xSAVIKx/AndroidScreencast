@@ -4,6 +4,10 @@ import javax.swing.tree.DefaultMutableTreeNode;
 
 public abstract class LazyMutableTreeNode extends DefaultMutableTreeNode {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6383034137965603498L;
 	protected boolean _loaded = false;
 
 	public LazyMutableTreeNode() {
@@ -18,6 +22,11 @@ public abstract class LazyMutableTreeNode extends DefaultMutableTreeNode {
 		super(userObject, allowsChildren);
 	}
 
+	public void clear() {
+		removeAllChildren();
+		_loaded = false;
+	}
+
 	@Override
 	public int getChildCount() {
 		synchronized (this) {
@@ -29,15 +38,10 @@ public abstract class LazyMutableTreeNode extends DefaultMutableTreeNode {
 		return super.getChildCount();
 	}
 
-	public void clear() {
-		removeAllChildren();
-		_loaded = false;
-	}
+	protected abstract void initChildren();
 
 	public boolean isLoaded() {
 		return _loaded;
 	}
-
-	protected abstract void initChildren();
 
 }

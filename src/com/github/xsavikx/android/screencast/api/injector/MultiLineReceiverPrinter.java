@@ -2,7 +2,6 @@ package com.github.xsavikx.android.screencast.api.injector;
 
 import com.android.ddmlib.MultiLineReceiver;
 
-
 public class MultiLineReceiverPrinter extends MultiLineReceiver {
 
 	@Override

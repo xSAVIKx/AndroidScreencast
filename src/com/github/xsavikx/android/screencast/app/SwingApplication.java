@@ -14,13 +14,14 @@ public class SwingApplication extends Application {
 
 	public SwingApplication(boolean nativeLook) {
 		try {
-			if(nativeLook)
-				UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-		} catch(Exception ex) {
+			if (nativeLook)
+				UIManager.setLookAndFeel(UIManager
+						.getSystemLookAndFeelClassName());
+		} catch (Exception ex) {
 			throw new RuntimeException(ex);
 		}
 	}
-	
+
 	@Override
 	protected void close() {
 		super.close();
@@ -31,24 +32,23 @@ public class SwingApplication extends Application {
 		try {
 			StringWriter sw = new StringWriter();
 			ex.printStackTrace(new PrintWriter(sw));
-			if(sw.toString().contains("SynthTreeUI"))
+			if (sw.toString().contains("SynthTreeUI"))
 				return;
 			ex.printStackTrace(System.err);
-			if(jd != null && jd.isVisible())
+			if (jd != null && jd.isVisible())
 				return;
 			jd = new JDialogError(ex);
 			SwingUtilities.invokeLater(new Runnable() {
-				
+
+				@Override
 				public void run() {
 					jd.setVisible(true);
-					
+
 				}
 			});
-		} catch(Exception ex2) {
+		} catch (Exception ex2) {
 			// ignored
 		}
 	}
-	
-	
 
 }
