@@ -230,7 +230,7 @@ public class Injector {
 	private static final String LOCAL_AGENT_JAR_LOCATION = "./MyInjectEventApp.jar";
 
 	private static final String REMOTE_AGENT_JAR_LOCATION = "/data/local/tmp/MyInjectEventApp.jar";
-	private static final String AGENT_MAIN_CLASS = "com.github.xsavikx.android.screencast.Main";
+	private static final String AGENT_MAIN_CLASS = "com.github.xsavikx.android.screencast.client.Main";
 	IDevice device;
 
 	public static Socket s;

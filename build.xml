@@ -11,12 +11,9 @@
 
 	<!--<property file="../${ant.project.name}.conf" />-->
 	<property name="mainjar" value="${ant.project.name}.jar" />
-	<property name="launcher" value="${ant.project.name}.jnlp" />
 	<property name="ddmlib" value="ddmlib.jar" />
-	<property name="log4j-core" value="log4j-core-2.0.jar" />
-	<property name="log4j-api" value="log4j-api-2.0.jar" />
-
-	<property name="sdk-ddmlib" value="/opt/android-sdk/tools/lib/ddmlib.jar" />
+	<property name="log4j" value="log4j-1.2.17.jar" />
+	<property name="android" value="android.jar" />
 
 	<target name="init">
 		<!-- Create the time stamp -->
@@ -27,7 +24,7 @@
 
 	<target name="compile" depends="init" description="compile the source ">
 		<!-- Compile the java code from ${src} into ${build} -->
-		<javac nowarn="true" srcdir="${src}" destdir="${build}" classpath="${lib}/${ddmlib};${lib}/${log4j-core};${lib}/${log4j-api}" debug="on" />
+		<javac nowarn="true" srcdir="${src}" destdir="${build}" classpath="${lib}/${ddmlib};${lib}/${log4j};${lib}/${android}" debug="on" />
 	</target>
 
 	<target name="dist" depends="compile" description="generate the distribution">
@@ -39,7 +36,7 @@
 				<attribute name="Main-Class" value="org.eclipse.jdt.internal.jarinjarloader.JarRsrcLoader" />
 				<attribute name="Rsrc-Main-Class" value="com.github.xsavikx.android.screencast.Main" />
 				<attribute name="Class-Path" value="." />
-				<attribute name="Rsrc-Class-Path" value="./ ddmlib.jar MyInjectEventApp.jar log4j-api-2.0.jar log4j-core-2.0.jar" />
+				<attribute name="Rsrc-Class-Path" value="./ ${ddmlib} MyInjectEventApp.jar ${log4j} ${android}" />
 				<attribute name="Built-By" value="${user.name}" />
 				<attribute name="Permissions" value="all-permissions" />
 				<attribute name="Application-Name" value="Android Screencast" />
@@ -47,10 +44,10 @@
 			<zipfileset src="jar-in-jar-loader.zip" />
 			<fileset dir="${build}" />
 			<fileset dir="${src}" />
-			<zipfileset dir="${lib}" includes="ddmlib.jar" />
-			<zipfileset dir="${lib}" includes="MyInjectEventApp.jar" />
-			<zipfileset dir="${lib}" includes="log4j-api-2.0.jar" />
-			<zipfileset dir="${lib}" includes="log4j-core-2.0.jar" />
+			<zipfileset dir="${lib}" includes="${ddmlib}" />
+			<zipfileset dir="${lib}" includes="${android}" />
+			<zipfileset dir="${lib}" includes="${log4j}" />
+
 		</jar>
 
 	</target>

@@ -19,3 +19,9 @@ hs_err_pid*
 .settings
 .classpath
 .project
+
+# Build folders
+dist
+
+# MyInjectEventApp copy
+/*.jar
