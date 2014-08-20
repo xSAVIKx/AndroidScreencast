@@ -191,6 +191,7 @@ public class Injector {
 			}
 		}
 	}
+
 	/**
 	 * @return true if there was a client running
 	 */
@@ -222,6 +223,7 @@ public class Injector {
 		}
 		return false;
 	}
+
 	/**
 	 * Logger for this class
 	 */
@@ -328,12 +330,12 @@ public class Injector {
 		}
 	}
 
-	public void injectKeycode(int type, int keyCode) {
+	public void injectKeycode(int keyCode) {
 		if (logger.isDebugEnabled()) {
-			logger.debug("injectKeycode(int, int) - start");
+			logger.debug("injectKeycode( int) - start");
 		}
 
-		String cmdList = "key/" + type + "/" + keyCode;
+		String cmdList = "key/" + keyCode;
 		injectData(cmdList);
 
 		if (logger.isDebugEnabled()) {

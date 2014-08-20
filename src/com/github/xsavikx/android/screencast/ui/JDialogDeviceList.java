@@ -16,7 +16,6 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
-import javax.swing.ListModel;
 
 import com.android.ddmlib.IDevice;
 
@@ -95,9 +94,6 @@ public class JDialogDeviceList extends JDialog implements ActionListener {
 			public void mouseClicked(MouseEvent e) {
 				if (e.getClickCount() == 2) {
 					int index = jlDevices.locationToIndex(e.getPoint());
-					ListModel dlm = jlDevices.getModel();
-					Object item = dlm.getElementAt(index);
-					;
 					jlDevices.ensureIndexIsVisible(index);
 					cancelled = false;
 					setVisible(false);

@@ -21,7 +21,7 @@ public class StreamUtils {
 		}
 	}
 
-	public static void transfertResource(Class c, String resourceName,
+	public static void transfertResource(Class<?> c, String resourceName,
 			File output) {
 		InputStream resStream = c.getResourceAsStream(resourceName);
 		if (resStream == null)

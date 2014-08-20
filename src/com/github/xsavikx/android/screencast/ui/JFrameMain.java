@@ -38,6 +38,7 @@ public class JFrameMain extends JFrame {
 		private int dragFromY = -1;
 		private long timeFromPress = -1;
 		private final static long ONE_SECOND = 1000L;
+
 		@Override
 		public void mouseClicked(MouseEvent e) {
 			if (JFrameMain.this.injector == null)
@@ -85,8 +86,6 @@ public class JFrameMain extends JFrame {
 			if (JFrameMain.this.injector == null)
 				return;
 			try {
-				// injector.injectKeycode(ConstEvtKey.ACTION_DOWN,code);
-				// injector.injectKeycode(ConstEvtKey.ACTION_UP,code);
 				JFrameMain.this.injector.injectTrackball(arg0
 						.getWheelRotation() < 0 ? -1f : 1f);
 			} catch (IOException e) {
@@ -94,6 +93,7 @@ public class JFrameMain extends JFrame {
 			}
 		}
 	}
+
 	public class KbActionListener implements ActionListener {
 
 		int key;
@@ -106,11 +106,11 @@ public class JFrameMain extends JFrame {
 		public void actionPerformed(ActionEvent e) {
 			if (injector == null)
 				return;
-			// injector.injectKeycode(ConstEvtKey.ACTION_DOWN, key);
-			injector.injectKeycode(ConstEvtKey.ACTION_UP, key);
+			injector.injectKeycode(key);
 		}
 
 	}
+
 	private static final long serialVersionUID = -2085909236767692371L;
 	private JPanelScreen jp = new JPanelScreen();
 	private JToolBar jtb = new JToolBar();
@@ -145,14 +145,9 @@ public class JFrameMain extends JFrame {
 							return false;
 						if (injector == null)
 							return false;
-						if (e.getID() == KeyEvent.KEY_PRESSED) {
+						if (e.getID() == KeyEvent.KEY_TYPED) {
 							int code = KeyCodeConverter.getKeyCode(e);
-							injector.injectKeycode(ConstEvtKey.ACTION_DOWN,
-									code);
-						}
-						if (e.getID() == KeyEvent.KEY_RELEASED) {
-							int code = KeyCodeConverter.getKeyCode(e);
-							injector.injectKeycode(ConstEvtKey.ACTION_UP, code);
+							injector.injectKeycode(code);
 						}
 						return false;
 					}

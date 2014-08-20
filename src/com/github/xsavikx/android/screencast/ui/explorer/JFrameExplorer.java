@@ -28,17 +28,8 @@ import com.github.xsavikx.android.screencast.api.file.FileInfo;
 
 public class JFrameExplorer extends JFrame {
 
-	private class FileTreeNode extends DefaultMutableTreeNode {
-		FileInfo fi;
-
-		public FileTreeNode(FileInfo fi) {
-			super(fi.name);
-			this.fi = fi;
-		}
-
-	}
 	private class FolderTreeNode extends LazyMutableTreeNode {
-
+		private static final long serialVersionUID = 9131974430354670263L;
 		String name;
 		String path;
 
@@ -66,6 +57,7 @@ public class JFrameExplorer extends JFrame {
 		}
 
 	}
+
 	/**
 	 * 
 	 */
@@ -120,7 +112,7 @@ public class JFrameExplorer extends JFrame {
 			public void mouseClicked(MouseEvent e) {
 				if (e.getClickCount() == 2) {
 					int index = jListFichiers.locationToIndex(e.getPoint());
-					ListModel dlm = jListFichiers.getModel();
+					ListModel<Object> dlm = jListFichiers.getModel();
 					FileInfo item = (FileInfo) dlm.getElementAt(index);
 					;
 					launchFile(item);
