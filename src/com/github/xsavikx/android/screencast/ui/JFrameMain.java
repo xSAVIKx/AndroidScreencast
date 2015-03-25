@@ -281,7 +281,7 @@ public class JFrameMain extends JFrame {
 	private void startRecording() {
 		JFileChooser jFileChooser = new JFileChooser();
 		FileNameExtensionFilter filter = new FileNameExtensionFilter(
-				"Vidéo file", "mov");
+				"Video file", "mov");
 		jFileChooser.setFileFilter(filter);
 		int returnVal = jFileChooser.showSaveDialog(this);
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
