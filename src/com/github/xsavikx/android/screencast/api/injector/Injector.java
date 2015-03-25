@@ -215,7 +215,7 @@ public class Injector {
 		} catch (Exception ex) {
 			logger.warn("killRunningAgent() - exception ignored", ex);
 
-			// ignor�
+			// ignor
 		}
 
 		if (logger.isDebugEnabled()) {
