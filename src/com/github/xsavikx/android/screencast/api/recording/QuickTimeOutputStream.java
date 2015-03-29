@@ -352,7 +352,7 @@ public class QuickTimeOutputStream {
 
 	/**
 	 * The timeScale of the movie. A time value that indicates the time scale
-	 * for this media—that is, the number of time units that pass per second in
+	 * for this media-that is, the number of time units that pass per second in
 	 * its time coordinate system.
 	 */
 	private int timeScale = 600;
@@ -584,14 +584,14 @@ public class QuickTimeOutputStream {
 		// specified using coordinated universal time (UTC).
 
 		d.writeInt(timeScale); // timeScale
-		// A time value that indicates the time scale for this movie—that is,
+		// A time value that indicates the time scale for this movie-that is,
 		// the number of time units that pass per second in its time coordinate
 		// system. A time coordinate system that measures time in sixtieths of a
 		// second, for example, has a time scale of 60.
 
 		d.writeInt(duration); // duration
 		// A time value that indicates the duration of the movie in time scale
-		// units. Note that this property is derived from the movie’s tracks.
+		// units. Note that this property is derived from the movie's tracks.
 		// The value of this field corresponds to the duration of the longest
 		// track in the movie.
 
@@ -601,7 +601,7 @@ public class QuickTimeOutputStream {
 
 		d.writeShort(256); // preferredVolume
 		// A 16-bit fixed-point number that specifies how loud to play this
-		// movie’s sound. A value of 1.0 indicates full volume.
+		// movie's sound. A value of 1.0 indicates full volume.
 
 		d.write(new byte[10]); // reserved;
 		// Ten bytes reserved for use by Apple. Set to 0.
@@ -616,7 +616,7 @@ public class QuickTimeOutputStream {
 		d.writeFixed16D16(0); // matrix[7]
 		d.writeFixed2D30(1f); // matrix[8]
 		// The matrix structure associated with this movie. A matrix shows how
-		// to map points from one coordinate space into another. See “Matrices”
+		// to map points from one coordinate space into another. See "Matrices"
 		// for a discussion of how display matrices are used in QuickTime:
 		// http://developer.apple.com/documentation/QuickTime/QTFF/QTFFChap4/chapter_5_section_4.html#//apple_ref/doc/uid/TP40000939-CH206-18737
 
@@ -680,10 +680,10 @@ public class QuickTimeOutputStream {
 		// Indicates that the track is used in the movie. Flag value is
 		// 0x0002.
 		// Track in preview
-		// Indicates that the track is used in the movie’s preview. Flag
+		// Indicates that the track is used in the movie's preview. Flag
 		// value is 0x0004.
 		// Track in poster
-		// Indicates that the track is used in the movie’s poster. Flag
+		// Indicates that the track is used in the movie's poster. Flag
 		// value is 0x0008.
 
 		d.writeMacTimestamp(creationTime); // creationTime
@@ -708,9 +708,9 @@ public class QuickTimeOutputStream {
 
 		d.writeInt(duration); // duration
 		// A time value that indicates the duration of this track (in the
-		// movie’s time coordinate system). Note that this property is derived
-		// from the track’s edits. The value of this field is equal to the sum
-		// of the durations of all of the track’s edits. If there is no edit
+		// movie's time coordinate system). Note that this property is derived
+		// from the track's edits. The value of this field is equal to the sum
+		// of the durations of all of the track's edits. If there is no edit
 		// list, then the duration is the sum of the sample durations, converted
 		// into the movie timescale.
 
@@ -719,7 +719,7 @@ public class QuickTimeOutputStream {
 		// 0.
 
 		d.writeShort(0); // layer;
-		// A 16-bit integer that indicates this track’s spatial priority in its
+		// A 16-bit integer that indicates this track's spatial priority in its
 		// movie. The QuickTime Movie Toolbox uses this value to determine how
 		// tracks overlay one another. Tracks with lower layer values are
 		// displayed in front of tracks with higher layer values.
@@ -732,7 +732,7 @@ public class QuickTimeOutputStream {
 		// capabilities of the computer.
 
 		d.writeShort(0); // volume
-		// A 16-bit fixed-point value that indicates how loudly this track’s
+		// A 16-bit fixed-point value that indicates how loudly this track's
 		// sound is to be played. A value of 1.0 indicates normal volume.
 
 		d.writeShort(0); // reserved
@@ -794,7 +794,7 @@ public class QuickTimeOutputStream {
 		// (UTC).
 
 		d.writeInt(timeScale); // timeScale
-		// A time value that indicates the time scale for this media—that is,
+		// A time value that indicates the time scale for this media-that is,
 		// the number of time units that pass per second in its time coordinate
 		// system.
 
@@ -803,11 +803,11 @@ public class QuickTimeOutputStream {
 
 		d.writeShort(0); // language;
 		// A 16-bit integer that specifies the language code for this media.
-		// See “Language Code Values” for valid language codes:
+		// See "Language Code Values" for valid language codes:
 		// http://developer.apple.com/documentation/QuickTime/QTFF/QTFFChap4/chapter_5_section_2.html#//apple_ref/doc/uid/TP40000939-CH206-27005
 
 		d.writeShort(0); // quality
-		// A 16-bit integer that specifies the media’s playback quality—that is,
+		// A 16-bit integer that specifies the media's playback quality-that is,
 		// its suitability for playback in a given environment.
 
 		/** Media Handler Atom ------- */
@@ -836,9 +836,9 @@ public class QuickTimeOutputStream {
 		d.writeType("vide"); // componentSubtype
 		// A four-character code that identifies the type of the media handler
 		// or data handler. For media handlers, this field defines the type of
-		// data—for example, 'vide' for video data or 'soun' for sound data.
+		// data-for example, 'vide' for video data or 'soun' for sound data.
 		//
-		// For data handlers, this field defines the data reference type—for
+		// For data handlers, this field defines the data reference type-for
 		// example, a component subtype value of 'alis' identifies a file alias.
 
 		d.writeInt(0); // componentManufacturer
@@ -851,7 +851,7 @@ public class QuickTimeOutputStream {
 		// Reserved. Set to 0.
 
 		d.write(0); // componentName (empty string)
-		// A (counted) string that specifies the name of the component—that is,
+		// A (counted) string that specifies the name of the component-that is,
 		// the media handler used when this media was created. This field may
 		// contain a zero-length (empty) string.
 
@@ -878,14 +878,14 @@ public class QuickTimeOutputStream {
 		// This is a compatibility flag that allows QuickTime to distinguish
 		// between movies created with QuickTime 1.0 and newer movies. You
 		// should always set this flag to 1, unless you are creating a movie
-		// intended for playback using version 1.0 of QuickTime. This flag’s
+		// intended for playback using version 1.0 of QuickTime. This flag's
 		// value is 0x0001.
 
 		d.writeShort(0x40); // graphicsMode (0x40 = ditherCopy)
 		// A 16-bit integer that specifies the transfer mode. The transfer mode
 		// specifies which Boolean operation QuickDraw should perform when
 		// drawing or transferring an image from one location to another.
-		// See “Graphics Modes” for a list of graphics modes supported by
+		// See "Graphics Modes" for a list of graphics modes supported by
 		// QuickTime:
 		// http://developer.apple.com/documentation/QuickTime/QTFF/QTFFChap4/chapter_5_section_5.html#//apple_ref/doc/uid/TP40000939-CH206-18741
 
@@ -897,7 +897,7 @@ public class QuickTimeOutputStream {
 
 		/* Handle reference atom -------- */
 		// The handler reference atom specifies the media handler component that
-		// is to be used to interpret the media’s data. The handler reference
+		// is to be used to interpret the media's data. The handler reference
 		// atom has an atom type value of 'hdlr'.
 		leaf = new DataAtom("hdlr");
 		minfAtom.add(leaf);
@@ -924,8 +924,8 @@ public class QuickTimeOutputStream {
 		d.writeType("alis"); // componentSubtype
 		// A four-character code that identifies the type of the media handler
 		// or data handler. For media handlers, this field defines the type of
-		// data—for example, 'vide' for video data or 'soun' for sound data.
-		// For data handlers, this field defines the data reference type—for
+		// data-for example, 'vide' for video data or 'soun' for sound data.
+		// For data handlers, this field defines the data reference type-for
 		// example, a component subtype value of 'alis' identifies a file alias.
 
 		d.writeInt(0); // componentManufacturer
@@ -938,7 +938,7 @@ public class QuickTimeOutputStream {
 		// Reserved. Set to 0.
 
 		d.write(0); // componentName (empty string)
-		// A (counted) string that specifies the name of the component—that is,
+		// A (counted) string that specifies the name of the component-that is,
 		// the media handler used when this media was created. This field may
 		// contain a zero-length (empty) string.
 
@@ -948,7 +948,7 @@ public class QuickTimeOutputStream {
 
 		/* Data reference atom ----- */
 		// Data reference atoms contain tabular data that instructs the data
-		// handler component how to access the media’s data.
+		// handler component how to access the media's data.
 		leaf = new DataAtom("dref");
 		dinfAtom.add(leaf);
 		/*
@@ -993,10 +993,10 @@ public class QuickTimeOutputStream {
 		// A 3-byte space for data reference flags. There is one defined flag.
 		//
 		// Self reference
-		// This flag indicates that the media’s data is in the same file as
+		// This flag indicates that the media's data is in the same file as
 		// the movie atom. On the Macintosh, and other file systems with
 		// multifork files, set this flag to 1 even if the data resides in
-		// a different fork from the movie atom. This flag’s value is
+		// a different fork from the movie atom. This flag's value is
 		// 0x0001.
 
 		/* Sample Table atom ========= */
@@ -1009,7 +1009,7 @@ public class QuickTimeOutputStream {
 		// description varies, depending on the media type. For example, in the
 		// case of video media, the sample descriptions are image description
 		// structures. The sample description information for each media type is
-		// explained in “Media Data Atom Types”:
+		// explained in "Media Data Atom Types":
 		// http://developer.apple.com/documentation/QuickTime/QTFF/QTFFChap3/chapter_4_section_1.html#//apple_ref/doc/uid/TP40000939-CH205-SW1
 		leaf = new DataAtom("stsd");
 		stblAtom.add(leaf);
@@ -1122,7 +1122,7 @@ public class QuickTimeOutputStream {
 
 			d.writeShort(-1); // sampleDescriptionTable.videoSampleDescription.colorTableID
 			// A 16-bit integer that identifies which color table to use.
-			// If this field is set to –1, the default color table should be
+			// If this field is set to -1, the default color table should be
 			// used for the specified depth. For all depths below 16 bits
 			// per pixel, this indicates a standard Macintosh color table
 			// for the specified depth. Depths of 16, 24, and 32 have no
@@ -1210,7 +1210,7 @@ public class QuickTimeOutputStream {
 
 			d.writeShort(-1); // sampleDescriptionTable.videoSampleDescription.colorTableID
 			// A 16-bit integer that identifies which color table to use.
-			// If this field is set to –1, the default color table should be
+			// If this field is set to -1, the default color table should be
 			// used for the specified depth. For all depths below 16 bits
 			// per pixel, this indicates a standard Macintosh color table
 			// for the specified depth. Depths of 16, 24, and 32 have no
@@ -1297,7 +1297,7 @@ public class QuickTimeOutputStream {
 
 			d.writeShort(-1); // sampleDescriptionTable.videoSampleDescription.colorTableID
 			// A 16-bit integer that identifies which color table to use.
-			// If this field is set to –1, the default color table should be
+			// If this field is set to -1, the default color table should be
 			// used for the specified depth. For all depths below 16 bits
 			// per pixel, this indicates a standard Macintosh color table
 			// for the specified depth. Depths of 16, 24, and 32 have no
@@ -1308,7 +1308,7 @@ public class QuickTimeOutputStream {
 		}
 
 		/* Time to Sample atom ---- */
-		// Time-to-sample atoms store duration information for a media’s
+		// Time-to-sample atoms store duration information for a media's
 		// samples, providing a mapping from a time in a media to the
 		// corresponding data sample. The time-to-sample atom has an atom type
 		// of 'stts'.
@@ -1409,8 +1409,8 @@ public class QuickTimeOutputStream {
 
 		d.writeInt(1); // sample description
 		// The identification number associated with the sample description for
-		// the sample. For details on sample description atoms, see “Sample
-		// Description Atoms.”:
+		// the sample. For details on sample description atoms, see "Sample
+		// Description Atoms.":
 		// http://developer.apple.com/documentation/QuickTime/QTFF/QTFFChap2/chapter_3_section_5.html#//apple_ref/doc/uid/TP40000939-CH204-25691
 
 		/* sample size atom -------- */
@@ -1450,7 +1450,7 @@ public class QuickTimeOutputStream {
 		for (Sample s : videoFrames) {
 			d.writeUInt(s.length); // sample size
 			// The size field contains the size, in bytes, of the sample in
-			// question. The table is indexed by sample number—the first entry
+			// question. The table is indexed by sample number-the first entry
 			// corresponds to the first sample, the second entry is for the
 			// second sample, and so on.
 		}
@@ -1491,7 +1491,7 @@ public class QuickTimeOutputStream {
 				d.writeUInt(s.offset); // offset
 				// The offset contains the byte offset from the beginning of the
 				// data stream to the chunk. The table is indexed by chunk
-				// number—the first table entry corresponds to the first chunk,
+				// number-the first table entry corresponds to the first chunk,
 				// the second table entry is for the second chunk, and so on.
 			}
 		} else {
@@ -1523,7 +1523,7 @@ public class QuickTimeOutputStream {
 				d.writeLong(s.offset); // offset
 				// The offset contains the byte offset from the beginning of the
 				// data stream to the chunk. The table is indexed by chunk
-				// number—the first table entry corresponds to the first chunk,
+				// number-the first table entry corresponds to the first chunk,
 				// the second table entry is for the second chunk, and so on.
 			}
 		}
