@@ -269,6 +269,8 @@ public abstract class SwingWorker<T, V> implements Future<T>, Runnable {
 
 	private class SwingWorkerPropertyChangeSupport extends
 			PropertyChangeSupport {
+		private static final long serialVersionUID = 2409754725172747617L;
+
 		SwingWorkerPropertyChangeSupport(Object source) {
 			super(source);
 		}

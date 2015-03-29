@@ -198,6 +198,7 @@ public class QuickTimeOutputStream {
 			return 8 + data.size();
 		}
 	}
+
 	/**
 	 * QuickTime stores media data in samples. A sample is a single element in a
 	 * sequence of time-ordered data. Samples are stored in the mdat atom.
@@ -228,6 +229,7 @@ public class QuickTimeOutputStream {
 			this.length = length;
 		}
 	}
+
 	/**
 	 * The states of the movie output stream.
 	 */
@@ -235,6 +237,7 @@ public class QuickTimeOutputStream {
 
 		STARTED, FINISHED, CLOSED;
 	}
+
 	/**
 	 * Supported video formats.
 	 */
@@ -242,6 +245,7 @@ public class QuickTimeOutputStream {
 
 		RAW, JPG, PNG;
 	}
+
 	/**
 	 * WideDataAtom can grow larger then 4 gigabytes.
 	 */
@@ -314,6 +318,7 @@ public class QuickTimeOutputStream {
 			return (size > 0xffffffffL) ? size + 8 : size;
 		}
 	}
+
 	/**
 	 * Output stream of the QuickTimeOutputStream.
 	 */
@@ -1588,8 +1593,8 @@ public class QuickTimeOutputStream {
 			break;
 		}
 		case JPG: {
-			ImageWriter iw = ImageIO.getImageWritersByMIMEType(
-					"image/jpeg").next();
+			ImageWriter iw = ImageIO.getImageWritersByMIMEType("image/jpeg")
+					.next();
 			ImageWriteParam iwParam = iw.getDefaultWriteParam();
 			iwParam.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
 			iwParam.setCompressionQuality(quality);
@@ -1603,8 +1608,8 @@ public class QuickTimeOutputStream {
 		}
 		case PNG:
 		default: {
-			ImageWriter iw = ImageIO.getImageWritersByMIMEType(
-					"image/png").next();
+			ImageWriter iw = ImageIO.getImageWritersByMIMEType("image/png")
+					.next();
 			ImageWriteParam iwParam = iw.getDefaultWriteParam();
 			MemoryCacheImageOutputStream imgOut = new MemoryCacheImageOutputStream(
 					mdatAtom.getOutputStream());
