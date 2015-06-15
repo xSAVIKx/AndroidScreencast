@@ -13,6 +13,10 @@
 	<property name="mainjar" value="${ant.project.name}.jar" />
 	<property name="ddmlib" value="ddmlib-24.2.3.jar" />
 	<property name="log4j" value="log4j-1.2.17.jar" />
+	<property name="common" value="common-24.2.3.jar" />
+	<property name="kxml" value="kxml2-2.3.0.jar" />
+	<property name="guava" value="guava-17.0.jar" />
+	<property name="annotations" value="annotations-24.2.3.jar" />
 
 	<target name="init">
 		<!-- Create the time stamp -->
@@ -23,7 +27,7 @@
 
 	<target name="compile" depends="init" description="compile the source ">
 		<!-- Compile the java code from ${src} into ${build} -->
-		<javac nowarn="true" srcdir="${src}" destdir="${build}" classpath="${lib}/${ddmlib};${lib}/${log4j}" debug="on" />
+		<javac nowarn="true" srcdir="${src}" destdir="${build}" classpath="${lib}/${common};${lib}/${guava}};${lib}/${annotations}};${lib}/$kxml};${lib}/${ddmlib};${lib}/${log4j}" debug="on" />
 	</target>
 
 	<target name="dist" depends="compile" description="generate the distribution">
@@ -35,7 +39,7 @@
 				<attribute name="Main-Class" value="org.eclipse.jdt.internal.jarinjarloader.JarRsrcLoader" />
 				<attribute name="Rsrc-Main-Class" value="com.github.xsavikx.android.screencast.Main" />
 				<attribute name="Class-Path" value="." />
-				<attribute name="Rsrc-Class-Path" value="./ ${ddmlib} MyInjectEventApp.jar ${log4j} ${android}" />
+				<attribute name="Rsrc-Class-Path" value="./ ${guava} ${annotations} ${common} ${kxml} ${ddmlib} MyInjectEventApp.jar ${log4j}" />
 				<attribute name="Built-By" value="${user.name}" />
 				<attribute name="Permissions" value="all-permissions" />
 				<attribute name="Application-Name" value="Android Screencast" />
@@ -43,8 +47,12 @@
 			<zipfileset src="jar-in-jar-loader.zip" />
 			<fileset dir="${build}" />
 			<fileset dir="${src}" />
+			<zipfileset dir="${lib}" includes="${common}" />
+			<zipfileset dir="${lib}" includes="${kxml}" />
 			<zipfileset dir="${lib}" includes="${ddmlib}" />
 			<zipfileset dir="${lib}" includes="${log4j}" />
+			<zipfileset dir="${lib}" includes="${guava}" />
+			<zipfileset dir="${lib}" includes="${annotations}" />
 
 		</jar>
 
