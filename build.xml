@@ -13,7 +13,6 @@
 	<property name="mainjar" value="${ant.project.name}.jar" />
 	<property name="ddmlib" value="ddmlib.jar" />
 	<property name="log4j" value="log4j-1.2.17.jar" />
-	<property name="android" value="android.jar" />
 
 	<target name="init">
 		<!-- Create the time stamp -->
@@ -24,7 +23,7 @@
 
 	<target name="compile" depends="init" description="compile the source ">
 		<!-- Compile the java code from ${src} into ${build} -->
-		<javac nowarn="true" srcdir="${src}" destdir="${build}" classpath="${lib}/${ddmlib};${lib}/${log4j};${lib}/${android}" debug="on" />
+		<javac nowarn="true" srcdir="${src}" destdir="${build}" classpath="${lib}/${ddmlib};${lib}/${log4j}" debug="on" />
 	</target>
 
 	<target name="dist" depends="compile" description="generate the distribution">
@@ -45,7 +44,6 @@
 			<fileset dir="${build}" />
 			<fileset dir="${src}" />
 			<zipfileset dir="${lib}" includes="${ddmlib}" />
-			<zipfileset dir="${lib}" includes="${android}" />
 			<zipfileset dir="${lib}" includes="${log4j}" />
 
 		</jar>
