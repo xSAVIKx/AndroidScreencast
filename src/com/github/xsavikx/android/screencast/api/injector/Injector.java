@@ -163,9 +163,25 @@ public class Injector {
 			if (logger.isInfoEnabled()) {
 				logger.info("launchProg(String) - String fullCmd=" + fullCmd);
 			}
-			device.executeShellCommand(fullCmd, new MultiLineReceiverPrinter());
+
+			SimpleResultCheckMultiLineReceiver receiver = new SimpleResultCheckMultiLineReceiver("[agent]", "");
+
+			device.executeShellCommand(fullCmd, receiver);
 			// device.executeShellCommand("rm " + REMOTE_AGENT_JAR_LOCATION,
 			// new OutputStreamShellOutputReceiver(System.out));
+
+			if(!receiver.isSucceed()) {
+				logger.error("launch with app_process failed, try with dalvikvm ...");
+				fullCmd = "su -c '/system/bin/dalvikvm -classpath "
+						+ REMOTE_AGENT_JAR_LOCATION + " " + AGENT_MAIN_CLASS
+						+ " " + cmdList + "'";
+				receiver = new SimpleResultCheckMultiLineReceiver("[agent]", "");
+				device.executeShellCommand(fullCmd, receiver);
+
+				if(!receiver.isSucceed()) {
+					logger.error("failed to launch the agent ...");
+				}
+			}
 
 			if (logger.isDebugEnabled()) {
 				logger.debug("launchProg(String) - end");
