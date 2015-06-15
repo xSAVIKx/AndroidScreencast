@@ -7,7 +7,10 @@ import java.net.UnknownHostException;
 
 import org.apache.log4j.Logger;
 
+import com.android.ddmlib.AdbCommandRejectedException;
 import com.android.ddmlib.IDevice;
+import com.android.ddmlib.ShellCommandUnresponsiveException;
+import com.android.ddmlib.TimeoutException;
 
 public class Injector {
   /**
@@ -270,7 +273,8 @@ public class Injector {
       }
     }
 
-    private void init() throws UnknownHostException, IOException, InterruptedException {
+    private void init() throws UnknownHostException, IOException, InterruptedException, TimeoutException,
+        AdbCommandRejectedException {
       if (logger.isDebugEnabled()) {
         logger.debug("init() - start");
       }
@@ -335,11 +339,6 @@ public class Injector {
         if (logger.isInfoEnabled()) {
           logger.info("uploadAgent() - ADB push exitValue=" + exitValue);
         }
-        // StreamUtils.transfertResource(getClass(),
-        // LOCAL_AGENT_JAR_LOCATION,
-        // tempFile);
-        // new AndroidDevice(device).pushFile(new File(
-        // LOCAL_AGENT_JAR_LOCATION), REMOTE_AGENT_JAR_LOCATION);
       } catch (InterruptedException ex) {
         logger.error("uploadAgent()", ex);
 
@@ -362,7 +361,8 @@ public class Injector {
       this.device = device;
     }
 
-    private void launchProg(String cmdList) throws IOException {
+    private void launchProg(String cmdList) throws IOException, TimeoutException, AdbCommandRejectedException,
+        ShellCommandUnresponsiveException {
       if (logger.isDebugEnabled()) {
         logger.debug("launchProg(String) - start");
       }
@@ -370,22 +370,12 @@ public class Injector {
       if (logger.isInfoEnabled()) {
         logger.info("launchProg(String) - String fullCmd=" + fullCmd);
       }
-
-      SimpleResultCheckMultiLineReceiver receiver = new SimpleResultCheckMultiLineReceiver("[agent]");
-
-      device.executeShellCommand(fullCmd, receiver);
-      // device.executeShellCommand("rm " + REMOTE_AGENT_JAR_LOCATION,
-      // new OutputStreamShellOutputReceiver(System.out));
-
-      if (!receiver.isSucceed()) {
+      try {
+        device.executeShellCommand(fullCmd, new MultiLineReceiverPrinter());
+      } catch (TimeoutException | AdbCommandRejectedException | ShellCommandUnresponsiveException e) {
         logger.error("launch with app_process failed, try with dalvikvm ...");
         fullCmd = String.format(DALVIK_VM_COMMAND, REMOTE_AGENT_JAR_LOCATION, AGENT_MAIN_CLASS, cmdList);
-        receiver = new SimpleResultCheckMultiLineReceiver("[agent]");
-        device.executeShellCommand(fullCmd, receiver);
-
-        if (!receiver.isSucceed()) {
-          logger.error("failed to launch the agent ...");
-        }
+        device.executeShellCommand(fullCmd, new MultiLineReceiverPrinter());
       }
 
       if (logger.isDebugEnabled()) {
@@ -401,7 +391,7 @@ public class Injector {
 
       try {
         launchProg("" + PORT);
-      } catch (IOException e) {
+      } catch (IOException | TimeoutException | AdbCommandRejectedException | ShellCommandUnresponsiveException e) {
         logger.error("run()", e);
 
         e.printStackTrace();

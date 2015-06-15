@@ -21,85 +21,85 @@ import com.android.ddmlib.IDevice;
 
 public class JDialogDeviceList extends JDialog implements ActionListener {
 
-	private static final long serialVersionUID = -3719844308147203239L;
-	private static final String DEFAULT_HOST = "127.0.0.1";
-	private static final int DEFAULT_PORT = 1324;
+  private static final long serialVersionUID = -3719844308147203239L;
+  private static final String DEFAULT_HOST = "127.0.0.1";
+  private static final int DEFAULT_PORT = 1324;
 
-	JTextField jtfHost = new JTextField(DEFAULT_HOST);
-	JFormattedTextField jftfPort = new JFormattedTextField(DEFAULT_PORT);
-	JList<IDevice> jlDevices = new JList<IDevice>();
-	JScrollPane jspDevices = new JScrollPane(jlDevices);
-	JPanel jpAgent = new JPanel();
-	JPanel jpButtons = new JPanel();
-	JButton jbOk = new JButton("OK");
-	JButton jbQuit = new JButton("Quit");
+  JTextField jtfHost = new JTextField(DEFAULT_HOST);
+  JFormattedTextField jftfPort = new JFormattedTextField(DEFAULT_PORT);
+  JList<IDevice> jlDevices = new JList<IDevice>();
+  JScrollPane jspDevices = new JScrollPane(jlDevices);
+  JPanel jpAgent = new JPanel();
+  JPanel jpButtons = new JPanel();
+  JButton jbOk = new JButton("OK");
+  JButton jbQuit = new JButton("Quit");
 
-	boolean cancelled = false;
-	IDevice[] devices;
+  boolean cancelled = false;
+  IDevice[] devices;
 
-	public JDialogDeviceList(IDevice[] devices) {
-		super();
-		setModal(true);
-		this.devices = devices;
-		initialize();
-	}
+  public JDialogDeviceList(IDevice[] devices) {
+    super();
+    setModal(true);
+    this.devices = devices;
+    initialize();
+  }
 
-	@Override
-	public void actionPerformed(ActionEvent arg0) {
-		cancelled = arg0.getSource() == jbQuit;
+  @Override
+  public void actionPerformed(ActionEvent arg0) {
+    cancelled = arg0.getSource() == jbQuit;
 
-		setVisible(false);
-	}
+    setVisible(false);
+  }
 
-	public IDevice getDevice() {
-		if (cancelled)
-			return null;
-		return jlDevices.getSelectedValue();
-	}
+  public IDevice getDevice() {
+    if (cancelled)
+      return null;
+    return jlDevices.getSelectedValue();
+  }
 
-	private void initialize() {
-		setTitle("Please select a device");
-		jlDevices.setListData(devices);
-		jlDevices.setPreferredSize(new Dimension(400, 300));
-		if (devices.length != 0)
-			jlDevices.setSelectedIndex(0);
-		jbOk.setEnabled(!jlDevices.isSelectionEmpty());
+  private void initialize() {
+    setTitle("Please select a device");
+    jlDevices.setListData(devices);
+    jlDevices.setPreferredSize(new Dimension(400, 300));
+    if (devices.length != 0)
+      jlDevices.setSelectedIndex(0);
+    jbOk.setEnabled(!jlDevices.isSelectionEmpty());
 
-		jpAgent.setBorder(BorderFactory.createTitledBorder("Agent"));
-		jpAgent.setLayout(new BorderLayout(10, 10));
-		jpAgent.add(jtfHost, BorderLayout.CENTER);
-		jpAgent.add(jftfPort, BorderLayout.EAST);
+    jpAgent.setBorder(BorderFactory.createTitledBorder("Agent"));
+    jpAgent.setLayout(new BorderLayout(10, 10));
+    jpAgent.add(jtfHost, BorderLayout.CENTER);
+    jpAgent.add(jftfPort, BorderLayout.EAST);
 
-		jpButtons.setLayout(new FlowLayout(FlowLayout.RIGHT));
-		jpButtons.add(jbOk, BorderLayout.CENTER);
-		jpButtons.add(jbQuit, BorderLayout.SOUTH);
+    jpButtons.setLayout(new FlowLayout(FlowLayout.RIGHT));
+    jpButtons.add(jbOk, BorderLayout.CENTER);
+    jpButtons.add(jbQuit, BorderLayout.SOUTH);
 
-		JPanel jpBottom = new JPanel();
-		jpBottom.setLayout(new BorderLayout());
-		jpBottom.add(jpAgent, BorderLayout.CENTER);
-		jpBottom.add(jpButtons, BorderLayout.SOUTH);
+    JPanel jpBottom = new JPanel();
+    jpBottom.setLayout(new BorderLayout());
+    jpBottom.add(jpAgent, BorderLayout.CENTER);
+    jpBottom.add(jpButtons, BorderLayout.SOUTH);
 
-		setLayout(new BorderLayout());
-		add(jlDevices, BorderLayout.CENTER);
-		add(jpBottom, BorderLayout.SOUTH);
+    setLayout(new BorderLayout());
+    add(jlDevices, BorderLayout.CENTER);
+    add(jpBottom, BorderLayout.SOUTH);
 
-		pack();
-		setLocationRelativeTo(null);
+    pack();
+    setLocationRelativeTo(null);
 
-		jbOk.addActionListener(this);
-		jbQuit.addActionListener(this);
-		jlDevices.addMouseListener(new MouseAdapter() {
+    jbOk.addActionListener(this);
+    jbQuit.addActionListener(this);
+    jlDevices.addMouseListener(new MouseAdapter() {
 
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				if (e.getClickCount() == 2) {
-					int index = jlDevices.locationToIndex(e.getPoint());
-					jlDevices.ensureIndexIsVisible(index);
-					cancelled = false;
-					setVisible(false);
-				}
-			}
+      @Override
+      public void mouseClicked(MouseEvent e) {
+        if (e.getClickCount() == 2) {
+          int index = jlDevices.locationToIndex(e.getPoint());
+          jlDevices.ensureIndexIsVisible(index);
+          cancelled = false;
+          setVisible(false);
+        }
+      }
 
-		});
-	}
+    });
+  }
 }

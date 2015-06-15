@@ -13,145 +13,142 @@ import com.github.xsavikx.android.screencast.ui.JFrameMain;
 import com.github.xsavikx.android.screencast.ui.JSplashScreen;
 
 public class Main extends SwingApplication {
-	public static void main(String args[]) throws IOException {
-		if (logger.isDebugEnabled()) {
-			logger.debug("main(String[]) - start");
-		}
-		boolean nativeLook = args.length == 0
-				|| !args[0].equalsIgnoreCase("nonativelook");
-		new Main(nativeLook);
+  public static void main(String args[]) throws IOException {
+    if (logger.isDebugEnabled()) {
+      logger.debug("main(String[]) - start");
+    }
+    boolean nativeLook = args.length == 0 || !args[0].equalsIgnoreCase("nonativelook");
+    new Main(nativeLook);
 
-		if (logger.isDebugEnabled()) {
-			logger.debug("main(String[]) - end");
-		}
-	}
-	/**
-	 * Logger for this class
-	 */
-	private static final Logger logger = Logger.getLogger(Main.class);
-	JFrameMain jf;
-	Injector injector;
+    if (logger.isDebugEnabled()) {
+      logger.debug("main(String[]) - end");
+    }
+  }
 
-	IDevice device;
+  /**
+   * Logger for this class
+   */
+  private static final Logger logger = Logger.getLogger(Main.class);
+  JFrameMain jf;
+  Injector injector;
 
-	public Main(boolean nativeLook) throws IOException {
-		super(nativeLook);
-		JSplashScreen jw = new JSplashScreen("");
+  IDevice device;
 
-		try {
-			initialize(jw);
-		} finally {
-			jw.setVisible(false);
-			jw = null;
-		}
-	}
+  public Main(boolean nativeLook) throws IOException {
+    super(nativeLook);
+    JSplashScreen jw = new JSplashScreen("");
 
-	@Override
-	protected void close() {
-		if (logger.isDebugEnabled()) {
-			logger.debug("close() - start");
-		}
+    try {
+      initialize(jw);
+    } finally {
+      jw.setVisible(false);
+      jw = null;
+    }
+  }
 
-		if (logger.isInfoEnabled()) {
-			logger.info("close() - Cleaning up...");
-		}
-		if (injector != null)
-			injector.close();
+  @Override
+  protected void close() {
+    if (logger.isDebugEnabled()) {
+      logger.debug("close() - start");
+    }
 
-		if (device != null) {
-			synchronized (device) {
-				AndroidDebugBridge.terminate();
-			}
-		}
-		if (logger.isInfoEnabled()) {
-			logger.info("close() - Cleaning done, exiting...");
-		}
-		super.close();
+    if (logger.isInfoEnabled()) {
+      logger.info("close() - Cleaning up...");
+    }
+    if (injector != null)
+      injector.close();
 
-		if (logger.isDebugEnabled()) {
-			logger.debug("close() - end");
-		}
-	}
+    if (device != null) {
+      synchronized (device) {
+        AndroidDebugBridge.terminate();
+      }
+    }
+    if (logger.isInfoEnabled()) {
+      logger.info("close() - Cleaning done, exiting...");
+    }
+    super.close();
 
-	private void initialize(JSplashScreen jw) throws IOException {
-		if (logger.isDebugEnabled()) {
-			logger.debug("initialize(JSplashScreen) - start");
-		}
+    if (logger.isDebugEnabled()) {
+      logger.debug("close() - end");
+    }
+  }
 
-		jw.setText("Getting devices list...");
-		jw.setVisible(true);
+  private void initialize(JSplashScreen jw) throws IOException {
+    if (logger.isDebugEnabled()) {
+      logger.debug("initialize(JSplashScreen) - start");
+    }
 
-		AndroidDebugBridge bridge = AndroidDebugBridge.createBridge();
-		waitDeviceList(bridge);
+    jw.setText("Getting devices list...");
+    jw.setVisible(true);
+    AndroidDebugBridge.initIfNeeded(false);
+    AndroidDebugBridge bridge = AndroidDebugBridge.createBridge();
 
-		IDevice devices[] = bridge.getDevices();
+    waitDeviceList(bridge);
 
-		jw.setVisible(false);
+    IDevice devices[] = bridge.getDevices();
 
-		// Let the user choose the device
-		if (devices.length == 1) {
-			device = devices[0];
-		} else {
-			JDialogDeviceList jd = new JDialogDeviceList(devices);
-			jd.setVisible(true);
+    jw.setVisible(false);
 
-			device = jd.getDevice();
-		}
-		if (device == null) {
-			System.exit(0);
+    // Let the user choose the device
+    if (devices.length == 1) {
+      device = devices[0];
+    } else {
+      JDialogDeviceList jd = new JDialogDeviceList(devices);
+      jd.setVisible(true);
 
-			if (logger.isDebugEnabled()) {
-				logger.debug("initialize(JSplashScreen) - end");
-			}
-			return;
-		}
+      device = jd.getDevice();
+    }
+    if (device == null) {
+      System.exit(0);
 
-		// Start showing the device screen
-		jf = new JFrameMain(device);
-		jf.setTitle("" + device);
+      if (logger.isDebugEnabled()) {
+        logger.debug("initialize(JSplashScreen) - end");
+      }
+      return;
+    }
 
-		// Show window
-		jf.setVisible(true);
+    // Start showing the device screen
+    jf = new JFrameMain(device);
+    jf.setTitle("" + device);
 
-		// Starting injector
-		jw.setText("Starting input injector...");
-		jw.setVisible(true);
+    // Show window
+    jf.setVisible(true);
 
-		injector = new Injector(device);
-		injector.start();
-		jf.setInjector(injector);
-		jw.setVisible(false);
-		if (logger.isDebugEnabled()) {
-			logger.debug("initialize(JSplashScreen) - end");
-		}
-	}
+    // Starting injector
+    jw.setText("Starting input injector...");
+    jw.setVisible(true);
 
-	private void waitDeviceList(AndroidDebugBridge bridge) {
-		if (logger.isDebugEnabled()) {
-			logger.debug("waitDeviceList(AndroidDebugBridge) - start");
-		}
+    injector = new Injector(device);
+    injector.start();
+    jf.setInjector(injector);
+    jw.setVisible(false);
+    if (logger.isDebugEnabled()) {
+      logger.debug("initialize(JSplashScreen) - end");
+    }
+  }
 
-		int count = 0;
-		while (bridge.hasInitialDeviceList() == false) {
-			try {
-				Thread.sleep(100);
-				count++;
-			} catch (InterruptedException e) {
-				logger.warn(
-						"waitDeviceList(AndroidDebugBridge) - exception ignored",
-						e);
+  private void waitDeviceList(AndroidDebugBridge bridge) {
+    if (logger.isDebugEnabled()) {
+      logger.debug("waitDeviceList(AndroidDebugBridge) - start");
+    }
 
-				// pass
-			}
-			// let's not wait > 10 sec.
-			if (count > 300) {
-				throw new RuntimeException("Timeout getting device list!");
-			}
-		}
+    int count = 0;
+    while (bridge.hasInitialDeviceList() == false) {
+      try {
+        Thread.sleep(100);
+        count++;
+      } catch (InterruptedException e) {
+        logger.warn("waitDeviceList(AndroidDebugBridge) - exception ignored", e);
+      }
+      // let's not wait > 10 sec.
+      if (count > 300) {
+        throw new RuntimeException("Timeout getting device list!");
+      }
+    }
 
-		if (logger.isDebugEnabled()) {
-			logger.debug("waitDeviceList(AndroidDebugBridge) - end");
-		}
-	}
+    if (logger.isDebugEnabled()) {
+      logger.debug("waitDeviceList(AndroidDebugBridge) - end");
+    }
+  }
 
 }

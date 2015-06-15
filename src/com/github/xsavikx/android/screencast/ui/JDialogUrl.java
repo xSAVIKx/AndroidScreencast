@@ -10,33 +10,33 @@ import javax.swing.JTextField;
 
 public class JDialogUrl extends JDialog {
 
-	private static final long serialVersionUID = -331017582679776599L;
-	JTextField jtfUrl = new JTextField();
-	JButton jbOk = new JButton("Ok");
-	boolean result = false;
+  private static final long serialVersionUID = -331017582679776599L;
+  JTextField jtfUrl = new JTextField();
+  JButton jbOk = new JButton("Ok");
+  boolean result = false;
 
-	public JDialogUrl() {
-		setModal(true);
-		setTitle("Open url");
+  public JDialogUrl() {
+    setModal(true);
+    setTitle("Open url");
 
-		setLayout(new BorderLayout());
-		add(jbOk, BorderLayout.SOUTH);
-		add(jtfUrl, BorderLayout.CENTER);
-		jtfUrl.setColumns(50);
+    setLayout(new BorderLayout());
+    add(jbOk, BorderLayout.SOUTH);
+    add(jtfUrl, BorderLayout.CENTER);
+    jtfUrl.setColumns(50);
 
-		jbOk.addActionListener(new ActionListener() {
+    jbOk.addActionListener(new ActionListener() {
 
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				result = true;
-				JDialogUrl.this.setVisible(false);
-			}
-		});
+      @Override
+      public void actionPerformed(ActionEvent arg0) {
+        result = true;
+        JDialogUrl.this.setVisible(false);
+      }
+    });
 
-		jbOk.setDefaultCapable(true);
-		getRootPane().setDefaultButton(jbOk);
-		pack();
-		setLocationRelativeTo(null);
+    jbOk.setDefaultCapable(true);
+    getRootPane().setDefaultButton(jbOk);
+    pack();
+    setLocationRelativeTo(null);
 
-	}
+  }
 }

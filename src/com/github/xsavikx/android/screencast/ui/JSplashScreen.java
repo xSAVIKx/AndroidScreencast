@@ -8,29 +8,29 @@ import javax.swing.JLabel;
 import javax.swing.JWindow;
 
 public class JSplashScreen extends JWindow {
-	/**
+  /**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
-	JLabel label;
+  private static final long serialVersionUID = 1L;
+  JLabel label;
 
-	public JSplashScreen(String text) {
-		label = new JLabel("Loading...", (int) Component.CENTER_ALIGNMENT);
-		initialize();
-		setText(text);
-	}
+  public JSplashScreen(String text) {
+    label = new JLabel("Loading...", (int) Component.CENTER_ALIGNMENT);
+    initialize();
+    setText(text);
+  }
 
-	private void initialize() {
-		setLayout(new BorderLayout());
-		label.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-		// createLineBorder(Color.BLACK));
-		add(label, BorderLayout.CENTER);
-	}
+  private void initialize() {
+    setLayout(new BorderLayout());
+    label.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+    // createLineBorder(Color.BLACK));
+    add(label, BorderLayout.CENTER);
+  }
 
-	public void setText(String text) {
-		label.setText(text);
-		pack();
-		setLocationRelativeTo(null);
-	}
+  public void setText(String text) {
+    label.setText(text);
+    pack();
+    setLocationRelativeTo(null);
+  }
 
 }

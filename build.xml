@@ -11,7 +11,7 @@
 
 	<!--<property file="../${ant.project.name}.conf" />-->
 	<property name="mainjar" value="${ant.project.name}.jar" />
-	<property name="ddmlib" value="ddmlib.jar" />
+	<property name="ddmlib" value="ddmlib-24.2.3.jar" />
 	<property name="log4j" value="log4j-1.2.17.jar" />
 
 	<target name="init">

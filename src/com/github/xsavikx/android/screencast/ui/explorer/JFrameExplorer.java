@@ -28,122 +28,120 @@ import com.github.xsavikx.android.screencast.api.file.FileInfo;
 
 public class JFrameExplorer extends JFrame {
 
-	private class FolderTreeNode extends LazyMutableTreeNode {
-		private static final long serialVersionUID = 9131974430354670263L;
-		String name;
-		String path;
+  private class FolderTreeNode extends LazyMutableTreeNode {
+    private static final long serialVersionUID = 9131974430354670263L;
+    String name;
+    String path;
 
-		public FolderTreeNode(String name, String path) {
-			this.name = name;
-			this.path = path;
-		}
+    public FolderTreeNode(String name, String path) {
+      this.name = name;
+      this.path = path;
+    }
 
-		@Override
-		public void initChildren() {
-			List<FileInfo> fileInfos = cache.get(path);
-			if (fileInfos == null)
-				fileInfos = new AndroidDevice(device).list(path);
-			for (FileInfo fi : fileInfos) {
-				if (fi.directory)
-					add(new FolderTreeNode(fi.name, path + fi.name + "/"));
-				// else
-				// add(new FileTreeNode(fi));
-			}
-		}
+    @Override
+    public void initChildren() {
+      List<FileInfo> fileInfos = cache.get(path);
+      if (fileInfos == null)
+        fileInfos = new AndroidDevice(device).list(path);
+      for (FileInfo fi : fileInfos) {
+        if (fi.directory)
+          add(new FolderTreeNode(fi.name, path + fi.name + "/"));
+        // else
+        // add(new FileTreeNode(fi));
+      }
+    }
 
-		@Override
-		public String toString() {
-			return name;
-		}
+    @Override
+    public String toString() {
+      return name;
+    }
 
-	}
+  }
 
-	/**
+  /**
 	 * 
 	 */
-	private static final long serialVersionUID = -5209265873286028854L;
-	JTree jt;
-	JSplitPane jSplitPane;
-	IDevice device;
+  private static final long serialVersionUID = -5209265873286028854L;
+  JTree jt;
+  JSplitPane jSplitPane;
+  IDevice device;
 
-	JList<Object> jListFichiers;
+  JList<Object> jListFichiers;
 
-	Map<String, List<FileInfo>> cache = new LinkedHashMap<String, List<FileInfo>>();
+  Map<String, List<FileInfo>> cache = new LinkedHashMap<String, List<FileInfo>>();
 
-	public JFrameExplorer(IDevice device) {
-		this.device = device;
+  public JFrameExplorer(IDevice device) {
+    this.device = device;
 
-		setTitle("Explorer");
-		setLayout(new BorderLayout());
+    setTitle("Explorer");
+    setLayout(new BorderLayout());
 
-		jt = new JTree(new DefaultMutableTreeNode("Test"));
-		jt.setModel(new DefaultTreeModel(new FolderTreeNode("Device", "/")));
-		jt.setRootVisible(true);
-		jt.addTreeSelectionListener(new TreeSelectionListener() {
+    jt = new JTree(new DefaultMutableTreeNode("Test"));
+    jt.setModel(new DefaultTreeModel(new FolderTreeNode("Device", "/")));
+    jt.setRootVisible(true);
+    jt.addTreeSelectionListener(new TreeSelectionListener() {
 
-			@Override
-			public void valueChanged(TreeSelectionEvent e) {
-				TreePath tp = e.getPath();
-				if (tp == null)
-					return;
-				if (!(tp.getLastPathComponent() instanceof FolderTreeNode))
-					return;
-				FolderTreeNode node = (FolderTreeNode) tp
-						.getLastPathComponent();
-				displayFolder(node.path);
-			}
-		});
+      @Override
+      public void valueChanged(TreeSelectionEvent e) {
+        TreePath tp = e.getPath();
+        if (tp == null)
+          return;
+        if (!(tp.getLastPathComponent() instanceof FolderTreeNode))
+          return;
+        FolderTreeNode node = (FolderTreeNode) tp.getLastPathComponent();
+        displayFolder(node.path);
+      }
+    });
 
-		JScrollPane jsp = new JScrollPane(jt);
+    JScrollPane jsp = new JScrollPane(jt);
 
-		jListFichiers = new JList<Object>();
-		jListFichiers.setListData(new Object[] {});
+    jListFichiers = new JList<Object>();
+    jListFichiers.setListData(new Object[] {});
 
-		jSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, jsp,
-				new JScrollPane(jListFichiers));
+    jSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, jsp, new JScrollPane(jListFichiers));
 
-		add(jSplitPane, BorderLayout.CENTER);
-		setSize(640, 480);
-		setLocationRelativeTo(null);
+    add(jSplitPane, BorderLayout.CENTER);
+    setSize(640, 480);
+    setLocationRelativeTo(null);
 
-		jListFichiers.addMouseListener(new MouseAdapter() {
+    jListFichiers.addMouseListener(new MouseAdapter() {
 
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				if (e.getClickCount() == 2) {
-					int index = jListFichiers.locationToIndex(e.getPoint());
-					ListModel<Object> dlm = jListFichiers.getModel();
-					FileInfo item = (FileInfo) dlm.getElementAt(index);
-					;
-					launchFile(item);
-				}
-			}
+      @Override
+      public void mouseClicked(MouseEvent e) {
+        if (e.getClickCount() == 2) {
+          int index = jListFichiers.locationToIndex(e.getPoint());
+          ListModel<Object> dlm = jListFichiers.getModel();
+          FileInfo item = (FileInfo) dlm.getElementAt(index);
+          ;
+          launchFile(item);
+        }
+      }
 
-		});
-	}
+    });
+  }
 
-	private void displayFolder(String path) {
-		List<FileInfo> fileInfos = cache.get(path);
-		if (fileInfos == null)
-			fileInfos = new AndroidDevice(device).list(path);
+  private void displayFolder(String path) {
+    List<FileInfo> fileInfos = cache.get(path);
+    if (fileInfos == null)
+      fileInfos = new AndroidDevice(device).list(path);
 
-		List<FileInfo> files = new Vector<FileInfo>();
-		for (FileInfo fi2 : fileInfos) {
-			if (fi2.directory)
-				continue;
-			files.add(fi2);
-		}
-		jListFichiers.setListData(files.toArray());
+    List<FileInfo> files = new Vector<FileInfo>();
+    for (FileInfo fi2 : fileInfos) {
+      if (fi2.directory)
+        continue;
+      files.add(fi2);
+    }
+    jListFichiers.setListData(files.toArray());
 
-	}
+  }
 
-	private void launchFile(FileInfo node) {
-		try {
-			File tempFile = node.downloadTemporary();
-			Desktop.getDesktop().open(tempFile);
-		} catch (Exception ex) {
-			throw new RuntimeException(ex);
-		}
-	}
+  private void launchFile(FileInfo node) {
+    try {
+      File tempFile = node.downloadTemporary();
+      Desktop.getDesktop().open(tempFile);
+    } catch (Exception ex) {
+      throw new RuntimeException(ex);
+    }
+  }
 
 }
