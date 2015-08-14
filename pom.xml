@@ -9,7 +9,7 @@
 		<dependency>
 			<groupId>com.android.tools.ddms</groupId>
 			<artifactId>ddmlib</artifactId>
-			<version>24.2.3</version>
+			<version>24.3.1</version>
 		</dependency>
 		<dependency>
 			<groupId>log4j</groupId>

@@ -36,9 +36,9 @@ import javax.swing.Timer;
  * 
  * <p>
  * When writing a multi-threaded application using Swing, there are two
- * constraints to keep in mind: (refer to <a
- * href="http://java.sun.com/docs/books/tutorial/uiswing/misc/threads.html"> How
- * to Use Threads </a> for more details):
+ * constraints to keep in mind: (refer to
+ * <a href="http://java.sun.com/docs/books/tutorial/uiswing/misc/threads.html">
+ * How to Use Threads </a> for more details):
  * <ul>
  * <li>Time-consuming tasks should not be run on the <i>Event Dispatch
  * Thread</i>. Otherwise the application becomes unresponsive.</li>
@@ -206,7 +206,7 @@ import javax.swing.Timer;
  * 
  */
 public abstract class SwingWorker<T, V> implements Future<T>, Runnable {
-  private static class DoSubmitAccumulativeRunnable extends AccumulativeRunnable<Runnable> implements ActionListener {
+  private static class DoSubmitAccumulativeRunnable extends AccumulativeRunnable<Runnable>implements ActionListener {
     private final static int DELAY = 1000 / 30;
 
     @Override
@@ -252,11 +252,10 @@ public abstract class SwingWorker<T, V> implements Future<T>, Runnable {
     /**
      * Initial {@code SwingWorker} state.
      */
-    PENDING,
-    /**
-     * {@code SwingWorker} is {@code STARTED} before invoking
-     * {@code doInBackground}.
-     */
+    PENDING, /**
+              * {@code SwingWorker} is {@code STARTED} before invoking
+              * {@code doInBackground}.
+              */
     STARTED,
 
     /**

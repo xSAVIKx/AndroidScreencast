@@ -36,7 +36,7 @@ import javax.swing.SwingUtilities;
  * <pre>
  * AccumulativeRunnable<String> doSetTextImpl = 
  * new  AccumulativeRunnable<String>() {
- *     @Override 
+ *     &#64;Override 
  *     protected void run(List&lt;String&gt; args) {
  *         //set to the last string being passed
  *         setTextImpl(args.get(args.size() - 1);

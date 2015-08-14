@@ -32,8 +32,8 @@ public abstract class LazyLoadingTreeNode extends DefaultMutableTreeNode impleme
    */
   protected static class CancelWorkersAction extends AbstractAction {
     /**
-		 * 
-		 */
+    	 * 
+    	 */
     private static final long serialVersionUID = 3173288834368915117L;
     /** the SwingWorkers */
     private Vector<SwingWorker<MutableTreeNode[], ?>> workers = new Vector<SwingWorker<MutableTreeNode[], ?>>();
@@ -67,8 +67,8 @@ public abstract class LazyLoadingTreeNode extends DefaultMutableTreeNode impleme
   }
 
   /**
-	 * 
-	 */
+   * 
+   */
   private static final long serialVersionUID = -4981073521761764327L;
 
   private static final String ESCAPE_ACTION_NAME = "escape";

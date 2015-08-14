@@ -9,8 +9,8 @@ import javax.swing.JWindow;
 
 public class JSplashScreen extends JWindow {
   /**
-	 * 
-	 */
+   * 
+   */
   private static final long serialVersionUID = 1L;
   JLabel label;
 

@@ -59,8 +59,8 @@ public class JFrameExplorer extends JFrame {
   }
 
   /**
-	 * 
-	 */
+   * 
+   */
   private static final long serialVersionUID = -5209265873286028854L;
   JTree jt;
   JSplitPane jSplitPane;

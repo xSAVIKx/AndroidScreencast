@@ -222,6 +222,7 @@ public class MultiLineLabelUI extends BasicLabelUI {
   static {
     labelUI = new MultiLineLabelUI();
   }
+
   static final int LEADING = SwingConstants.LEADING;
   static final int TRAILING = SwingConstants.TRAILING;
   static final int LEFT = SwingConstants.LEFT;

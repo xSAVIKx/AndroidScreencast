@@ -61,8 +61,8 @@ public class AndroidDevice {
         if (data.length < 4)
           continue;
         /*
-         * for(int j=0; j<data.length; j++) {
-         * System.out.println(j+" = "+data[j]); }
+         * for(int j=0; j<data.length; j++) { System.out.println(j+" = "
+         * +data[j]); }
          */
         String attribs = data[0];
         boolean directory = attribs.startsWith("d");
@@ -111,8 +111,8 @@ public class AndroidDevice {
       if (device.getSyncService() == null)
         throw new RuntimeException("SyncService is null, ADB crashed ?");
 
-      Method m = device.getSyncService().getClass()
-          .getDeclaredMethod("doPullFile", String.class, String.class, ISyncProgressMonitor.class);
+      Method m = device.getSyncService().getClass().getDeclaredMethod("doPullFile", String.class, String.class,
+          ISyncProgressMonitor.class);
       m.setAccessible(true);
       device.getSyncService();
       m.invoke(device.getSyncService(), removeFrom, localTo.getAbsolutePath(), SyncService.getNullProgressMonitor());

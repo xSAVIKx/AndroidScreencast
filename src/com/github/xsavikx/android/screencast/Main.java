@@ -1,11 +1,11 @@
 package com.github.xsavikx.android.screencast;
 
-import java.io.IOException;
-
 import org.apache.log4j.Logger;
 
 import com.android.ddmlib.AndroidDebugBridge;
 import com.android.ddmlib.IDevice;
+import com.github.xsavikx.android.screencast.api.command.executor.CommandExecutor;
+import com.github.xsavikx.android.screencast.api.command.executor.ShellCommandExecutor;
 import com.github.xsavikx.android.screencast.api.injector.Injector;
 import com.github.xsavikx.android.screencast.app.SwingApplication;
 import com.github.xsavikx.android.screencast.ui.JDialogDeviceList;
@@ -13,11 +13,21 @@ import com.github.xsavikx.android.screencast.ui.JFrameMain;
 import com.github.xsavikx.android.screencast.ui.JSplashScreen;
 
 public class Main extends SwingApplication {
-  public static void main(String args[]) throws IOException {
+  private static int PORT = 2436;
+
+  public static void main(String args[]) {
     if (logger.isDebugEnabled()) {
       logger.debug("main(String[]) - start");
     }
-    boolean nativeLook = args.length == 0 || !args[0].equalsIgnoreCase("nonativelook");
+    boolean nativeLook = true;
+    for (int i = 0; i < args.length; i++) {
+      if (args[i].equalsIgnoreCase("nonativelook")) {
+        nativeLook = false;
+      }
+      if (args[i].equalsIgnoreCase("port") && i + 1 < args.length) {
+        PORT = Integer.parseInt(args[i + 1]);
+      }
+    }
     new Main(nativeLook);
 
     if (logger.isDebugEnabled()) {
@@ -31,10 +41,11 @@ public class Main extends SwingApplication {
   private static final Logger logger = Logger.getLogger(Main.class);
   JFrameMain jf;
   Injector injector;
+  CommandExecutor commandExecutor;
 
-  IDevice device;
+  volatile IDevice device;
 
-  public Main(boolean nativeLook) throws IOException {
+  public Main(boolean nativeLook) {
     super(nativeLook);
     JSplashScreen jw = new JSplashScreen("");
 
@@ -73,7 +84,7 @@ public class Main extends SwingApplication {
     }
   }
 
-  private void initialize(JSplashScreen jw) throws IOException {
+  private void initialize(JSplashScreen jw) {
     if (logger.isDebugEnabled()) {
       logger.debug("initialize(JSplashScreen) - start");
     }
@@ -118,9 +129,11 @@ public class Main extends SwingApplication {
     jw.setText("Starting input injector...");
     jw.setVisible(true);
 
-    injector = new Injector(device);
+    injector = new Injector(device, PORT);
     injector.start();
+    commandExecutor = new ShellCommandExecutor(device);
     jf.setInjector(injector);
+    jf.setCommandExecutor(commandExecutor);
     jw.setVisible(false);
     if (logger.isDebugEnabled()) {
       logger.debug("initialize(JSplashScreen) - end");

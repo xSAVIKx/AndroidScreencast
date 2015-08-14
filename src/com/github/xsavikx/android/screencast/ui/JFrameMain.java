@@ -12,7 +12,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
 
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -24,6 +23,8 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 import com.android.ddmlib.IDevice;
 import com.github.xsavikx.android.screencast.api.AndroidDevice;
+import com.github.xsavikx.android.screencast.api.command.executor.CommandExecutor;
+import com.github.xsavikx.android.screencast.api.command.factory.AdbInputCommandFactory;
 import com.github.xsavikx.android.screencast.api.injector.ConstEvtKey;
 import com.github.xsavikx.android.screencast.api.injector.Injector;
 import com.github.xsavikx.android.screencast.api.injector.KeyCodeConverter;
@@ -31,83 +32,6 @@ import com.github.xsavikx.android.screencast.api.injector.ScreenCaptureThread.Sc
 import com.github.xsavikx.android.screencast.ui.explorer.JFrameExplorer;
 
 public class JFrameMain extends JFrame {
-
-  class InjectMouseAdapter extends MouseAdapter {
-    private int dragFromX = -1;
-
-    private int dragFromY = -1;
-    private long timeFromPress = -1;
-    private final static long ONE_SECOND = 1000L;
-
-    @Override
-    public void mouseClicked(MouseEvent e) {
-      if (JFrameMain.this.injector == null)
-        return;
-      try {
-        if (e.getButton() == MouseEvent.BUTTON3) {
-          JFrameMain.this.injector.screencapture.toogleOrientation();
-          e.consume();
-          return;
-        }
-        Point p2 = jp.getRawPoint(e.getPoint());
-        JFrameMain.this.injector.injectTap(p2.x, p2.y);
-      } catch (IOException e1) {
-        throw new RuntimeException(e1);
-      }
-    }
-
-    @Override
-    public void mouseDragged(MouseEvent e) {
-      if (dragFromX == -1 && dragFromY == -1) {
-        Point p2 = jp.getRawPoint(e.getPoint());
-        dragFromX = p2.x;
-        dragFromY = p2.y;
-        timeFromPress = System.currentTimeMillis();
-      }
-    }
-
-    @Override
-    public void mouseReleased(MouseEvent e) {
-      if (JFrameMain.this.injector == null) {
-        return;
-      }
-      if (timeFromPress >= ONE_SECOND) {
-        Point p2 = jp.getRawPoint(e.getPoint());
-        JFrameMain.this.injector.injectSwipe(dragFromX, dragFromY, p2.x, p2.y);
-        dragFromX = -1;
-        dragFromY = -1;
-        timeFromPress = -1;
-      }
-    }
-
-    @Override
-    public void mouseWheelMoved(MouseWheelEvent arg0) {
-      if (JFrameMain.this.injector == null)
-        return;
-      try {
-        JFrameMain.this.injector.injectTrackball(arg0.getWheelRotation() < 0 ? -1f : 1f);
-      } catch (IOException e) {
-        throw new RuntimeException(e);
-      }
-    }
-  }
-
-  public class KbActionListener implements ActionListener {
-
-    int key;
-
-    public KbActionListener(int key) {
-      this.key = key;
-    }
-
-    @Override
-    public void actionPerformed(ActionEvent e) {
-      if (injector == null)
-        return;
-      injector.injectKeycode(key);
-    }
-
-  }
 
   private static final long serialVersionUID = -2085909236767692371L;
   private JPanelScreen jp = new JPanelScreen();
@@ -118,6 +42,7 @@ public class JFrameMain extends JFrame {
   private JButton jbOpenUrl = new JButton("Open Url");
   JScrollPane jsp;
   private JButton jbExplorer = new JButton("Explore");
+  private JButton jbRestartClient = new JButton("Restart client");
   private JButton jbKbHome = new JButton("Home");
   private JButton jbKbMenu = new JButton("Menu");
   private JButton jbKbBack = new JButton("Back");
@@ -127,11 +52,11 @@ public class JFrameMain extends JFrame {
 
   private JButton jbKbPhoneOff = new JButton("End call");
   private IDevice device;
+  private CommandExecutor commandExecutor;
   private Injector injector;
-
   private Dimension oldImageDimension = null;
 
-  public JFrameMain(IDevice device) throws IOException {
+  public JFrameMain(IDevice device) {
     this.device = device;
     initialize();
     KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(new KeyEventDispatcher() {
@@ -140,18 +65,18 @@ public class JFrameMain extends JFrame {
       public boolean dispatchKeyEvent(KeyEvent e) {
         if (!JFrameMain.this.isActive())
           return false;
-        if (injector == null)
+        if (commandExecutor == null)
           return false;
         if (e.getID() == KeyEvent.KEY_TYPED) {
           int code = KeyCodeConverter.getKeyCode(e);
-          injector.injectKeycode(code);
+          commandExecutor.execute(AdbInputCommandFactory.getKeyCommand(code));
         }
         return false;
       }
     });
   }
 
-  public void initialize() throws IOException {
+  public void initialize() {
     jtb.setFocusable(false);
     jbExplorer.setFocusable(false);
     jtbRecord.setFocusable(false);
@@ -162,6 +87,7 @@ public class JFrameMain extends JFrame {
     jbKbSearch.setFocusable(false);
     jbKbPhoneOn.setFocusable(false);
     jbKbPhoneOff.setFocusable(false);
+    jbRestartClient.setFocusable(false);
 
     jbKbHome.addActionListener(new KbActionListener(ConstEvtKey.KEYCODE_HOME));
     jbKbMenu.addActionListener(new KbActionListener(ConstEvtKey.KEYCODE_MENU));
@@ -188,22 +114,6 @@ public class JFrameMain extends JFrame {
     jsp.setPreferredSize(new Dimension(100, 100));
     pack();
     setLocationRelativeTo(null);
-    /*
-     * jp.addKeyListener(new KeyAdapter() {
-     * 
-     * @Override public void keyPressed(KeyEvent e) { if(injector == null)
-     * return; try { int code = KeyCodeConverter.getKeyCode(e);
-     * injector.injectKeycode(ConstEvtKey.ACTION_DOWN,code); } catch
-     * (IOException e1) { throw new RuntimeException(e1); } }
-     * 
-     * @Override public void keyReleased(KeyEvent e) { if(injector == null)
-     * return; try { int code = KeyCodeConverter.getKeyCode(e);
-     * injector.injectKeycode(ConstEvtKey.ACTION_UP,code); } catch (IOException
-     * e1) { throw new RuntimeException(e1); } }
-     * 
-     * 
-     * });
-     */
 
     MouseAdapter ma = new InjectMouseAdapter();
 
@@ -235,6 +145,8 @@ public class JFrameMain extends JFrame {
       }
     });
     jtb.add(jbExplorer);
+
+    jtb.add(jbRestartClient);
 
     jbOpenUrl.addActionListener(new ActionListener() {
       @Override
@@ -279,5 +191,83 @@ public class JFrameMain extends JFrame {
 
   private void stopRecording() {
     injector.screencapture.stopRecording();
+  }
+
+  public CommandExecutor getCommandExecutor() {
+    return commandExecutor;
+  }
+
+  public void setCommandExecutor(CommandExecutor commandExecutor) {
+    this.commandExecutor = commandExecutor;
+  }
+
+  class InjectMouseAdapter extends MouseAdapter {
+    private int dragFromX = -1;
+
+    private int dragFromY = -1;
+    private long timeFromPress = -1;
+    private final static long ONE_SECOND = 1000L;
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+      if (injector != null && e.getButton() == MouseEvent.BUTTON3) {
+        injector.screencapture.toogleOrientation();
+        e.consume();
+        return;
+      }
+      if (commandExecutor == null)
+        return;
+      Point p2 = jp.getRawPoint(e.getPoint());
+      commandExecutor.execute(AdbInputCommandFactory.getTapCommand(p2.x, p2.y));
+    }
+
+    @Override
+    public void mouseDragged(MouseEvent e) {
+      if (dragFromX == -1 && dragFromY == -1) {
+        Point p2 = jp.getRawPoint(e.getPoint());
+        dragFromX = p2.x;
+        dragFromY = p2.y;
+        timeFromPress = System.currentTimeMillis();
+      }
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+      if (commandExecutor == null) {
+        return;
+      }
+      if (timeFromPress >= ONE_SECOND) {
+        Point p2 = jp.getRawPoint(e.getPoint());
+        commandExecutor.execute(AdbInputCommandFactory.getSwipeCommand(dragFromX, dragFromY, p2.x, p2.y));
+        dragFromX = -1;
+        dragFromY = -1;
+        timeFromPress = -1;
+      }
+    }
+
+    @Override
+    public void mouseWheelMoved(MouseWheelEvent arg0) {
+      // if (JFrameMain.this.injector == null)
+      // return;
+      // JFrameMain.this.injector.injectTrackball(arg0.getWheelRotation() < 0 ?
+      // -1f : 1f);
+    }
+  }
+
+  public class KbActionListener implements ActionListener {
+
+    int key;
+
+    public KbActionListener(int key) {
+      this.key = key;
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+      if (commandExecutor == null)
+        return;
+      commandExecutor.execute(AdbInputCommandFactory.getKeyCommand(key));
+    }
+
   }
 }

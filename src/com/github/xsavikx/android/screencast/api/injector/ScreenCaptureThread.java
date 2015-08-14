@@ -4,6 +4,7 @@ import java.awt.Dimension;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 import javax.swing.SwingUtilities;
 
@@ -92,7 +93,7 @@ public class ScreenCaptureThread extends Thread {
     RawImage rawImage = null;
     synchronized (device) {
       try {
-        rawImage = device.getScreenshot();
+        rawImage = device.getScreenshot(5, TimeUnit.SECONDS);
       } catch (TimeoutException | AdbCommandRejectedException e) {
         e.printStackTrace();
       }

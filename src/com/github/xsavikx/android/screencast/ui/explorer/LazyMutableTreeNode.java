@@ -5,8 +5,8 @@ import javax.swing.tree.DefaultMutableTreeNode;
 public abstract class LazyMutableTreeNode extends DefaultMutableTreeNode {
 
   /**
-	 * 
-	 */
+   * 
+   */
   private static final long serialVersionUID = -6383034137965603498L;
   protected boolean _loaded = false;
 
