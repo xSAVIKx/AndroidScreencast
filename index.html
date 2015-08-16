@@ -1,50 +1,56 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
   <head>
-    <meta charset="utf-8">
+    <meta charset='utf-8'>
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <title>AndroidScreencast by xSAVIKx</title>
-    <link rel="stylesheet" href="stylesheets/styles.css">
-    <link rel="stylesheet" href="stylesheets/github-dark.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-    <script src="javascripts/main.js"></script>
-    <!--[if lt IE 9]>
-      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="viewport" content="width=640">
 
+    <link rel="stylesheet" href="stylesheets/core.css" media="screen">
+    <link rel="stylesheet" href="stylesheets/mobile.css" media="handheld, only screen and (max-device-width:640px)">
+    <link rel="stylesheet" href="stylesheets/github-light.css">
+
+    <script type="text/javascript" src="javascripts/modernizr.js"></script>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script type="text/javascript" src="javascripts/headsmart.min.js"></script>
+    <script type="text/javascript">
+      $(document).ready(function () {
+        $('#main_content').headsmart()
+      })
+    </script>
+    <title>AndroidScreencast by xSAVIKx</title>
   </head>
+
   <body>
+    <a id="forkme_banner" href="https://github.com/xSAVIKx/AndroidScreencast">View on GitHub</a>
+    <div class="shell">
 
       <header>
-        <h1>AndroidScreencast</h1>
-        <p>View and control your android device on PC</p>
+        <span class="ribbon-outer">
+          <span class="ribbon-inner">
+            <h1>AndroidScreencast</h1>
+            <h2>View and control your android device on PC</h2>
+          </span>
+          <span class="left-tail"></span>
+          <span class="right-tail"></span>
+        </span>
       </header>
 
-      <div id="banner">
-        <span id="logo"></span>
+      <section id="downloads">
+        <span class="inner">
+          <a href="https://github.com/xSAVIKx/AndroidScreencast/zipball/master" class="zip"><em>download</em> .ZIP</a><a href="https://github.com/xSAVIKx/AndroidScreencast/tarball/master" class="tgz"><em>download</em> .TGZ</a>
+        </span>
+      </section>
 
-        <a href="https://github.com/xSAVIKx/AndroidScreencast" class="button fork"><strong>View On GitHub</strong></a>
-        <div class="downloads">
-          <span>Downloads:</span>
-          <ul>
-            <li><a href="https://github.com/xSAVIKx/AndroidScreencast/zipball/master" class="button">ZIP</a></li>
-            <li><a href="https://github.com/xSAVIKx/AndroidScreencast/tarball/master" class="button">TAR</a></li>
-          </ul>
-        </div>
-      </div><!-- end banner -->
 
-    <div class="wrapper">
-      <nav>
-        <ul></ul>
-      </nav>
-      <section>
+      <span class="banner-fix"></span>
+
+
+      <section id="main_content">
         <h1>
-<a id="androidscreencast" class="anchor" href="#androidscreencast" aria-hidden="true"><span class="octicon octicon-link"></span></a>AndroidScreencast</h1>
+<a id="androidscreencast---download-latest" class="anchor" href="#androidscreencast---download-latest" aria-hidden="true"><span class="octicon octicon-link"></span></a>AndroidScreencast - <a href="https://github.com/xSAVIKx/AndroidScreencast/releases/download/0.0.4S/androidscreencast-0.0.4S.jar"><i>download latest</i></a>
+</h1>
 
 <p><a href="https://drone.io/github.com/xSAVIKx/AndroidScreencast/latest"><img src="https://drone.io/github.com/xSAVIKx/AndroidScreencast/status.png" alt="Build Status"></a></p>
-
-<p><a href="https://github.com/xSAVIKx/AndroidScreencast/releases/download/0.0.4S/androidscreencast-0.0.4S.jar"><i>download latest</i></a></p>
 
 <p>AndroidScreencast - View and control your android device on PC.</p>
 
@@ -62,12 +68,21 @@
 
 <p><a href="https://github.com/xSAVIKx/AndroidScreencast/wiki">Small wiki of project</a></p>
       </section>
+
       <footer>
-        <p>Project maintained by <a href="https://github.com/xSAVIKx">xSAVIKx</a></p>
-        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://twitter.com/michigangraham">mattgraham</a></small></p>
+        <span class="ribbon-outer">
+          <span class="ribbon-inner">
+            <p>this project by <a href="https://github.com/xSAVIKx">xSAVIKx</a> can be found on <a href="https://github.com/xSAVIKx/AndroidScreencast">GitHub</a></p>
+          </span>
+          <span class="left-tail"></span>
+          <span class="right-tail"></span>
+        </span>
+        <p>Generated with <a href="https://pages.github.com">GitHub Pages</a> using Merlot</p>
+        <span class="octocat"></span>
       </footer>
+
     </div>
-    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+
     
   </body>
 </html>
