@@ -74,7 +74,7 @@
 				<executions>
 					<execution>
 						<configuration>
-							<filename>androidscreencast.jar</filename>
+							<filename>androidscreencast-${project.version}.jar</filename>
 							<classifier>onejar</classifier>
 						</configuration>
 						<goals>
