@@ -8,13 +8,16 @@ import javax.swing.UIManager;
 
 import com.github.xsavikx.android.screencast.ui.JDialogError;
 
-public class SwingApplication extends Application {
+public abstract class SwingApplication extends GUIApplication {
 
-  JDialogError jd = null;
+  private JDialogError jd = null;
 
-  public SwingApplication(boolean nativeLook) {
+  protected abstract boolean isNativeLook();
+
+  @Override
+  public void init() {
     try {
-      if (nativeLook)
+      if (isNativeLook())
         UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
     } catch (Exception ex) {
       throw new RuntimeException(ex);
@@ -22,12 +25,7 @@ public class SwingApplication extends Application {
   }
 
   @Override
-  protected void close() {
-    super.close();
-  }
-
-  @Override
-  protected void handleException(Thread thread, Throwable ex) {
+  public void handleException(Thread thread, Throwable ex) {
     try {
       StringWriter sw = new StringWriter();
       ex.printStackTrace(new PrintWriter(sw));

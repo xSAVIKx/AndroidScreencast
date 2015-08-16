@@ -12,7 +12,7 @@ public class JSplashScreen extends JWindow {
    * 
    */
   private static final long serialVersionUID = 1L;
-  JLabel label;
+  private JLabel label;
 
   public JSplashScreen(String text) {
     label = new JLabel("Loading...", (int) Component.CENTER_ALIGNMENT);

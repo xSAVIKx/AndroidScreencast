@@ -2,11 +2,11 @@ package com.github.xsavikx.android.screencast.api.file;
 
 import java.io.File;
 
-import com.github.xsavikx.android.screencast.api.AndroidDevice;
+import com.github.xsavikx.android.screencast.api.AndroidDeviceImpl;
 
 public class FileInfo {
 
-  public AndroidDevice device;
+  public AndroidDeviceImpl device;
   public String path;
   public String attribs;
   public boolean directory;

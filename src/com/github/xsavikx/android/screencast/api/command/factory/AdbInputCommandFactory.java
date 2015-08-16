@@ -1,11 +1,13 @@
 package com.github.xsavikx.android.screencast.api.command.factory;
 
 import org.apache.log4j.Logger;
+import org.springframework.stereotype.Service;
 
 import com.github.xsavikx.android.screencast.api.command.KeyCommand;
 import com.github.xsavikx.android.screencast.api.command.SwipeCommand;
 import com.github.xsavikx.android.screencast.api.command.TapCommand;
 
+@Service
 public final class AdbInputCommandFactory {
   /**
    * Logger for this class

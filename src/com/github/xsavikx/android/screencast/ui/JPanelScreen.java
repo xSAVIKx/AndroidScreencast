@@ -3,7 +3,6 @@ package com.github.xsavikx.android.screencast.ui;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
 
@@ -11,17 +10,14 @@ import javax.swing.JPanel;
 
 public class JPanelScreen extends JPanel {
 
-  /**
-   * 
-   */
   private static final long serialVersionUID = -2034873107028503004L;
-  public float coef = 1;
-  double origX;
-  double origY;
-  boolean landscape;
+  private float coef = 1;
+  private double origX;
+  private double origY;
+  private boolean landscape;
 
-  Dimension size = null;
-  BufferedImage image = null;
+  private Dimension size = null;
+  private BufferedImage image = null;
 
   public JPanelScreen() {
     this.setFocusable(true);

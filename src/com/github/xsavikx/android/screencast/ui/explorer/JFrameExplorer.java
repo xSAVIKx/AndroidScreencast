@@ -23,7 +23,7 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 
 import com.android.ddmlib.IDevice;
-import com.github.xsavikx.android.screencast.api.AndroidDevice;
+import com.github.xsavikx.android.screencast.api.AndroidDeviceImpl;
 import com.github.xsavikx.android.screencast.api.file.FileInfo;
 
 public class JFrameExplorer extends JFrame {
@@ -42,7 +42,7 @@ public class JFrameExplorer extends JFrame {
     public void initChildren() {
       List<FileInfo> fileInfos = cache.get(path);
       if (fileInfos == null)
-        fileInfos = new AndroidDevice(device).list(path);
+        fileInfos = new AndroidDeviceImpl(device).list(path);
       for (FileInfo fi : fileInfos) {
         if (fi.directory)
           add(new FolderTreeNode(fi.name, path + fi.name + "/"));
@@ -123,7 +123,7 @@ public class JFrameExplorer extends JFrame {
   private void displayFolder(String path) {
     List<FileInfo> fileInfos = cache.get(path);
     if (fileInfos == null)
-      fileInfos = new AndroidDevice(device).list(path);
+      fileInfos = new AndroidDeviceImpl(device).list(path);
 
     List<FileInfo> files = new Vector<FileInfo>();
     for (FileInfo fi2 : fileInfos) {

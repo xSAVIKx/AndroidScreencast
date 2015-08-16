@@ -25,17 +25,17 @@ public class JDialogDeviceList extends JDialog implements ActionListener {
   private static final String DEFAULT_HOST = "127.0.0.1";
   private static final int DEFAULT_PORT = 1324;
 
-  JTextField jtfHost = new JTextField(DEFAULT_HOST);
-  JFormattedTextField jftfPort = new JFormattedTextField(DEFAULT_PORT);
-  JList<IDevice> jlDevices = new JList<IDevice>();
-  JScrollPane jspDevices = new JScrollPane(jlDevices);
-  JPanel jpAgent = new JPanel();
-  JPanel jpButtons = new JPanel();
-  JButton jbOk = new JButton("OK");
-  JButton jbQuit = new JButton("Quit");
+  private JTextField jtfHost = new JTextField(DEFAULT_HOST);
+  private JFormattedTextField jftfPort = new JFormattedTextField(DEFAULT_PORT);
+  private JList<IDevice> jlDevices = new JList<IDevice>();
+  private JScrollPane jspDevices = new JScrollPane(jlDevices);
+  private JPanel jpAgent = new JPanel();
+  private JPanel jpButtons = new JPanel();
+  private JButton jbOk = new JButton("OK");
+  private JButton jbQuit = new JButton("Quit");
 
-  boolean cancelled = false;
-  IDevice[] devices;
+  private boolean cancelled = false;
+  private IDevice[] devices;
 
   public JDialogDeviceList(IDevice[] devices) {
     super();

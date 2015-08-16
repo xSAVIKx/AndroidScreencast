@@ -11,9 +11,18 @@ import javax.swing.JTextField;
 public class JDialogUrl extends JDialog {
 
   private static final long serialVersionUID = -331017582679776599L;
-  JTextField jtfUrl = new JTextField();
-  JButton jbOk = new JButton("Ok");
-  boolean result = false;
+  private JTextField jtfUrl = new JTextField();
+
+  public JTextField getJtfUrl() {
+    return jtfUrl;
+  }
+
+  public void setJtfUrl(JTextField jtfUrl) {
+    this.jtfUrl = jtfUrl;
+  }
+
+  private JButton jbOk = new JButton("Ok");
+  private boolean result = false;
 
   public JDialogUrl() {
     setModal(true);
@@ -28,7 +37,7 @@ public class JDialogUrl extends JDialog {
 
       @Override
       public void actionPerformed(ActionEvent arg0) {
-        result = true;
+        setResult(true);
         JDialogUrl.this.setVisible(false);
       }
     });
@@ -38,5 +47,13 @@ public class JDialogUrl extends JDialog {
     pack();
     setLocationRelativeTo(null);
 
+  }
+
+  public boolean isResult() {
+    return result;
+  }
+
+  public void setResult(boolean result) {
+    this.result = result;
   }
 }

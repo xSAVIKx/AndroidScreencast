@@ -2,15 +2,10 @@ package com.github.xsavikx.android.screencast.ui;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.KeyEventDispatcher;
 import java.awt.KeyboardFocusManager;
-import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseWheelEvent;
 import java.awt.image.BufferedImage;
 
 import javax.swing.JButton;
@@ -21,15 +16,19 @@ import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import com.android.ddmlib.IDevice;
-import com.github.xsavikx.android.screencast.api.AndroidDevice;
+import com.github.xsavikx.android.screencast.api.AndroidDeviceImpl;
 import com.github.xsavikx.android.screencast.api.command.executor.CommandExecutor;
-import com.github.xsavikx.android.screencast.api.command.factory.AdbInputCommandFactory;
 import com.github.xsavikx.android.screencast.api.injector.ConstEvtKey;
 import com.github.xsavikx.android.screencast.api.injector.Injector;
-import com.github.xsavikx.android.screencast.api.injector.KeyCodeConverter;
 import com.github.xsavikx.android.screencast.api.injector.ScreenCaptureThread.ScreenCaptureListener;
 import com.github.xsavikx.android.screencast.ui.explorer.JFrameExplorer;
+import com.github.xsavikx.android.screencast.ui.interaction.KeyEventDispatcherFactory;
+import com.github.xsavikx.android.screencast.ui.interaction.KeyboardActionListenerFactory;
+import com.github.xsavikx.android.screencast.ui.interaction.MouseActionAdapterFactory;
 
 public class JFrameMain extends JFrame {
 
@@ -40,7 +39,7 @@ public class JFrameMain extends JFrame {
   private JToggleButton jtbRecord = new JToggleButton("Record");
 
   private JButton jbOpenUrl = new JButton("Open Url");
-  JScrollPane jsp;
+  private JScrollPane jsp;
   private JButton jbExplorer = new JButton("Explore");
   private JButton jbRestartClient = new JButton("Restart client");
   private JButton jbKbHome = new JButton("Home");
@@ -59,21 +58,8 @@ public class JFrameMain extends JFrame {
   public JFrameMain(IDevice device) {
     this.device = device;
     initialize();
-    KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(new KeyEventDispatcher() {
-
-      @Override
-      public boolean dispatchKeyEvent(KeyEvent e) {
-        if (!JFrameMain.this.isActive())
-          return false;
-        if (commandExecutor == null)
-          return false;
-        if (e.getID() == KeyEvent.KEY_TYPED) {
-          int code = KeyCodeConverter.getKeyCode(e);
-          commandExecutor.execute(AdbInputCommandFactory.getKeyCommand(code));
-        }
-        return false;
-      }
-    });
+    KeyboardFocusManager.getCurrentKeyboardFocusManager()
+        .addKeyEventDispatcher(KeyEventDispatcherFactory.getKeyEventDispatcher(this));
   }
 
   public void initialize() {
@@ -89,12 +75,12 @@ public class JFrameMain extends JFrame {
     jbKbPhoneOff.setFocusable(false);
     jbRestartClient.setFocusable(false);
 
-    jbKbHome.addActionListener(new KbActionListener(ConstEvtKey.KEYCODE_HOME));
-    jbKbMenu.addActionListener(new KbActionListener(ConstEvtKey.KEYCODE_MENU));
-    jbKbBack.addActionListener(new KbActionListener(ConstEvtKey.KEYCODE_BACK));
-    jbKbSearch.addActionListener(new KbActionListener(ConstEvtKey.KEYCODE_SEARCH));
-    jbKbPhoneOn.addActionListener(new KbActionListener(ConstEvtKey.KEYCODE_CALL));
-    jbKbPhoneOff.addActionListener(new KbActionListener(ConstEvtKey.KEYCODE_ENDCALL));
+    jbKbHome.addActionListener(KeyboardActionListenerFactory.getInstance(ConstEvtKey.KEYCODE_HOME));
+    jbKbMenu.addActionListener(KeyboardActionListenerFactory.getInstance(ConstEvtKey.KEYCODE_MENU));
+    jbKbBack.addActionListener(KeyboardActionListenerFactory.getInstance(ConstEvtKey.KEYCODE_BACK));
+    jbKbSearch.addActionListener(KeyboardActionListenerFactory.getInstance(ConstEvtKey.KEYCODE_SEARCH));
+    jbKbPhoneOn.addActionListener(KeyboardActionListenerFactory.getInstance(ConstEvtKey.KEYCODE_CALL));
+    jbKbPhoneOff.addActionListener(KeyboardActionListenerFactory.getInstance(ConstEvtKey.KEYCODE_ENDCALL));
 
     jtbHardkeys.add(jbKbHome);
     jtbHardkeys.add(jbKbMenu);
@@ -115,7 +101,7 @@ public class JFrameMain extends JFrame {
     pack();
     setLocationRelativeTo(null);
 
-    MouseAdapter ma = new InjectMouseAdapter();
+    MouseAdapter ma = MouseActionAdapterFactory.getInstance(jp);
 
     jp.addMouseMotionListener(ma);
     jp.addMouseListener(ma);
@@ -153,10 +139,10 @@ public class JFrameMain extends JFrame {
       public void actionPerformed(ActionEvent arg0) {
         JDialogUrl jdUrl = new JDialogUrl();
         jdUrl.setVisible(true);
-        if (!jdUrl.result)
+        if (!jdUrl.isResult())
           return;
-        String url = jdUrl.jtfUrl.getText();
-        new AndroidDevice(device).openUrl(url);
+        String url = jdUrl.getJtfUrl().getText();
+        new AndroidDeviceImpl(device).openUrl(url);
       }
     });
     jtb.add(jbOpenUrl);
@@ -201,73 +187,4 @@ public class JFrameMain extends JFrame {
     this.commandExecutor = commandExecutor;
   }
 
-  class InjectMouseAdapter extends MouseAdapter {
-    private int dragFromX = -1;
-
-    private int dragFromY = -1;
-    private long timeFromPress = -1;
-    private final static long ONE_SECOND = 1000L;
-
-    @Override
-    public void mouseClicked(MouseEvent e) {
-      if (injector != null && e.getButton() == MouseEvent.BUTTON3) {
-        injector.screencapture.toogleOrientation();
-        e.consume();
-        return;
-      }
-      if (commandExecutor == null)
-        return;
-      Point p2 = jp.getRawPoint(e.getPoint());
-      commandExecutor.execute(AdbInputCommandFactory.getTapCommand(p2.x, p2.y));
-    }
-
-    @Override
-    public void mouseDragged(MouseEvent e) {
-      if (dragFromX == -1 && dragFromY == -1) {
-        Point p2 = jp.getRawPoint(e.getPoint());
-        dragFromX = p2.x;
-        dragFromY = p2.y;
-        timeFromPress = System.currentTimeMillis();
-      }
-    }
-
-    @Override
-    public void mouseReleased(MouseEvent e) {
-      if (commandExecutor == null) {
-        return;
-      }
-      if (timeFromPress >= ONE_SECOND) {
-        Point p2 = jp.getRawPoint(e.getPoint());
-        commandExecutor.execute(AdbInputCommandFactory.getSwipeCommand(dragFromX, dragFromY, p2.x, p2.y));
-        dragFromX = -1;
-        dragFromY = -1;
-        timeFromPress = -1;
-      }
-    }
-
-    @Override
-    public void mouseWheelMoved(MouseWheelEvent arg0) {
-      // if (JFrameMain.this.injector == null)
-      // return;
-      // JFrameMain.this.injector.injectTrackball(arg0.getWheelRotation() < 0 ?
-      // -1f : 1f);
-    }
-  }
-
-  public class KbActionListener implements ActionListener {
-
-    int key;
-
-    public KbActionListener(int key) {
-      this.key = key;
-    }
-
-    @Override
-    public void actionPerformed(ActionEvent e) {
-      if (commandExecutor == null)
-        return;
-      commandExecutor.execute(AdbInputCommandFactory.getKeyCommand(key));
-    }
-
-  }
 }
