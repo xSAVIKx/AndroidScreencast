@@ -8,10 +8,8 @@ import javax.swing.JLabel;
 import javax.swing.JWindow;
 
 public class JSplashScreen extends JWindow {
-  /**
-   * 
-   */
-  private static final long serialVersionUID = 1L;
+
+  private static final long serialVersionUID = -4537199368044671301L;
   private JLabel label;
 
   public JSplashScreen(String text) {

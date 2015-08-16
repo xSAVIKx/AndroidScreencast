@@ -1,5 +1,4 @@
 package com.github.xsavikx.android.screencast.app;
-
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
@@ -9,7 +8,6 @@ import javax.swing.UIManager;
 import com.github.xsavikx.android.screencast.ui.JDialogError;
 
 public abstract class SwingApplication extends GUIApplication {
-
   private JDialogError jd = null;
 
   protected abstract boolean isNativeLook();
@@ -40,7 +38,6 @@ public abstract class SwingApplication extends GUIApplication {
         @Override
         public void run() {
           jd.setVisible(true);
-
         }
       });
     } catch (Exception ex2) {

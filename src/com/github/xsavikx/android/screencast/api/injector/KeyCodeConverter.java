@@ -1,10 +1,15 @@
 package com.github.xsavikx.android.screencast.api.injector;
 
+import org.apache.log4j.Logger;
+
 import java.awt.event.KeyEvent;
 
 public class KeyCodeConverter {
+  private static final Logger LOGGER = Logger.getLogger(KeyCodeConverter.class);
 
   public static int getKeyCode(KeyEvent e) {
+    LOGGER.debug("getKeyCode(KeyEvent e=" + e + ") - start");
+
     char c = e.getKeyChar();
     int code = 0;
     if (Character.isLetter(c))
@@ -87,6 +92,7 @@ public class KeyCodeConverter {
     if (e.getKeyCode() == KeyEvent.VK_SHIFT)
       code = ConstEvtKey.KEYCODE_SHIFT_LEFT;
 
+    LOGGER.debug("getKeyCode(KeyEvent e=" + e + ") - end");
     return code;
   }
 

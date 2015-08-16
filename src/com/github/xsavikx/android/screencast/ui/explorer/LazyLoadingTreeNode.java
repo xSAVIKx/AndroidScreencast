@@ -15,7 +15,6 @@ import javax.swing.event.TreeExpansionEvent;
 import javax.swing.event.TreeWillExpandListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.ExpandVetoException;
 import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreeModel;
 
@@ -118,16 +117,14 @@ public abstract class LazyLoadingTreeNode extends DefaultMutableTreeNode impleme
    * 
    * @param tree
    *          the tree
-   * @param cancelable
-   *          if the worker should be cancelable
    * @return the newly created SwingWorker
    */
-  protected SwingWorker<MutableTreeNode[], ?> createSwingWorker(final JTree tree, boolean cancelable) {
+  protected SwingWorker<MutableTreeNode[], ?> createSwingWorker(final JTree tree) {
 
     SwingWorker<MutableTreeNode[], ?> worker = new SwingWorker<MutableTreeNode[], Object>() {
 
       @Override
-      protected MutableTreeNode[] doInBackground() throws Exception {
+      protected MutableTreeNode[] doInBackground() {
         return loadChildren(tree);
       }
 
@@ -143,10 +140,8 @@ public abstract class LazyLoadingTreeNode extends DefaultMutableTreeNode impleme
             reset();
           }
         } catch (InterruptedException e) {
-          // TODO Auto-generated catch block
           e.printStackTrace();
         } catch (ExecutionException e) {
-          // TODO Auto-generated catch block
           e.printStackTrace();
         }
 
@@ -227,9 +222,6 @@ public abstract class LazyLoadingTreeNode extends DefaultMutableTreeNode impleme
    *          new nodes
    */
   protected void setChildren(MutableTreeNode... nodes) {
-    if (nodes == null) {
-
-    }
     TreeModel model = tree.getModel();
     if (model instanceof DefaultTreeModel) {
       DefaultTreeModel defaultModel = (DefaultTreeModel) model;
@@ -265,20 +257,21 @@ public abstract class LazyLoadingTreeNode extends DefaultMutableTreeNode impleme
    * Default empty implementation, do nothing on collapse event.
    */
   @Override
-  public void treeWillCollapse(TreeExpansionEvent event) throws ExpandVetoException {
+  public void treeWillCollapse(TreeExpansionEvent event) {
+    // ignore
   }
 
   /**
-   * Node will expand, it's time to retreive nodes
+   * Node will expand, it's time to retrieve nodes
    */
   @Override
-  public void treeWillExpand(TreeExpansionEvent event) throws ExpandVetoException {
+  public void treeWillExpand(TreeExpansionEvent event) {
     if (this.equals(event.getPath().getLastPathComponent())) {
       if (areChildrenLoaded()) {
         return;
       }
       setLoading();
-      SwingWorker<MutableTreeNode[], ?> worker = createSwingWorker(tree, cancelable);
+      SwingWorker<MutableTreeNode[], ?> worker = createSwingWorker(tree);
       worker.execute();
     }
   }

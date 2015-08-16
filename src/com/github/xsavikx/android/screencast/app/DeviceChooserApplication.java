@@ -9,7 +9,6 @@ import com.android.ddmlib.AndroidDebugBridge;
 import com.android.ddmlib.IDevice;
 import com.github.xsavikx.android.screencast.constant.Constants;
 import com.github.xsavikx.android.screencast.ui.JDialogDeviceList;
-import com.github.xsavikx.android.screencast.ui.JSplashScreen;
 
 @Component
 public class DeviceChooserApplication extends SwingApplication {
@@ -24,33 +23,30 @@ public class DeviceChooserApplication extends SwingApplication {
 
   @Override
   public void close() {
-
+    // ignore
   }
 
   @Override
   public void start() {
-    JSplashScreen jw = new JSplashScreen("");
+    LOGGER.debug("start() - start");
+    initialize();
 
-    try {
-      initialize(jw);
-    } finally {
-      jw.setVisible(false);
-      jw.removeAll();
-      jw = null;
-    }
-
+    LOGGER.debug("start() - end");
   }
 
   @SuppressWarnings("boxing")
   @Override
   protected boolean isNativeLook() {
-    return env.getProperty(Constants.APP_NATIVE_LOOK_PROPERTY, Boolean.class, Constants.DEFAULT_APP_NATIVE_LOOK);
+    LOGGER.debug("isNativeLook() - start");
+
+    boolean returnboolean = env.getProperty(Constants.APP_NATIVE_LOOK_PROPERTY, Boolean.class,
+        Constants.DEFAULT_APP_NATIVE_LOOK);
+    LOGGER.debug("isNativeLook() - end");
+    return returnboolean;
   }
 
   private void waitDeviceList(AndroidDebugBridge bridge) {
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("waitDeviceList(AndroidDebugBridge) - start");
-    }
+    LOGGER.debug("waitDeviceList(AndroidDebugBridge bridge=" + bridge + ") - start");
 
     int count = 0;
     while (bridge.hasInitialDeviceList() == false) {
@@ -59,6 +55,7 @@ public class DeviceChooserApplication extends SwingApplication {
         count++;
       } catch (InterruptedException e) {
         LOGGER.warn("waitDeviceList(AndroidDebugBridge) - exception ignored", e);
+
       }
       // let's not wait > 10 sec.
       if (count > 300) {
@@ -66,24 +63,15 @@ public class DeviceChooserApplication extends SwingApplication {
       }
     }
 
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("waitDeviceList(AndroidDebugBridge) - end");
-    }
+    LOGGER.debug("waitDeviceList(AndroidDebugBridge bridge=" + bridge + ") - end");
   }
 
-  private void initialize(JSplashScreen jw) {
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("initialize(JSplashScreen) - start");
-    }
-
-    jw.setText("Getting devices list...");
-    jw.setVisible(true);
+  private void initialize() {
+    LOGGER.debug("initialize() - start");
 
     waitDeviceList(bridge);
 
     IDevice devices[] = bridge.getDevices();
-    jw.setVisible(false);
-    jw.removeAll();
     // Let the user choose the device
     if (devices.length == 1) {
       device = devices[0];
@@ -96,15 +84,11 @@ public class DeviceChooserApplication extends SwingApplication {
     if (device == null) {
       System.exit(0);
 
-      if (LOGGER.isDebugEnabled()) {
-        LOGGER.debug("initialize(JSplashScreen) - end");
-      }
+      LOGGER.debug("initialize() - end");
       return;
     }
 
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("initialize(JSplashScreen) - end");
-    }
+    LOGGER.debug("initialize() - end");
   }
 
   public IDevice getDevice() {

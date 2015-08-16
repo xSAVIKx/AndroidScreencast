@@ -1,3 +1,6 @@
+#logs
+*.log*
+
 # Bin folder
 bin
 *.class
@@ -18,9 +21,6 @@ hs_err_pid*
 
 # Build folders
 dist
-
-# MyInjectEventApp copy
-/*.jar
 
 ######################
 # Eclipse

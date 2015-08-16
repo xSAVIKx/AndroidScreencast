@@ -15,7 +15,7 @@ import com.github.xsavikx.android.screencast.constant.Constants;
 
 @Configuration
 @ComponentScan(basePackages = "com.github.xsavikx.android.screencast")
-@PropertySource(value = "file:${app.home}/app.properties", ignoreResourceNotFound = true)
+@PropertySource(value = "file:${user.dir}/app.properties", ignoreResourceNotFound = true)
 public class ApplicationConfiguration {
   @Autowired
   private Environment env;

@@ -28,7 +28,6 @@ public class JDialogDeviceList extends JDialog implements ActionListener {
   private JTextField jtfHost = new JTextField(DEFAULT_HOST);
   private JFormattedTextField jftfPort = new JFormattedTextField(DEFAULT_PORT);
   private JList<IDevice> jlDevices = new JList<IDevice>();
-  private JScrollPane jspDevices = new JScrollPane(jlDevices);
   private JPanel jpAgent = new JPanel();
   private JPanel jpButtons = new JPanel();
   private JButton jbOk = new JButton("OK");

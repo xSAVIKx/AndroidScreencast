@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.android.ddmlib.AdbCommandRejectedException;
@@ -18,7 +19,7 @@ import com.github.xsavikx.android.screencast.api.injector.MultiLineReceiverPrint
 public class ShellCommandExecutor implements CommandExecutor {
   private static final Logger LOGGER = Logger.getLogger(ShellCommandExecutor.class);
   private static final int MAX_TIME_TO_WAIT_RESPONSE = 5;
-
+  @Autowired
   private IDevice device;
 
   @Override
@@ -34,11 +35,6 @@ public class ShellCommandExecutor implements CommandExecutor {
     }
 
     LOGGER.debug("execute(Command command=" + command + ") - end");
-  }
-
-  @Override
-  public void setDevice(IDevice device) {
-    this.device = device;
   }
 
 }

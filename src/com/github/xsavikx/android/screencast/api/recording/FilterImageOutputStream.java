@@ -28,10 +28,7 @@ public class FilterImageOutputStream extends FilterOutputStream {
    */
   @Override
   public void close() throws IOException {
-    try {
-      flush();
-    } catch (IOException ignored) {
-    }
+    flush();
     imgOut.close();
   }
 
@@ -47,7 +44,7 @@ public class FilterImageOutputStream extends FilterOutputStream {
    * @see java.io.FilterOutputStream#out
    */
   @Override
-  public void flush() throws IOException {
+  public void flush() {
     // System.err.println(this+" discarded flush");
     // imgOut.flush();
   }

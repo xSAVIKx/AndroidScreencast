@@ -14,8 +14,6 @@ public class JPanelScreen extends JPanel {
   private float coef = 1;
   private double origX;
   private double origY;
-  private boolean landscape;
-
   private Dimension size = null;
   private BufferedImage image = null;
 
@@ -30,8 +28,7 @@ public class JPanelScreen extends JPanel {
     return p2;
   }
 
-  public void handleNewImage(Dimension size, BufferedImage image, boolean landscape) {
-    this.landscape = landscape;
+  public void handleNewImage(Dimension size, BufferedImage image) {
     this.size = size;
     this.image = image;
     repaint();

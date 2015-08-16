@@ -1,64 +1,41 @@
 package com.github.xsavikx.android.screencast.api.injector;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.net.Socket;
-import java.net.UnknownHostException;
-
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-import com.android.ddmlib.AdbCommandRejectedException;
-import com.android.ddmlib.IDevice;
-import com.android.ddmlib.ShellCommandUnresponsiveException;
-import com.android.ddmlib.TimeoutException;
+import com.github.xsavikx.android.screencast.spring.config.ApplicationContextProvider;
 
+@Service
 public class Injector {
-  /**
-   * Logger for this class
-   */
-  private static final Logger logger = Logger.getLogger(Injector.class);
-  private static int PORT = 2436;
-  IDevice device;
-
+  private static final Logger LOGGER = Logger.getLogger(Injector.class);
+  @Autowired
   public ScreenCaptureThread screencapture;
 
-  public Injector(IDevice d) {
-    this.device = d;
-    this.screencapture = new ScreenCaptureThread(device);
-  }
-
-  public Injector(IDevice d, int port) {
-    this(d);
-    Injector.PORT = port;
-  }
-
   public void restart() {
+    LOGGER.debug("restart() - start");
+
     close();
-    screencapture = new ScreenCaptureThread(device);
+    screencapture = ApplicationContextProvider.getApplicationContext().getBean(ScreenCaptureThread.class);
     start();
+
+    LOGGER.debug("restart() - end");
   }
 
   public void close() {
-    if (logger.isDebugEnabled()) {
-      logger.debug("close() - start");
-    }
+    LOGGER.debug("close() - start");
 
     screencapture.interrupt();
 
-    if (logger.isDebugEnabled()) {
-      logger.debug("close() - end");
-    }
+    LOGGER.debug("close() - end");
   }
 
   public void start() {
-    if (logger.isDebugEnabled()) {
-      logger.debug("start() - start");
-    }
+    LOGGER.debug("start() - start");
 
     screencapture.start();
 
-    if (logger.isDebugEnabled()) {
-      logger.debug("start() - end");
-    }
+    LOGGER.debug("start() - end");
   }
+
 }

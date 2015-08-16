@@ -7,7 +7,7 @@ import com.android.ddmlib.IShellOutputReceiver;
 
 public class OutputStreamShellOutputReceiver implements IShellOutputReceiver {
 
-  OutputStream os;
+  private OutputStream os;
 
   public OutputStreamShellOutputReceiver(OutputStream os) {
     this.os = os;

@@ -1,6 +1,6 @@
 package com.github.xsavikx.android.screencast.api.injector;
 
-public class ConstEvtMotion {
+public final class ConstEvtMotion {
   // Field descriptor #10 I
   public static final int ACTION_DOWN = 0;
 

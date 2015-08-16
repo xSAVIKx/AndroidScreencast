@@ -2,10 +2,12 @@ package com.github.xsavikx.android.screencast.api.file;
 
 import java.io.File;
 
+import org.springframework.stereotype.Component;
+
 import com.github.xsavikx.android.screencast.api.AndroidDeviceImpl;
 
+@Component
 public class FileInfo {
-
   public AndroidDeviceImpl device;
   public String path;
   public String attribs;

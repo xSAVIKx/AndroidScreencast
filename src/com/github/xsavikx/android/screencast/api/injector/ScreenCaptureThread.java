@@ -1,5 +1,7 @@
 package com.github.xsavikx.android.screencast.api.injector;
 
+import org.apache.log4j.Logger;
+
 import java.awt.Dimension;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -8,13 +10,18 @@ import java.util.concurrent.TimeUnit;
 
 import javax.swing.SwingUtilities;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import com.android.ddmlib.AdbCommandRejectedException;
 import com.android.ddmlib.IDevice;
 import com.android.ddmlib.RawImage;
 import com.android.ddmlib.TimeoutException;
 import com.github.xsavikx.android.screencast.api.recording.QuickTimeOutputStream;
 
+@Component
 public class ScreenCaptureThread extends Thread {
+  private static final Logger LOGGER = Logger.getLogger(ScreenCaptureThread.class);
 
   public interface ScreenCaptureListener {
     public void handleNewImage(Dimension size, BufferedImage image, boolean landscape);
@@ -22,20 +29,21 @@ public class ScreenCaptureThread extends Thread {
 
   private BufferedImage image;
   private Dimension size;
+  @Autowired
   private IDevice device;
   private QuickTimeOutputStream qos = null;
   private boolean landscape = false;
 
   private ScreenCaptureListener listener = null;
 
-  public ScreenCaptureThread(IDevice device) {
+  public ScreenCaptureThread() {
     super("Screen capture");
-    this.device = device;
     image = null;
     size = new Dimension();
   }
 
   public void display(RawImage rawImage) {
+
     int width2 = landscape ? rawImage.height : rawImage.width;
     int height2 = landscape ? rawImage.width : rawImage.height;
     if (image == null) {
@@ -63,6 +71,8 @@ public class ScreenCaptureThread extends Thread {
       if (qos != null)
         qos.writeFrame(image, 10);
     } catch (IOException e) {
+      LOGGER.error("display(RawImage)", e);
+
       throw new RuntimeException(e);
     }
 
@@ -71,19 +81,24 @@ public class ScreenCaptureThread extends Thread {
 
         @Override
         public void run() {
+
           listener.handleNewImage(size, image, landscape);
           // jp.handleNewImage(size, image, landscape);
+
         }
       });
     }
+
   }
 
   private boolean fetchImage() throws IOException {
+
     if (device == null) {
       // device not ready
       try {
         Thread.sleep(100);
       } catch (InterruptedException e) {
+        LOGGER.error("fetchImage()", e);
         return false;
       }
       return true;
@@ -95,21 +110,21 @@ public class ScreenCaptureThread extends Thread {
       try {
         rawImage = device.getScreenshot(5, TimeUnit.SECONDS);
       } catch (TimeoutException | AdbCommandRejectedException e) {
-        e.printStackTrace();
+        LOGGER.error("fetchImage()", e);
       }
     }
     if (rawImage != null) {
       // System.out.println("screenshot through ADB ok");
       display(rawImage);
     } else {
-      System.out.println("failed getting screenshot through ADB ok");
+      LOGGER.info("failed getting screenshot through ADB ok");
     }
     try {
       Thread.sleep(10);
     } catch (InterruptedException e) {
+      LOGGER.error("fetchImage()", e);
       return false;
     }
-
     return true;
   }
 
@@ -129,9 +144,12 @@ public class ScreenCaptureThread extends Thread {
         if (!ok)
           break;
       } catch (java.nio.channels.ClosedByInterruptException ciex) {
+        LOGGER.error("run()", ciex);
+
         break;
       } catch (IOException e) {
-        System.err.println((new StringBuilder()).append("Exception fetching image: ").append(e.toString()).toString());
+        LOGGER.error("run()", e);
+        LOGGER.error((new StringBuilder()).append("Exception fetching image: ").append(e.toString()).toString());
       }
 
     } while (true);
@@ -142,29 +160,45 @@ public class ScreenCaptureThread extends Thread {
   }
 
   public void startRecording(File f) {
+    LOGGER.debug("startRecording(File f=" + f + ") - start");
+
     try {
       if (!f.getName().toLowerCase().endsWith(".mov"))
         f = new File(f.getAbsolutePath() + ".mov");
       qos = new QuickTimeOutputStream(f, QuickTimeOutputStream.VideoFormat.JPG);
     } catch (IOException e) {
+      LOGGER.error("startRecording(File)", e);
+
       throw new RuntimeException(e);
     }
     qos.setVideoCompressionQuality(1f);
     qos.setTimeScale(30); // 30 fps
+
+    LOGGER.debug("startRecording(File f=" + f + ") - end");
   }
 
   public void stopRecording() {
+    LOGGER.debug("stopRecording() - start");
+
     try {
       QuickTimeOutputStream o = qos;
       qos = null;
       o.close();
     } catch (IOException e) {
+      LOGGER.error("stopRecording()", e);
+
       throw new RuntimeException(e);
     }
+
+    LOGGER.debug("stopRecording() - end");
   }
 
   public void toogleOrientation() {
+    LOGGER.debug("toogleOrientation() - start");
+
     landscape = !landscape;
+
+    LOGGER.debug("toogleOrientation() - end");
   }
 
 }

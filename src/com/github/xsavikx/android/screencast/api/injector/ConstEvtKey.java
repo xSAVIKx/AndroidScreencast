@@ -1,6 +1,6 @@
 package com.github.xsavikx.android.screencast.api.injector;
 
-public class ConstEvtKey {
+public final class ConstEvtKey {
 
   // Field descriptor #13 I
   public static final int KEYCODE_UNKNOWN = 0;

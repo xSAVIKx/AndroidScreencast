@@ -19,17 +19,17 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.android.ddmlib.IDevice;
-import com.github.xsavikx.android.screencast.api.AndroidDeviceImpl;
-import com.github.xsavikx.android.screencast.api.command.executor.CommandExecutor;
+import com.github.xsavikx.android.screencast.api.AndroidDevice;
 import com.github.xsavikx.android.screencast.api.injector.ConstEvtKey;
 import com.github.xsavikx.android.screencast.api.injector.Injector;
 import com.github.xsavikx.android.screencast.api.injector.ScreenCaptureThread.ScreenCaptureListener;
+import com.github.xsavikx.android.screencast.spring.config.ApplicationContextProvider;
 import com.github.xsavikx.android.screencast.ui.explorer.JFrameExplorer;
 import com.github.xsavikx.android.screencast.ui.interaction.KeyEventDispatcherFactory;
 import com.github.xsavikx.android.screencast.ui.interaction.KeyboardActionListenerFactory;
 import com.github.xsavikx.android.screencast.ui.interaction.MouseActionAdapterFactory;
 
+@Component
 public class JFrameMain extends JFrame {
 
   private static final long serialVersionUID = -2085909236767692371L;
@@ -50,13 +50,13 @@ public class JFrameMain extends JFrame {
   private JButton jbKbPhoneOn = new JButton("Call");
 
   private JButton jbKbPhoneOff = new JButton("End call");
-  private IDevice device;
-  private CommandExecutor commandExecutor;
+  @Autowired
+  private AndroidDevice androidDevice;
+  @Autowired
   private Injector injector;
   private Dimension oldImageDimension = null;
 
-  public JFrameMain(IDevice device) {
-    this.device = device;
+  public JFrameMain() {
     initialize();
     KeyboardFocusManager.getCurrentKeyboardFocusManager()
         .addKeyEventDispatcher(KeyEventDispatcherFactory.getKeyEventDispatcher(this));
@@ -125,8 +125,9 @@ public class JFrameMain extends JFrame {
 
       @Override
       public void actionPerformed(ActionEvent arg0) {
-        JFrameExplorer jf = new JFrameExplorer(device);
+        JFrameExplorer jf = ApplicationContextProvider.getApplicationContext().getBean(JFrameExplorer.class);
         jf.setIconImage(getIconImage());
+        jf.launch();
         jf.setVisible(true);
       }
     });
@@ -142,15 +143,14 @@ public class JFrameMain extends JFrame {
         if (!jdUrl.isResult())
           return;
         String url = jdUrl.getJtfUrl().getText();
-        new AndroidDeviceImpl(device).openUrl(url);
+        androidDevice.openUrl(url);
       }
     });
     jtb.add(jbOpenUrl);
 
   }
 
-  public void setInjector(Injector injector) {
-    this.injector = injector;
+  public void launchInjector() {
     injector.screencapture.setListener(new ScreenCaptureListener() {
 
       @Override
@@ -160,9 +160,10 @@ public class JFrameMain extends JFrame {
           JFrameMain.this.pack();
           oldImageDimension = size;
         }
-        jp.handleNewImage(size, image, landscape);
+        jp.handleNewImage(size, image);
       }
     });
+    injector.start();
   }
 
   private void startRecording() {
@@ -177,14 +178,6 @@ public class JFrameMain extends JFrame {
 
   private void stopRecording() {
     injector.screencapture.stopRecording();
-  }
-
-  public CommandExecutor getCommandExecutor() {
-    return commandExecutor;
-  }
-
-  public void setCommandExecutor(CommandExecutor commandExecutor) {
-    this.commandExecutor = commandExecutor;
   }
 
 }

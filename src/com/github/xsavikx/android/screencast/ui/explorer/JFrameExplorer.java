@@ -22,10 +22,13 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 
-import com.android.ddmlib.IDevice;
-import com.github.xsavikx.android.screencast.api.AndroidDeviceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import com.github.xsavikx.android.screencast.api.AndroidDevice;
 import com.github.xsavikx.android.screencast.api.file.FileInfo;
 
+@Component
 public class JFrameExplorer extends JFrame {
 
   private class FolderTreeNode extends LazyMutableTreeNode {
@@ -42,7 +45,7 @@ public class JFrameExplorer extends JFrame {
     public void initChildren() {
       List<FileInfo> fileInfos = cache.get(path);
       if (fileInfos == null)
-        fileInfos = new AndroidDeviceImpl(device).list(path);
+        fileInfos = androidDevice.list(path);
       for (FileInfo fi : fileInfos) {
         if (fi.directory)
           add(new FolderTreeNode(fi.name, path + fi.name + "/"));
@@ -58,25 +61,26 @@ public class JFrameExplorer extends JFrame {
 
   }
 
-  /**
-   * 
-   */
   private static final long serialVersionUID = -5209265873286028854L;
-  JTree jt;
-  JSplitPane jSplitPane;
-  IDevice device;
+  private JTree jt;
+  private JSplitPane jSplitPane;
+  @Autowired
+  private AndroidDevice androidDevice;
 
-  JList<Object> jListFichiers;
+  private JList<Object> jListFichiers;
 
-  Map<String, List<FileInfo>> cache = new LinkedHashMap<String, List<FileInfo>>();
+  private Map<String, List<FileInfo>> cache = new LinkedHashMap<String, List<FileInfo>>();
 
-  public JFrameExplorer(IDevice device) {
-    this.device = device;
+  public JFrameExplorer() {
 
     setTitle("Explorer");
     setLayout(new BorderLayout());
 
     jt = new JTree(new DefaultMutableTreeNode("Test"));
+  }
+
+  public void launch() {
+
     jt.setModel(new DefaultTreeModel(new FolderTreeNode("Device", "/")));
     jt.setRootVisible(true);
     jt.addTreeSelectionListener(new TreeSelectionListener() {
@@ -112,7 +116,6 @@ public class JFrameExplorer extends JFrame {
           int index = jListFichiers.locationToIndex(e.getPoint());
           ListModel<Object> dlm = jListFichiers.getModel();
           FileInfo item = (FileInfo) dlm.getElementAt(index);
-          ;
           launchFile(item);
         }
       }
@@ -123,7 +126,7 @@ public class JFrameExplorer extends JFrame {
   private void displayFolder(String path) {
     List<FileInfo> fileInfos = cache.get(path);
     if (fileInfos == null)
-      fileInfos = new AndroidDeviceImpl(device).list(path);
+      fileInfos = androidDevice.list(path);
 
     List<FileInfo> files = new Vector<FileInfo>();
     for (FileInfo fi2 : fileInfos) {
