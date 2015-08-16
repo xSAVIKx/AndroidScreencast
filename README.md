@@ -12,3 +12,6 @@ Features:
   - Write messages using PC keyboard
   - Support for landscape mode
   - Browse your phone files on PC
+
+
+[Small wiki of project](https://github.com/xSAVIKx/AndroidScreencast/wiki)
