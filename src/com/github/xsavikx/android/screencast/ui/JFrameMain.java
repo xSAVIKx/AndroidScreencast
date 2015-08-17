@@ -20,8 +20,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.github.xsavikx.android.screencast.api.AndroidDevice;
-import com.github.xsavikx.android.screencast.api.injector.ConstEvtKey;
 import com.github.xsavikx.android.screencast.api.injector.Injector;
+import com.github.xsavikx.android.screencast.api.injector.InputKeyEvent;
 import com.github.xsavikx.android.screencast.api.injector.ScreenCaptureThread.ScreenCaptureListener;
 import com.github.xsavikx.android.screencast.spring.config.ApplicationContextProvider;
 import com.github.xsavikx.android.screencast.ui.explorer.JFrameExplorer;
@@ -75,12 +75,12 @@ public class JFrameMain extends JFrame {
     jbKbPhoneOff.setFocusable(false);
     jbRestartClient.setFocusable(false);
 
-    jbKbHome.addActionListener(KeyboardActionListenerFactory.getInstance(ConstEvtKey.KEYCODE_HOME));
-    jbKbMenu.addActionListener(KeyboardActionListenerFactory.getInstance(ConstEvtKey.KEYCODE_MENU));
-    jbKbBack.addActionListener(KeyboardActionListenerFactory.getInstance(ConstEvtKey.KEYCODE_BACK));
-    jbKbSearch.addActionListener(KeyboardActionListenerFactory.getInstance(ConstEvtKey.KEYCODE_SEARCH));
-    jbKbPhoneOn.addActionListener(KeyboardActionListenerFactory.getInstance(ConstEvtKey.KEYCODE_CALL));
-    jbKbPhoneOff.addActionListener(KeyboardActionListenerFactory.getInstance(ConstEvtKey.KEYCODE_ENDCALL));
+    jbKbHome.addActionListener(KeyboardActionListenerFactory.getInstance(InputKeyEvent.KEYCODE_HOME));
+    jbKbMenu.addActionListener(KeyboardActionListenerFactory.getInstance(InputKeyEvent.KEYCODE_MENU));
+    jbKbBack.addActionListener(KeyboardActionListenerFactory.getInstance(InputKeyEvent.KEYCODE_BACK));
+    jbKbSearch.addActionListener(KeyboardActionListenerFactory.getInstance(InputKeyEvent.KEYCODE_SEARCH));
+    jbKbPhoneOn.addActionListener(KeyboardActionListenerFactory.getInstance(InputKeyEvent.KEYCODE_CALL));
+    jbKbPhoneOff.addActionListener(KeyboardActionListenerFactory.getInstance(InputKeyEvent.KEYCODE_ENDCALL));
 
     jtbHardkeys.add(jbKbHome);
     jtbHardkeys.add(jbKbMenu);
