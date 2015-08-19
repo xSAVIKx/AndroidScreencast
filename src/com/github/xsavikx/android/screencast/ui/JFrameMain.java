@@ -17,12 +17,14 @@ import javax.swing.JToolBar;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import com.github.xsavikx.android.screencast.api.AndroidDevice;
 import com.github.xsavikx.android.screencast.api.injector.Injector;
 import com.github.xsavikx.android.screencast.api.injector.InputKeyEvent;
 import com.github.xsavikx.android.screencast.api.injector.ScreenCaptureThread.ScreenCaptureListener;
+import com.github.xsavikx.android.screencast.constant.Constants;
 import com.github.xsavikx.android.screencast.spring.config.ApplicationContextProvider;
 import com.github.xsavikx.android.screencast.ui.explorer.JFrameExplorer;
 import com.github.xsavikx.android.screencast.ui.interaction.KeyEventDispatcherFactory;
@@ -50,19 +52,32 @@ public class JFrameMain extends JFrame {
   private JButton jbKbPhoneOn = new JButton("Call");
 
   private JButton jbKbPhoneOff = new JButton("End call");
-  @Autowired
   private AndroidDevice androidDevice;
-  @Autowired
   private Injector injector;
+  private Environment env;
   private Dimension oldImageDimension = null;
 
-  public JFrameMain() {
+  @Autowired
+  public JFrameMain(Environment env, Injector injector, AndroidDevice androidDevice) {
+    this.injector = injector;
+    this.env = env;
+    this.androidDevice = androidDevice;
     initialize();
     KeyboardFocusManager.getCurrentKeyboardFocusManager()
         .addKeyEventDispatcher(KeyEventDispatcherFactory.getKeyEventDispatcher(this));
   }
 
+  private void setPrefferedWindowSize() {
+    if (env.containsProperty(Constants.DEFAULT_WINDOW_HEIGHT) && env.containsProperty(Constants.DEFAULT_WINDOW_WIDTH)) {
+      int height = env.getProperty(Constants.DEFAULT_WINDOW_HEIGHT, Integer.class).intValue();
+      int width = env.getProperty(Constants.DEFAULT_WINDOW_WIDTH, Integer.class).intValue();
+      getContentPane().setPreferredSize(new Dimension(width, height));
+    }
+    pack();
+  }
+
   public void initialize() {
+
     jtb.setFocusable(false);
     jbExplorer.setFocusable(false);
     jtbRecord.setFocusable(false);
@@ -91,7 +106,7 @@ public class JFrameMain extends JFrame {
 
     // setIconImage(Toolkit.getDefaultToolkit().getImage(
     // getClass().getResource("icon.png")));
-    setDefaultCloseOperation(3);
+    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     setLayout(new BorderLayout());
     add(jtb, BorderLayout.NORTH);
     add(jtbHardkeys, BorderLayout.SOUTH);
@@ -100,7 +115,7 @@ public class JFrameMain extends JFrame {
     jsp.setPreferredSize(new Dimension(100, 100));
     pack();
     setLocationRelativeTo(null);
-
+    setPrefferedWindowSize();
     MouseAdapter ma = MouseActionAdapterFactory.getInstance(jp);
 
     jp.addMouseMotionListener(ma);
