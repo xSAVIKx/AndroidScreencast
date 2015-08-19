@@ -1,6 +1,8 @@
 AndroidScreencast
 =================
-[![Build Status](https://drone.io/github.com/xSAVIKx/AndroidScreencast/status.png)](https://drone.io/github.com/xSAVIKx/AndroidScreencast/latest)
+[![Build Status DroneIO](https://drone.io/github.com/xSAVIKx/AndroidScreencast/status.png)](https://drone.io/github.com/xSAVIKx/AndroidScreencast/latest)
+
+[![Build Status Travis-CI](https://travis-ci.org/xSAVIKx/AndroidScreencast.svg?branch=master)](https://travis-ci.org/xSAVIKx/AndroidScreencast)
 
 AndroidScreencast - View and control your android device on PC.
 
