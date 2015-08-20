@@ -26,7 +26,7 @@ public class ApplicationConfiguration {
     if (env.containsProperty(Constants.ADB_PATH_PROPERTY)) {
       return AndroidDebugBridge.createBridge(env.getProperty(Constants.ADB_PATH_PROPERTY), false);
     }
-    return AndroidDebugBridge.createBridge();
+    return AndroidDebugBridge.createBridge("adb", false);
   }
 
   @Bean
