@@ -51,7 +51,8 @@ public class JFrameMain extends JFrame {
 
   private JButton jbKbPhoneOn = new JButton("Call");
 
-  private JButton jbKbPhoneOff = new JButton("End call");
+  private JButton jbKbPhoneOff = new JButton("End_Call");
+  private JButton jbKbPower = new JButton("Power");
   private AndroidDevice androidDevice;
   private Injector injector;
   private Environment env;
@@ -89,6 +90,7 @@ public class JFrameMain extends JFrame {
     jbKbPhoneOn.setFocusable(false);
     jbKbPhoneOff.setFocusable(false);
     jbRestartClient.setFocusable(false);
+    jbKbPower.setFocusable(false);
 
     jbKbHome.addActionListener(KeyboardActionListenerFactory.getInstance(InputKeyEvent.KEYCODE_HOME));
     jbKbMenu.addActionListener(KeyboardActionListenerFactory.getInstance(InputKeyEvent.KEYCODE_MENU));
@@ -96,6 +98,7 @@ public class JFrameMain extends JFrame {
     jbKbSearch.addActionListener(KeyboardActionListenerFactory.getInstance(InputKeyEvent.KEYCODE_SEARCH));
     jbKbPhoneOn.addActionListener(KeyboardActionListenerFactory.getInstance(InputKeyEvent.KEYCODE_CALL));
     jbKbPhoneOff.addActionListener(KeyboardActionListenerFactory.getInstance(InputKeyEvent.KEYCODE_ENDCALL));
+    jbKbPower.addActionListener(KeyboardActionListenerFactory.getInstance(InputKeyEvent.KEYCODE_POWER));
 
     jtbHardkeys.add(jbKbHome);
     jtbHardkeys.add(jbKbMenu);
@@ -103,6 +106,7 @@ public class JFrameMain extends JFrame {
     jtbHardkeys.add(jbKbSearch);
     jtbHardkeys.add(jbKbPhoneOn);
     jtbHardkeys.add(jbKbPhoneOff);
+    jtbHardkeys.add(jbKbPower);
 
     // setIconImage(Toolkit.getDefaultToolkit().getImage(
     // getClass().getResource("icon.png")));
@@ -148,8 +152,6 @@ public class JFrameMain extends JFrame {
     });
     jtb.add(jbExplorer);
 
-    jtb.add(jbRestartClient);
-
     jbOpenUrl.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent arg0) {
@@ -162,6 +164,8 @@ public class JFrameMain extends JFrame {
       }
     });
     jtb.add(jbOpenUrl);
+
+    jtb.add(jbRestartClient);
 
   }
 
