@@ -40,10 +40,10 @@ public class JFrameMain extends JFrame {
   private JToolBar jtbHardkeys = new JToolBar();
   private JToggleButton jtbRecord = new JToggleButton("Record");
 
-  private JButton jbOpenUrl = new JButton("Open Url");
+  private JButton jbOpenUrl = new JButton("Open_Url");
   private JScrollPane jsp;
   private JButton jbExplorer = new JButton("Explore");
-  private JButton jbRestartClient = new JButton("Restart client");
+  private JButton jbRestartClient = new JButton("Restart_Client");
   private JButton jbKbHome = new JButton("Home");
   private JButton jbKbMenu = new JButton("Menu");
   private JButton jbKbBack = new JButton("Back");
@@ -51,7 +51,8 @@ public class JFrameMain extends JFrame {
 
   private JButton jbKbPhoneOn = new JButton("Call");
 
-  private JButton jbKbPhoneOff = new JButton("End call");
+  private JButton jbKbPhoneOff = new JButton("End_Call");
+  private JButton jbKbPower = new JButton("Power");
   private AndroidDevice androidDevice;
   private Injector injector;
   private Environment env;
@@ -65,6 +66,17 @@ public class JFrameMain extends JFrame {
     initialize();
     KeyboardFocusManager.getCurrentKeyboardFocusManager()
         .addKeyEventDispatcher(KeyEventDispatcherFactory.getKeyEventDispatcher(this));
+  }
+
+  private boolean useCustomWindowSize() {
+    if (env.getProperty(Constants.CUSTOM_WINDOW_SIZE) != null &&
+            (env.getProperty(Constants.CUSTOM_WINDOW_SIZE)).equals("true") == true) {
+	  boolean useCustomWindowSize = env.getProperty(Constants.CUSTOM_WINDOW_SIZE, Boolean.class);
+      return useCustomWindowSize;
+	} else {
+      boolean useCustomWindowSize = false;
+      return useCustomWindowSize;
+	}
   }
 
   private void setPrefferedWindowSize() {
@@ -89,6 +101,7 @@ public class JFrameMain extends JFrame {
     jbKbPhoneOn.setFocusable(false);
     jbKbPhoneOff.setFocusable(false);
     jbRestartClient.setFocusable(false);
+    jbKbPower.setFocusable(false);
 
     jbKbHome.addActionListener(KeyboardActionListenerFactory.getInstance(InputKeyEvent.KEYCODE_HOME));
     jbKbMenu.addActionListener(KeyboardActionListenerFactory.getInstance(InputKeyEvent.KEYCODE_MENU));
@@ -96,6 +109,7 @@ public class JFrameMain extends JFrame {
     jbKbSearch.addActionListener(KeyboardActionListenerFactory.getInstance(InputKeyEvent.KEYCODE_SEARCH));
     jbKbPhoneOn.addActionListener(KeyboardActionListenerFactory.getInstance(InputKeyEvent.KEYCODE_CALL));
     jbKbPhoneOff.addActionListener(KeyboardActionListenerFactory.getInstance(InputKeyEvent.KEYCODE_ENDCALL));
+    jbKbPower.addActionListener(KeyboardActionListenerFactory.getInstance(InputKeyEvent.KEYCODE_POWER));
 
     jtbHardkeys.add(jbKbHome);
     jtbHardkeys.add(jbKbMenu);
@@ -103,6 +117,7 @@ public class JFrameMain extends JFrame {
     jtbHardkeys.add(jbKbSearch);
     jtbHardkeys.add(jbKbPhoneOn);
     jtbHardkeys.add(jbKbPhoneOff);
+    jtbHardkeys.add(jbKbPower);
 
     // setIconImage(Toolkit.getDefaultToolkit().getImage(
     // getClass().getResource("icon.png")));
@@ -115,7 +130,7 @@ public class JFrameMain extends JFrame {
     jsp.setPreferredSize(new Dimension(100, 100));
     pack();
     setLocationRelativeTo(null);
-    setPrefferedWindowSize();
+
     MouseAdapter ma = MouseActionAdapterFactory.getInstance(jp);
 
     jp.addMouseMotionListener(ma);
@@ -148,8 +163,6 @@ public class JFrameMain extends JFrame {
     });
     jtb.add(jbExplorer);
 
-    jtb.add(jbRestartClient);
-
     jbOpenUrl.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent arg0) {
@@ -163,6 +176,8 @@ public class JFrameMain extends JFrame {
     });
     jtb.add(jbOpenUrl);
 
+    jtb.add(jbRestartClient);
+
   }
 
   public void launchInjector() {
@@ -171,7 +186,11 @@ public class JFrameMain extends JFrame {
       @Override
       public void handleNewImage(Dimension size, BufferedImage image, boolean landscape) {
         if (oldImageDimension == null || !size.equals(oldImageDimension)) {
-          jsp.setPreferredSize(size);
+          if (useCustomWindowSize()) {
+            setPrefferedWindowSize();
+          } else {
+            jsp.setPreferredSize(size);
+          }
           JFrameMain.this.pack();
           oldImageDimension = size;
         }
