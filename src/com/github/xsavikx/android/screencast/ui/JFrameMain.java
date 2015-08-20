@@ -40,10 +40,10 @@ public class JFrameMain extends JFrame {
   private JToolBar jtbHardkeys = new JToolBar();
   private JToggleButton jtbRecord = new JToggleButton("Record");
 
-  private JButton jbOpenUrl = new JButton("Open Url");
+  private JButton jbOpenUrl = new JButton("Open_Url");
   private JScrollPane jsp;
   private JButton jbExplorer = new JButton("Explore");
-  private JButton jbRestartClient = new JButton("Restart client");
+  private JButton jbRestartClient = new JButton("Restart_Client");
   private JButton jbKbHome = new JButton("Home");
   private JButton jbKbMenu = new JButton("Menu");
   private JButton jbKbBack = new JButton("Back");
@@ -66,6 +66,17 @@ public class JFrameMain extends JFrame {
     initialize();
     KeyboardFocusManager.getCurrentKeyboardFocusManager()
         .addKeyEventDispatcher(KeyEventDispatcherFactory.getKeyEventDispatcher(this));
+  }
+
+  private boolean useCustomWindowSize() {
+    if (env.getProperty(Constants.CUSTOM_WINDOW_SIZE) != null &&
+            (env.getProperty(Constants.CUSTOM_WINDOW_SIZE)).equals("true") == true) {
+	  boolean useCustomWindowSize = env.getProperty(Constants.CUSTOM_WINDOW_SIZE, Boolean.class);
+      return useCustomWindowSize;
+	} else {
+      boolean useCustomWindowSize = false;
+      return useCustomWindowSize;
+	}
   }
 
   private void setPrefferedWindowSize() {
@@ -119,7 +130,7 @@ public class JFrameMain extends JFrame {
     jsp.setPreferredSize(new Dimension(100, 100));
     pack();
     setLocationRelativeTo(null);
-    setPrefferedWindowSize();
+
     MouseAdapter ma = MouseActionAdapterFactory.getInstance(jp);
 
     jp.addMouseMotionListener(ma);
@@ -175,7 +186,11 @@ public class JFrameMain extends JFrame {
       @Override
       public void handleNewImage(Dimension size, BufferedImage image, boolean landscape) {
         if (oldImageDimension == null || !size.equals(oldImageDimension)) {
-          jsp.setPreferredSize(size);
+          if (useCustomWindowSize()) {
+            setPrefferedWindowSize();
+          } else {
+            jsp.setPreferredSize(size);
+          }
           JFrameMain.this.pack();
           oldImageDimension = size;
         }
