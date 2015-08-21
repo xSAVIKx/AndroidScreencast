@@ -14,7 +14,6 @@ import javax.swing.JDialog;
 import javax.swing.JFormattedTextField;
 import javax.swing.JList;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
 import com.android.ddmlib.IDevice;

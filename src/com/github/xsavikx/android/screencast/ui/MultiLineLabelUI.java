@@ -23,12 +23,9 @@ public class MultiLineLabelUI extends BasicLabelUI {
   }
 
   /**
-   * Compute and return the location of the icons origin, the location of origin
-   * of the text baseline, and a possibly clipped version of the compound labels
-   * string. Locations are computed relative to the viewR rectangle. This
-   * layoutCompoundLabel() does not know how to handle LEADING/TRAILING values
-   * in horizontalTextPosition (they will default to RIGHT) and in
-   * horizontalAlignment (they will default to CENTER). Use the other version of
+   * Compute and return the location of the icons origin, the location of origin of the text baseline, and a possibly clipped version of the compound
+   * labels string. Locations are computed relative to the viewR rectangle. This layoutCompoundLabel() does not know how to handle LEADING/TRAILING
+   * values in horizontalTextPosition (they will default to RIGHT) and in horizontalAlignment (they will default to CENTER). Use the other version of
    * layoutCompoundLabel() instead.
    */
   public static String layoutCompoundLabel(FontMetrics fm, String[] text, Icon icon, int verticalAlignment,
@@ -46,8 +43,7 @@ public class MultiLineLabelUI extends BasicLabelUI {
     }
 
     /*
-     * Initialize the text bounds rectangle textR. If a null or and empty String
-     * was specified we substitute "" here and use 0,0,0,0 for textR.
+     * Initialize the text bounds rectangle textR. If a null or and empty String was specified we substitute "" here and use 0,0,0,0 for textR.
      */
 
     // Fix for textIsEmpty sent by Paulo Santos
@@ -64,8 +60,7 @@ public class MultiLineLabelUI extends BasicLabelUI {
     }
 
     /*
-     * Unless both text and icon are non-null, we effectively ignore the value
-     * of textIconGap. The code that follows uses the value of gap instead of
+     * Unless both text and icon are non-null, we effectively ignore the value of textIconGap. The code that follows uses the value of gap instead of
      * textIconGap.
      */
 
@@ -74,8 +69,7 @@ public class MultiLineLabelUI extends BasicLabelUI {
     if (!textIsEmpty) {
 
       /*
-       * If the label text string is too wide to fit within the available space
-       * "..." and as many characters as will fit will be displayed instead.
+       * If the label text string is too wide to fit within the available space "..." and as many characters as will fit will be displayed instead.
        */
 
       int availTextWidth;
@@ -102,8 +96,7 @@ public class MultiLineLabelUI extends BasicLabelUI {
     }
 
     /*
-     * Compute textR.x,y given the verticalTextPosition and
-     * horizontalTextPosition properties
+     * Compute textR.x,y given the verticalTextPosition and horizontalTextPosition properties
      */
 
     if (verticalTextPosition == TOP) {
@@ -131,11 +124,9 @@ public class MultiLineLabelUI extends BasicLabelUI {
     }
 
     /*
-     * labelR is the rectangle that contains iconR and textR. Move it to its
-     * proper position given the labelAlignment properties.
+     * labelR is the rectangle that contains iconR and textR. Move it to its proper position given the labelAlignment properties.
      * 
-     * To avoid actually allocating a Rectangle, Rectangle.union has been
-     * inlined below.
+     * To avoid actually allocating a Rectangle, Rectangle.union has been inlined below.
      */
     int labelR_x = Math.min(iconR.x, textR.x);
     int labelR_width = Math.max(iconR.x + iconR.width, textR.x + textR.width) - labelR_x;
@@ -174,11 +165,9 @@ public class MultiLineLabelUI extends BasicLabelUI {
   }
 
   /**
-   * Compute and return the location of the icons origin, the location of origin
-   * of the text baseline, and a possibly clipped version of the compound labels
-   * string. Locations are computed relative to the viewR rectangle. The
-   * JComponents orientation (LEADING/TRAILING) will also be taken into account
-   * and translated into LEFT/RIGHT values accordingly.
+   * Compute and return the location of the icons origin, the location of origin of the text baseline, and a possibly clipped version of the compound
+   * labels string. Locations are computed relative to the viewR rectangle. The JComponents orientation (LEADING/TRAILING) will also be taken into
+   * account and translated into LEFT/RIGHT values accordingly.
    */
   public static String layoutCompoundLabel(JComponent c, FontMetrics fm, String[] text, Icon icon,
       int verticalAlignment, int horizontalAlignment, int verticalTextPosition, int horizontalTextPosition,

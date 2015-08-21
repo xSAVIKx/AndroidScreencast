@@ -1,7 +1,5 @@
 package com.github.xsavikx.android.screencast.api.injector;
 
-import org.apache.log4j.Logger;
-
 import java.awt.Dimension;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -10,6 +8,7 @@ import java.util.concurrent.TimeUnit;
 
 import javax.swing.SwingUtilities;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -43,7 +42,6 @@ public class ScreenCaptureThread extends Thread {
   }
 
   public void display(RawImage rawImage) {
-
     int width2 = landscape ? rawImage.height : rawImage.width;
     int height2 = landscape ? rawImage.width : rawImage.height;
     if (image == null) {
@@ -78,13 +76,9 @@ public class ScreenCaptureThread extends Thread {
 
     if (listener != null) {
       SwingUtilities.invokeLater(new Runnable() {
-
         @Override
         public void run() {
-
           listener.handleNewImage(size, image, landscape);
-          // jp.handleNewImage(size, image, landscape);
-
         }
       });
     }
@@ -103,8 +97,6 @@ public class ScreenCaptureThread extends Thread {
       }
       return true;
     }
-
-    // System.out.println("Getting initial screenshot through ADB");
     RawImage rawImage = null;
     synchronized (device) {
       try {
@@ -114,13 +106,12 @@ public class ScreenCaptureThread extends Thread {
       }
     }
     if (rawImage != null) {
-      // System.out.println("screenshot through ADB ok");
       display(rawImage);
     } else {
       LOGGER.info("failed getting screenshot through ADB ok");
     }
     try {
-      Thread.sleep(10);
+      Thread.sleep(5);
     } catch (InterruptedException e) {
       LOGGER.error("fetchImage()", e);
       return false;

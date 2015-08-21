@@ -12,7 +12,6 @@ import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
-import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
@@ -38,12 +37,14 @@ public class JFrameMain extends JFrame {
   private JPanelScreen jp = new JPanelScreen();
   private JToolBar jtb = new JToolBar();
   private JToolBar jtbHardkeys = new JToolBar();
-  private JToggleButton jtbRecord = new JToggleButton("Record");
+  // private JToggleButton jtbRecord = new JToggleButton("Record");
 
-  private JButton jbOpenUrl = new JButton("Open Url");
+  // private JButton jbOpenUrl = new JButton("Open Url");
   private JScrollPane jsp;
   private JButton jbExplorer = new JButton("Explore");
   private JButton jbRestartClient = new JButton("Restart client");
+  private JButton jbExecuteKeyEvent = new JButton("Execute keycode");
+
   private JButton jbKbHome = new JButton("Home");
   private JButton jbKbMenu = new JButton("Menu");
   private JButton jbKbBack = new JButton("Back");
@@ -55,7 +56,7 @@ public class JFrameMain extends JFrame {
   private AndroidDevice androidDevice;
   private Injector injector;
   private Environment env;
-  private Dimension oldImageDimension = null;
+  private Dimension oldImageDimension;
 
   @Autowired
   public JFrameMain(Environment env, Injector injector, AndroidDevice androidDevice) {
@@ -80,8 +81,8 @@ public class JFrameMain extends JFrame {
 
     jtb.setFocusable(false);
     jbExplorer.setFocusable(false);
-    jtbRecord.setFocusable(false);
-    jbOpenUrl.setFocusable(false);
+    // jtbRecord.setFocusable(false);
+    // jbOpenUrl.setFocusable(false);
     jbKbHome.setFocusable(false);
     jbKbMenu.setFocusable(false);
     jbKbBack.setFocusable(false);
@@ -89,6 +90,7 @@ public class JFrameMain extends JFrame {
     jbKbPhoneOn.setFocusable(false);
     jbKbPhoneOff.setFocusable(false);
     jbRestartClient.setFocusable(false);
+    jbExecuteKeyEvent.setFocusable(false);
 
     jbKbHome.addActionListener(KeyboardActionListenerFactory.getInstance(InputKeyEvent.KEYCODE_HOME));
     jbKbMenu.addActionListener(KeyboardActionListenerFactory.getInstance(InputKeyEvent.KEYCODE_MENU));
@@ -116,25 +118,25 @@ public class JFrameMain extends JFrame {
     pack();
     setLocationRelativeTo(null);
     setPrefferedWindowSize();
-    MouseAdapter ma = MouseActionAdapterFactory.getInstance(jp);
+    MouseAdapter ma = MouseActionAdapterFactory.getInstance(jp, injector);
 
     jp.addMouseMotionListener(ma);
     jp.addMouseListener(ma);
     jp.addMouseWheelListener(ma);
 
-    jtbRecord.addActionListener(new ActionListener() {
-
-      @Override
-      public void actionPerformed(ActionEvent arg0) {
-        if (jtbRecord.isSelected()) {
-          startRecording();
-        } else {
-          stopRecording();
-        }
-      }
-
-    });
-    jtb.add(jtbRecord);
+    // jtbRecord.addActionListener(new ActionListener() {
+    //
+    // @Override
+    // public void actionPerformed(ActionEvent arg0) {
+    // if (jtbRecord.isSelected()) {
+    // startRecording();
+    // } else {
+    // stopRecording();
+    // }
+    // }
+    //
+    // });
+    // jtb.add(jtbRecord);
 
     jbExplorer.addActionListener(new ActionListener() {
 
@@ -150,18 +152,30 @@ public class JFrameMain extends JFrame {
 
     jtb.add(jbRestartClient);
 
-    jbOpenUrl.addActionListener(new ActionListener() {
+    jbExecuteKeyEvent.addActionListener(new ActionListener() {
+
       @Override
-      public void actionPerformed(ActionEvent arg0) {
-        JDialogUrl jdUrl = new JDialogUrl();
-        jdUrl.setVisible(true);
-        if (!jdUrl.isResult())
-          return;
-        String url = jdUrl.getJtfUrl().getText();
-        androidDevice.openUrl(url);
+      public void actionPerformed(ActionEvent e) {
+        JDialogExecuteKeyEvent jdExecuteKeyEvent = ApplicationContextProvider.getApplicationContext()
+            .getBean(JDialogExecuteKeyEvent.class);
+        jdExecuteKeyEvent.setVisible(true);
       }
     });
-    jtb.add(jbOpenUrl);
+
+    jtb.add(jbExecuteKeyEvent);
+
+    // jbOpenUrl.addActionListener(new ActionListener() {
+    // @Override
+    // public void actionPerformed(ActionEvent arg0) {
+    // JDialogUrl jdUrl = new JDialogUrl();
+    // jdUrl.setVisible(true);
+    // if (!jdUrl.isResult())
+    // return;
+    // String url = jdUrl.getJtfUrl().getText();
+    // androidDevice.openUrl(url);
+    // }
+    // });
+    // jtb.add(jbOpenUrl);
 
   }
 

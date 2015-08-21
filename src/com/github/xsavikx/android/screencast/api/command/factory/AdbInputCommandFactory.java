@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import com.github.xsavikx.android.screencast.api.command.KeyCommand;
 import com.github.xsavikx.android.screencast.api.command.SwipeCommand;
 import com.github.xsavikx.android.screencast.api.command.TapCommand;
+import com.github.xsavikx.android.screencast.api.injector.InputKeyEvent;
 
 @Service
 public final class AdbInputCommandFactory {
@@ -19,6 +20,14 @@ public final class AdbInputCommandFactory {
 
     KeyCommand returnKeyCommand = new KeyCommand(keyCode);
     LOGGER.debug("getKeyCommand(int keyCode=" + keyCode + ") - end");
+    return returnKeyCommand;
+  }
+
+  public static KeyCommand getKeyCommand(InputKeyEvent inputKeyEvent) {
+    LOGGER.debug("getKeyCommand(InputKeyEvent inputKeyEvent=" + inputKeyEvent + ") - start");
+
+    KeyCommand returnKeyCommand = new KeyCommand(inputKeyEvent);
+    LOGGER.debug("getKeyCommand(InputKeyEvent inputKeyEvent=" + inputKeyEvent + ") - end");
     return returnKeyCommand;
   }
 

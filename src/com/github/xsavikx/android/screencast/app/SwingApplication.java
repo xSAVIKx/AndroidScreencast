@@ -1,4 +1,5 @@
 package com.github.xsavikx.android.screencast.app;
+
 import java.io.PrintWriter;
 import java.io.StringWriter;
 

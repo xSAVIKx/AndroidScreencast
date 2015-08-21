@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>AndroidScreencast</groupId>
 	<artifactId>AndroidScreencast</artifactId>
-	<version>0.0.4S</version>
+	<version>0.0.5S</version>
 	<name>Android Screencast</name>
 	<properties>
 		<spring-version>4.2.0.RELEASE</spring-version>
@@ -50,7 +50,7 @@
 		<plugins>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.1</version>
+				<version>3.3</version>
 				<configuration>
 					<source>1.7</source>
 					<target>1.7</target>
@@ -92,4 +92,23 @@
 			<url>http://onejar-maven-plugin.googlecode.com/svn/mavenrepo</url>
 		</pluginRepository>
 	</pluginRepositories>
+	<url>http://xsavikx.github.io/AndroidScreencast</url>
+	<ciManagement>
+		<url>https://drone.io/github.com/xSAVIKx/AndroidScreencast</url>
+		<system>DroneIO</system>
+	</ciManagement>
+	<issueManagement>
+		<system>GitHub</system>
+		<url>https://github.com/xSAVIKx/AndroidScreencast/issues</url>
+	</issueManagement>
+	<description>AndroidScreencast - View and control your android device on PC.
+
+This project gives you opportunity to use your phone even with broken screen.
+
+Features:
+    No client needed
+    Support for Tap and Swipe gestures
+    Write messages using PC keyboard
+    Support for landscape mode
+    Browse your phone files on PC</description>
 </project>

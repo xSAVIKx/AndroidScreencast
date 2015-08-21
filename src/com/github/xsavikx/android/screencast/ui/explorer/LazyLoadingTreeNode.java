@@ -23,8 +23,7 @@ import com.github.xsavikx.android.screencast.ui.worker.SwingWorker;
 public abstract class LazyLoadingTreeNode extends DefaultMutableTreeNode implements TreeWillExpandListener {
 
   /**
-   * ActionMap can only store one Action for the same key, This Action Stores
-   * the list of SwingWorker to be canceled if the escape key is pressed.
+   * ActionMap can only store one Action for the same key, This Action Stores the list of SwingWorker to be canceled if the escape key is pressed.
    * 
    * @author Thierry LEFORT 3 mars 08
    *
@@ -164,8 +163,7 @@ public abstract class LazyLoadingTreeNode extends DefaultMutableTreeNode impleme
   }
 
   /**
-   * This method will be executed in a background thread. If you have to do some
-   * GUI stuff use {@link SwingUtilities#invokeLater(Runnable)}
+   * This method will be executed in a background thread. If you have to do some GUI stuff use {@link SwingUtilities#invokeLater(Runnable)}
    * 
    * @param tree
    *          the tree
@@ -174,8 +172,7 @@ public abstract class LazyLoadingTreeNode extends DefaultMutableTreeNode impleme
   public abstract MutableTreeNode[] loadChildren(JTree tree);
 
   /**
-   * If the node is cancelable an escape Action is registered in the tree's
-   * InputMap and ActionMap that will cancel the execution
+   * If the node is cancelable an escape Action is registered in the tree's InputMap and ActionMap that will cancel the execution
    * 
    * @param tree
    *          the tree
@@ -201,8 +198,7 @@ public abstract class LazyLoadingTreeNode extends DefaultMutableTreeNode impleme
   }
 
   /**
-   * Need some improvement ... This method should restore the Node initial state
-   * if the worker if canceled
+   * Need some improvement ... This method should restore the Node initial state if the worker if canceled
    */
   protected void reset() {
     DefaultTreeModel defaultModel = (DefaultTreeModel) tree.getModel();

@@ -67,8 +67,7 @@ public class QuickTimeOutputStream {
     private boolean finished;
 
     /**
-     * Creates a new CompositeAtom at the current position of the
-     * ImageOutputStream.
+     * Creates a new CompositeAtom at the current position of the ImageOutputStream.
      * 
      * @param type
      *          The type of the atom.
@@ -87,8 +86,7 @@ public class QuickTimeOutputStream {
     }
 
     /**
-     * Writes the atom and all its children to the ImageOutputStream and
-     * disposes of all resources held by the atom.
+     * Writes the atom and all its children to the ImageOutputStream and disposes of all resources held by the atom.
      * 
      * @throws java.io.IOException
      */
@@ -169,8 +167,7 @@ public class QuickTimeOutputStream {
     }
 
     /**
-     * Returns the offset of this atom to the beginning of the random access
-     * file
+     * Returns the offset of this atom to the beginning of the random access file
      * 
      * @return
      */
@@ -192,8 +189,7 @@ public class QuickTimeOutputStream {
   }
 
   /**
-   * QuickTime stores media data in samples. A sample is a single element in a
-   * sequence of time-ordered data. Samples are stored in the mdat atom.
+   * QuickTime stores media data in samples. A sample is a single element in a sequence of time-ordered data. Samples are stored in the mdat atom.
    */
   private static class Sample {
 
@@ -286,8 +282,7 @@ public class QuickTimeOutputStream {
     }
 
     /**
-     * Returns the offset of this atom to the beginning of the random access
-     * file
+     * Returns the offset of this atom to the beginning of the random access file
      * 
      * @return
      */
@@ -330,20 +325,17 @@ public class QuickTimeOutputStream {
   private Date creationTime;
 
   /**
-   * Width of the video frames. All frames must have the same width. The value
-   * -1 is used to mark unspecified width.
+   * Width of the video frames. All frames must have the same width. The value -1 is used to mark unspecified width.
    */
   private int imgWidth = -1;
   /**
-   * Height of the video frames. All frames must have the same height. The value
-   * -1 is used to mark unspecified height.
+   * Height of the video frames. All frames must have the same height. The value -1 is used to mark unspecified height.
    */
   private int imgHeight = -1;
 
   /**
-   * The timeScale of the movie. A time value that indicates the time scale for
-   * this media-that is, the number of time units that pass per second in its
-   * time coordinate system.
+   * The timeScale of the movie. A time value that indicates the time scale for this media-that is, the number of time units that pass per second in
+   * its time coordinate system.
    */
   private int timeScale = 600;
 
@@ -363,8 +355,7 @@ public class QuickTimeOutputStream {
   private WideDataAtom mdatAtom;
 
   /**
-   * Creates a new output stream with the specified image videoFormat and
-   * framerate.
+   * Creates a new output stream with the specified image videoFormat and framerate.
    * 
    * @param file
    *          the output file
@@ -428,13 +419,11 @@ public class QuickTimeOutputStream {
   }
 
   /**
-   * Finishes writing the contents of the QuickTime output stream without
-   * closing the underlying stream. Use this method when applying multiple
+   * Finishes writing the contents of the QuickTime output stream without closing the underlying stream. Use this method when applying multiple
    * filters in succession to the same output stream.
    * 
    * @exception IllegalStateException
-   *              if the dimension of the video track has not been specified or
-   *              determined yet.
+   *              if the dimension of the video track has not been specified or determined yet.
    * @exception IOException
    *              if an I/O exception has occurred
    */
@@ -470,8 +459,7 @@ public class QuickTimeOutputStream {
   }
 
   /**
-   * Sets the time scale for this media, that is, the number of time units that
-   * pass per second in its time coordinate system.
+   * Sets the time scale for this media, that is, the number of time units that pass per second in its time coordinate system.
    * <p>
    * The default value is 600.
    * 
@@ -485,12 +473,10 @@ public class QuickTimeOutputStream {
   }
 
   /**
-   * Sets the compression quality of the video track. A value of 0 stands for
-   * "high compression is important" a value of 1 for
+   * Sets the compression quality of the video track. A value of 0 stands for "high compression is important" a value of 1 for
    * "high image quality is important".
    * <p>
-   * Changing this value affects frames which are subsequently written to the
-   * QuickTimeOutputStream. Frames which have already been written are not
+   * Changing this value affects frames which are subsequently written to the QuickTimeOutputStream. Frames which have already been written are not
    * changed.
    * <p>
    * This value has no effect on videos encoded with the PNG format.
@@ -506,11 +492,9 @@ public class QuickTimeOutputStream {
   /**
    * Sets the dimension of the video track.
    * <p>
-   * You need to explicitly set the dimension, if you add all frames from files
-   * or input streams.
+   * You need to explicitly set the dimension, if you add all frames from files or input streams.
    * <p>
-   * If you add frames from buffered images, then QuickTimeOutputStream can
-   * determine the video dimension from the image width and height.
+   * If you add frames from buffered images, then QuickTimeOutputStream can determine the video dimension from the image width and height.
    * 
    * @param width
    * @param height
@@ -536,16 +520,12 @@ public class QuickTimeOutputStream {
     CompositeAtom moovAtom = new CompositeAtom("moov");
 
     /*
-     * Movie Header Atom ------------- The data contained in this atom defines
-     * characteristics of the entire QuickTime movie, such as time scale and
+     * Movie Header Atom ------------- The data contained in this atom defines characteristics of the entire QuickTime movie, such as time scale and
      * duration. It has an atom type value of 'mvhd'.
      * 
-     * typedef struct { byte version; byte[3] flags; mactimestamp creationTime;
-     * mactimestamp modificationTime; int timeScale; int duration; int
-     * preferredRate; short preferredVolume; byte[10] reserved; int[9] matrix;
-     * int previewTime; int previewDuration; int posterTime; int selectionTime;
-     * int selectionDuration; int currentTime; int nextTrackId; }
-     * movieHeaderAtom;
+     * typedef struct { byte version; byte[3] flags; mactimestamp creationTime; mactimestamp modificationTime; int timeScale; int duration; int
+     * preferredRate; short preferredVolume; byte[10] reserved; int[9] matrix; int previewTime; int previewDuration; int posterTime; int
+     * selectionTime; int selectionDuration; int currentTime; int nextTrackId; } movieHeaderAtom;
      */
     leaf = new DataAtom("mvhd");
     moovAtom.add(leaf);
@@ -635,17 +615,13 @@ public class QuickTimeOutputStream {
     moovAtom.add(trakAtom);
 
     /*
-     * Track Header Atom ----------- The track header atom specifies the
-     * characteristics of a single track within a movie. A track header atom
-     * contains a size field that specifies the number of bytes and a type field
-     * that indicates the format of the data (defined by the atom type 'tkhd').
+     * Track Header Atom ----------- The track header atom specifies the characteristics of a single track within a movie. A track header atom
+     * contains a size field that specifies the number of bytes and a type field that indicates the format of the data (defined by the atom type
+     * 'tkhd').
      * 
-     * typedef struct { byte version; byte flag0; byte flag1; byte set
-     * TrackHeaderFlags flag2; mactimestamp creationTime; mactimestamp
-     * modificationTime; int trackId; byte[4] reserved; int duration; byte[8]
-     * reserved; short layer; short alternateGroup; short volume; byte[2]
-     * reserved; int[9] matrix; int trackWidth; int trackHeight; }
-     * trackHeaderAtom;
+     * typedef struct { byte version; byte flag0; byte flag1; byte set TrackHeaderFlags flag2; mactimestamp creationTime; mactimestamp
+     * modificationTime; int trackId; byte[4] reserved; int duration; byte[8] reserved; short layer; short alternateGroup; short volume; byte[2]
+     * reserved; int[9] matrix; int trackWidth; int trackHeight; } trackHeaderAtom;
      */
     leaf = new DataAtom("tkhd");
     trakAtom.add(leaf);
@@ -751,9 +727,8 @@ public class QuickTimeOutputStream {
     trakAtom.add(mdiaAtom);
 
     /*
-     * Media Header atom ------- typedef struct { byte version; byte[3] flags;
-     * mactimestamp creationTime; mactimestamp modificationTime; int timeScale;
-     * int duration; short language; short quality; } mediaHeaderAtom;
+     * Media Header atom ------- typedef struct { byte version; byte[3] flags; mactimestamp creationTime; mactimestamp modificationTime; int
+     * timeScale; int duration; short language; short quality; } mediaHeaderAtom;
      */
     leaf = new DataAtom("mdhd");
     mdiaAtom.add(leaf);
@@ -799,8 +774,7 @@ public class QuickTimeOutputStream {
     leaf = new DataAtom("hdlr");
     mdiaAtom.add(leaf);
     /*
-     * typedef struct { byte version; byte[3] flags; magic componentType; magic
-     * componentSubtype; magic componentManufacturer; int componentFlags; int
+     * typedef struct { byte version; byte[3] flags; magic componentType; magic componentSubtype; magic componentManufacturer; int componentFlags; int
      * componentFlagsMask; cstring componentName; } handlerReferenceAtom;
      */
     d = leaf.getOutputStream();
@@ -847,8 +821,7 @@ public class QuickTimeOutputStream {
     leaf = new DataAtom("vmhd");
     minfAtom.add(leaf);
     /*
-     * typedef struct { byte version; byte flag1; byte flag2; byte set vmhdFlags
-     * flag3; short graphicsMode; ushort[3] opcolor; }
+     * typedef struct { byte version; byte flag1; byte flag2; byte set vmhdFlags flag3; short graphicsMode; ushort[3] opcolor; }
      * videoMediaInformationHeaderAtom;
      */
     d = leaf.getOutputStream();
@@ -886,8 +859,7 @@ public class QuickTimeOutputStream {
     leaf = new DataAtom("hdlr");
     minfAtom.add(leaf);
     /*
-     * typedef struct { byte version; byte[3] flags; magic componentType; magic
-     * componentSubtype; magic componentManufacturer; int componentFlags; int
+     * typedef struct { byte version; byte[3] flags; magic componentType; magic componentSubtype; magic componentManufacturer; int componentFlags; int
      * componentFlagsMask; cstring componentName; } handlerReferenceAtom;
      */
     d = leaf.getOutputStream();
@@ -935,14 +907,11 @@ public class QuickTimeOutputStream {
     leaf = new DataAtom("dref");
     dinfAtom.add(leaf);
     /*
-     * typedef struct { ubyte version; ubyte[3] flags; int numberOfEntries;
-     * dataReferenceEntry dataReference[numberOfEntries]; } dataReferenceAtom;
+     * typedef struct { ubyte version; ubyte[3] flags; int numberOfEntries; dataReferenceEntry dataReference[numberOfEntries]; } dataReferenceAtom;
      * 
-     * set { dataRefSelfReference=1 // I am not shure if this is the correct
-     * value for this flag } drefEntryFlags;
+     * set { dataRefSelfReference=1 // I am not shure if this is the correct value for this flag } drefEntryFlags;
      * 
-     * typedef struct { int size; magic type; byte version; ubyte flag1; ubyte
-     * flag2; ubyte set drefEntryFlags flag3; byte[size - 12] data; }
+     * typedef struct { int size; magic type; byte version; ubyte flag1; ubyte flag2; ubyte set drefEntryFlags flag3; byte[size - 12] data; }
      * dataReferenceEntry;
      */
     d = leaf.getOutputStream();
@@ -996,16 +965,12 @@ public class QuickTimeOutputStream {
     leaf = new DataAtom("stsd");
     stblAtom.add(leaf);
     /*
-     * typedef struct { byte version; byte[3] flags; int numberOfEntries;
-     * sampleDescriptionEntry sampleDescriptionTable[numberOfEntries]; }
+     * typedef struct { byte version; byte[3] flags; int numberOfEntries; sampleDescriptionEntry sampleDescriptionTable[numberOfEntries]; }
      * sampleDescriptionAtom;
      * 
-     * typedef struct { int size; magic type; byte[6] reserved; // six bytes
-     * that must be zero short dataReferenceIndex; // A 16-bit integer that
-     * contains the index of the data reference to use to retrieve data
-     * associated with samples that use this sample description. Data references
-     * are stored in data reference atoms. byte[size - 16] data; }
-     * sampleDescriptionEntry;
+     * typedef struct { int size; magic type; byte[6] reserved; // six bytes that must be zero short dataReferenceIndex; // A 16-bit integer that
+     * contains the index of the data reference to use to retrieve data associated with samples that use this sample description. Data references are
+     * stored in data reference atoms. byte[size - 16] data; } sampleDescriptionEntry;
      */
     d = leaf.getOutputStream();
     d.write(0); // version
@@ -1297,11 +1262,9 @@ public class QuickTimeOutputStream {
     leaf = new DataAtom("stts");
     stblAtom.add(leaf);
     /*
-     * typedef struct { byte version; byte[3] flags; int numberOfEntries;
-     * timeToSampleTable timeToSampleTable[numberOfEntries]; } timeToSampleAtom;
+     * typedef struct { byte version; byte[3] flags; int numberOfEntries; timeToSampleTable timeToSampleTable[numberOfEntries]; } timeToSampleAtom;
      * 
-     * typedef struct { int sampleCount; int sampleDuration; }
-     * timeToSampleTable;
+     * typedef struct { int sampleCount; int sampleDuration; } timeToSampleTable;
      */
     d = leaf.getOutputStream();
     d.write(0); // version
@@ -1360,12 +1323,9 @@ public class QuickTimeOutputStream {
     leaf = new DataAtom("stsc");
     stblAtom.add(leaf);
     /*
-     * typedef struct { byte version; byte[3] flags; int numberOfEntries;
-     * sampleToChunkTable sampleToChunkTable[numberOfEntries]; }
-     * sampleToChunkAtom;
+     * typedef struct { byte version; byte[3] flags; int numberOfEntries; sampleToChunkTable sampleToChunkTable[numberOfEntries]; } sampleToChunkAtom;
      * 
-     * typedef struct { int firstChunk; int samplesPerChunk; int
-     * sampleDescription; } sampleToChunkTable;
+     * typedef struct { int firstChunk; int samplesPerChunk; int sampleDescription; } sampleToChunkTable;
      */
     d = leaf.getOutputStream();
     d.write(0); // version
@@ -1401,8 +1361,7 @@ public class QuickTimeOutputStream {
     leaf = new DataAtom("stsz");
     stblAtom.add(leaf);
     /*
-     * typedef struct { byte version; byte[3] flags; int sampleSize; int
-     * numberOfEntries; sampleSizeTable sampleSizeTable[numberOfEntries]; }
+     * typedef struct { byte version; byte[3] flags; int sampleSize; int numberOfEntries; sampleSizeTable sampleSizeTable[numberOfEntries]; }
      * sampleSizeAtom;
      * 
      * typedef struct { int size; } sampleSizeTable;
@@ -1445,8 +1404,7 @@ public class QuickTimeOutputStream {
       leaf = new DataAtom("stco");
       stblAtom.add(leaf);
       /*
-       * typedef struct { byte version; byte[3] flags; int numberOfEntries;
-       * chunkOffsetTable chunkOffsetTable[numberOfEntries]; } chunkOffsetAtom;
+       * typedef struct { byte version; byte[3] flags; int numberOfEntries; chunkOffsetTable chunkOffsetTable[numberOfEntries]; } chunkOffsetAtom;
        * 
        * typedef struct { int offset; } chunkOffsetTable;
        */
@@ -1476,9 +1434,7 @@ public class QuickTimeOutputStream {
       leaf = new DataAtom("co64");
       stblAtom.add(leaf);
       /*
-       * typedef struct { byte version; byte[3] flags; int numberOfEntries;
-       * chunkOffsetTable chunkOffset64Table[numberOfEntries]; }
-       * chunkOffset64Atom;
+       * typedef struct { byte version; byte[3] flags; int numberOfEntries; chunkOffsetTable chunkOffset64Table[numberOfEntries]; } chunkOffset64Atom;
        * 
        * typedef struct { long offset; } chunkOffset64Table;
        */
@@ -1511,8 +1467,7 @@ public class QuickTimeOutputStream {
   /**
    * Writes a frame to the video track.
    * <p>
-   * If the dimension of the video track has not been specified yet, it is
-   * derived from the first buffered image added to the QuickTimeOutputStream.
+   * If the dimension of the video track has not been specified yet, it is derived from the first buffered image added to the QuickTimeOutputStream.
    *
    * @param image
    *          The frame image.
@@ -1520,8 +1475,7 @@ public class QuickTimeOutputStream {
    *          The duration of the frame in time scale units.
    * 
    * @throws IllegalArgumentException
-   *           if the duration is less than 1, or if the dimension of the frame
-   *           does not match the dimension of the video track.
+   *           if the duration is less than 1, or if the dimension of the frame does not match the dimension of the video track.
    * @throws IOException
    *           if writing the image failed.
    */
@@ -1596,13 +1550,11 @@ public class QuickTimeOutputStream {
   /**
    * Writes a frame from a file to the video track.
    * <p>
-   * This method does not inspect the contents of the file. The contents has to
-   * match the video format. For example, it is your responsibility to only add
-   * JPG files if you have chosen the JPEG video format.
+   * This method does not inspect the contents of the file. The contents has to match the video format. For example, it is your responsibility to only
+   * add JPG files if you have chosen the JPEG video format.
    * <p>
-   * If you add all frames from files or from input streams, then you have to
-   * explicitly set the dimension of the video track before you call finish() or
-   * close().
+   * If you add all frames from files or from input streams, then you have to explicitly set the dimension of the video track before you call finish()
+   * or close().
    *
    * @param file
    *          The file which holds the image data.
@@ -1624,13 +1576,11 @@ public class QuickTimeOutputStream {
   /**
    * Writes a frame to the video track.
    * <p>
-   * This method does not inspect the contents of the input stream. The contents
-   * has to match the video format. For example, it is your responsibility to
-   * only add JPG files if you have chosen the JPEG video format.
+   * This method does not inspect the contents of the input stream. The contents has to match the video format. For example, it is your responsibility
+   * to only add JPG files if you have chosen the JPEG video format.
    * <p>
-   * If you add all frames from files or from input streams, then you have to
-   * explicitly set the dimension of the video track before you call finish() or
-   * close().
+   * If you add all frames from files or from input streams, then you have to explicitly set the dimension of the video track before you call finish()
+   * or close().
    *
    * @param in
    *          The input stream which holds the image data.
@@ -1665,8 +1615,7 @@ public class QuickTimeOutputStream {
     /*
      * File type atom
      * 
-     * typedef struct { magic brand; bcd4 versionYear; bcd2 versionMonth; bcd2
-     * versionMinor; magic[4] compatibleBrands; } ftypAtom;
+     * typedef struct { magic brand; bcd4 versionYear; bcd2 versionMonth; bcd2 versionMinor; magic[4] compatibleBrands; } ftypAtom;
      */
     DataAtom ftypAtom = new DataAtom("ftyp");
     DataAtomOutputStream d = ftypAtom.getOutputStream();

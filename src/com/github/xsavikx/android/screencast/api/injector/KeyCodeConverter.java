@@ -1,8 +1,8 @@
 package com.github.xsavikx.android.screencast.api.injector;
 
-import org.apache.log4j.Logger;
-
 import java.awt.event.KeyEvent;
+
+import org.apache.log4j.Logger;
 
 public class KeyCodeConverter {
   private static final Logger LOGGER = Logger.getLogger(KeyCodeConverter.class);

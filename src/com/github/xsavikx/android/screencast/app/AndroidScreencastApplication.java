@@ -1,5 +1,7 @@
 package com.github.xsavikx.android.screencast.app;
 
+import javax.swing.SwingUtilities;
+
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -46,15 +48,18 @@ public class AndroidScreencastApplication extends SwingApplication {
   @Override
   public void start() {
     LOGGER.debug("start() - start");
+    SwingUtilities.invokeLater(new Runnable() {
+      @Override
+      public void run() {
+        // Start showing the device screen
+        jf.setTitle("" + device);
 
-    // Start showing the device screen
-    jf.setTitle("" + device);
+        // Show window
+        jf.setVisible(true);
 
-    // Show window
-    jf.setVisible(true);
-
-    jf.launchInjector();
-
+        jf.launchInjector();
+      }
+    });
     LOGGER.debug("start() - end");
   }
 

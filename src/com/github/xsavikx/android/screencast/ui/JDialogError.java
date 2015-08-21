@@ -23,7 +23,6 @@ public class JDialogError extends JDialog {
     pack();
     setLocationRelativeTo(null);
     setAlwaysOnTop(true);
-    setAlwaysOnTop(false);
   }
 
 }

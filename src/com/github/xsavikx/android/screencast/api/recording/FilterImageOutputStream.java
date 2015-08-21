@@ -14,12 +14,10 @@ public class FilterImageOutputStream extends FilterOutputStream {
   }
 
   /**
-   * Closes this output stream and releases any system resources associated with
-   * the stream.
+   * Closes this output stream and releases any system resources associated with the stream.
    * <p>
-   * The <code>close</code> method of <code>FilterOutputStream</code> calls its
-   * <code>flush</code> method, and then calls the <code>close</code> method of
-   * its underlying output stream.
+   * The <code>close</code> method of <code>FilterOutputStream</code> calls its <code>flush</code> method, and then calls the <code>close</code>
+   * method of its underlying output stream.
    *
    * @exception IOException
    *              if an I/O error occurs.
@@ -33,11 +31,9 @@ public class FilterImageOutputStream extends FilterOutputStream {
   }
 
   /**
-   * Flushes this output stream and forces any buffered output bytes to be
-   * written out to the stream.
+   * Flushes this output stream and forces any buffered output bytes to be written out to the stream.
    * <p>
-   * The <code>flush</code> method of <code>FilterOutputStream</code> calls the
-   * <code>flush</code> method of its underlying output stream.
+   * The <code>flush</code> method of <code>FilterOutputStream</code> calls the <code>flush</code> method of its underlying output stream.
    *
    * @exception IOException
    *              if an I/O error occurs.
@@ -50,17 +46,13 @@ public class FilterImageOutputStream extends FilterOutputStream {
   }
 
   /**
-   * Writes <code>len</code> bytes from the specified <code>byte</code> array
-   * starting at offset <code>off</code> to this output stream.
+   * Writes <code>len</code> bytes from the specified <code>byte</code> array starting at offset <code>off</code> to this output stream.
    * <p>
-   * The <code>write</code> method of <code>FilterOutputStream</code> calls the
-   * <code>write</code> method of one argument on each <code>byte</code> to
+   * The <code>write</code> method of <code>FilterOutputStream</code> calls the <code>write</code> method of one argument on each <code>byte</code> to
    * output.
    * <p>
-   * Note that this method does not call the <code>write</code> method of its
-   * underlying input stream with the same arguments. Subclasses of
-   * <code>FilterOutputStream</code> should provide a more efficient
-   * implementation of this method.
+   * Note that this method does not call the <code>write</code> method of its underlying input stream with the same arguments. Subclasses of
+   * <code>FilterOutputStream</code> should provide a more efficient implementation of this method.
    *
    * @param b
    *          the data.
@@ -80,8 +72,7 @@ public class FilterImageOutputStream extends FilterOutputStream {
   /**
    * Writes the specified <code>byte</code> to this output stream.
    * <p>
-   * The <code>write</code> method of <code>FilterOutputStream</code> calls the
-   * <code>write</code> method of its underlying output stream, that is, it
+   * The <code>write</code> method of <code>FilterOutputStream</code> calls the <code>write</code> method of its underlying output stream, that is, it
    * performs <tt>out.write(b)</tt>.
    * <p>
    * Implements the abstract <tt>write</tt> method of <tt>OutputStream</tt>.

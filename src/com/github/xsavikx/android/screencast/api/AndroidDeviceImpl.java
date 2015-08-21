@@ -69,8 +69,7 @@ public class AndroidDeviceImpl implements AndroidDevice {
         if (data.length < 4)
           continue;
         /*
-         * for(int j=0; j<data.length; j++) { System.out.println(j+" = "
-         * +data[j]); }
+         * for(int j=0; j<data.length; j++) { System.out.println(j+" = " +data[j]); }
          */
         String attribs = data[0];
         boolean directory = attribs.startsWith("d");

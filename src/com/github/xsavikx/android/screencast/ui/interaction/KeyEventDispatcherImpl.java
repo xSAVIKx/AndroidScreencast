@@ -4,6 +4,8 @@ import java.awt.KeyEventDispatcher;
 import java.awt.Window;
 import java.awt.event.KeyEvent;
 
+import javax.swing.SwingUtilities;
+
 import com.github.xsavikx.android.screencast.api.command.executor.CommandExecutor;
 import com.github.xsavikx.android.screencast.api.command.factory.AdbInputCommandFactory;
 import com.github.xsavikx.android.screencast.api.injector.KeyCodeConverter;
@@ -22,8 +24,16 @@ public class KeyEventDispatcherImpl implements KeyEventDispatcher {
     if (!window.isActive())
       return false;
     if (e.getID() == KeyEvent.KEY_TYPED) {
-      int code = KeyCodeConverter.getKeyCode(e);
-      getCommandExecutor().execute(AdbInputCommandFactory.getKeyCommand(code));
+      final int code = KeyCodeConverter.getKeyCode(e);
+      SwingUtilities.invokeLater(new Runnable() {
+
+        @Override
+        public void run() {
+          getCommandExecutor().execute(AdbInputCommandFactory.getKeyCommand(code));
+
+        }
+      });
+
     }
     return false;
   }
