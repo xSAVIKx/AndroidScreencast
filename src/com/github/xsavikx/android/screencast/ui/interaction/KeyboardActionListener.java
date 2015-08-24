@@ -20,7 +20,6 @@ public class KeyboardActionListener implements ActionListener {
   @Override
   public void actionPerformed(ActionEvent e) {
     SwingUtilities.invokeLater(new Runnable() {
-
       @Override
       public void run() {
         getCommandExecutor().execute(AdbInputCommandFactory.getKeyCommand(key));

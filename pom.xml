@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>AndroidScreencast</groupId>
 	<artifactId>AndroidScreencast</artifactId>
-	<version>0.0.5S</version>
+	<version>0.0.5.1S</version>
 	<name>Android Screencast</name>
 	<properties>
 		<spring-version>4.2.0.RELEASE</spring-version>

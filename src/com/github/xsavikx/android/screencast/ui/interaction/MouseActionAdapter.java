@@ -65,11 +65,15 @@ public class MouseActionAdapter extends MouseAdapter {
   public void mouseReleased(MouseEvent e) {
     if (timeFromPress >= ONE_SECOND) {
       final Point p2 = jp.getRawPoint(e.getPoint());
+      final int xFrom = dragFromX;
+      final int yFrom = dragFromY;
+      final int xTo = p2.x;
+      final int yTo = p2.y;
       SwingUtilities.invokeLater(new Runnable() {
 
         @Override
         public void run() {
-          getCommandExecutor().execute(AdbInputCommandFactory.getSwipeCommand(dragFromX, dragFromY, p2.x, p2.y));
+          getCommandExecutor().execute(AdbInputCommandFactory.getSwipeCommand(xFrom, yFrom, xTo, yTo));
         }
       });
       dragFromX = -1;

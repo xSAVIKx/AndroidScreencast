@@ -1,7 +1,10 @@
 package com.github.xsavikx.android.screencast.api.injector;
 
+import org.springframework.stereotype.Component;
+
 import com.android.ddmlib.MultiLineReceiver;
 
+@Component
 public class MultiLineReceiverPrinter extends MultiLineReceiver {
 
   @Override

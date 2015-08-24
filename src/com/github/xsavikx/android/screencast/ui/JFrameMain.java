@@ -70,9 +70,10 @@ public class JFrameMain extends JFrame {
 
   private void setPrefferedWindowSize() {
     if (env.containsProperty(Constants.DEFAULT_WINDOW_HEIGHT) && env.containsProperty(Constants.DEFAULT_WINDOW_WIDTH)) {
-      int height = env.getProperty(Constants.DEFAULT_WINDOW_HEIGHT, Integer.class).intValue();
-      int width = env.getProperty(Constants.DEFAULT_WINDOW_WIDTH, Integer.class).intValue();
-      getContentPane().setPreferredSize(new Dimension(width, height));
+      Integer height = env.getProperty(Constants.DEFAULT_WINDOW_HEIGHT, Integer.class);
+      Integer width = env.getProperty(Constants.DEFAULT_WINDOW_WIDTH, Integer.class);
+      if (height != null && width != null)
+        getContentPane().setPreferredSize(new Dimension(width.intValue(), height.intValue()));
     }
     pack();
   }
