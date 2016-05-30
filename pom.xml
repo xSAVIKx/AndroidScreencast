@@ -1,114 +1,107 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<groupId>AndroidScreencast</groupId>
-	<artifactId>AndroidScreencast</artifactId>
-	<version>0.0.5.1S</version>
-	<name>Android Screencast</name>
-	<properties>
-		<spring-version>4.2.0.RELEASE</spring-version>
-		<ddmlib-version>24.3.1</ddmlib-version>
-		<log4j-version>1.2.17</log4j-version>
-	</properties>
-	<dependencies>
-		<dependency>
-			<groupId>com.android.tools.ddms</groupId>
-			<artifactId>ddmlib</artifactId>
-			<version>${ddmlib-version}</version>
-		</dependency>
-		<dependency>
-			<groupId>log4j</groupId>
-			<artifactId>log4j</artifactId>
-			<version>${log4j-version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-core</artifactId>
-			<version>${spring-version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-beans</artifactId>
-			<version>${spring-version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-context</artifactId>
-			<version>${spring-version}</version>
-		</dependency>
-	</dependencies>
-	<build>
-		<sourceDirectory>src</sourceDirectory>
-		<resources>
-			<resource>
-				<directory>src</directory>
-				<excludes>
-					<exclude>**/*.java</exclude>
-				</excludes>
-			</resource>
-		</resources>
-		<plugins>
-			<plugin>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.3</version>
-				<configuration>
-					<source>1.7</source>
-					<target>1.7</target>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
-				<configuration>
-					<archive>
-						<manifest>
-							<mainClass>com.github.xsavikx.android.screencast.Main</mainClass>
-						</manifest>
-					</archive>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.dstovall</groupId>
-				<artifactId>onejar-maven-plugin</artifactId>
-				<version>1.4.5</version>
-				<executions>
-					<execution>
-						<configuration>
-							<filename>androidscreencast-${project.version}.jar</filename>
-							<classifier>onejar</classifier>
-						</configuration>
-						<goals>
-							<goal>one-jar</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
-	</build>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.github.xsavikx</groupId>
+    <artifactId>androidscreencast</artifactId>
+    <version>0.0.6</version>
+    <name>Android Screencast</name>
+    <properties>
+        <spring-version>4.2.6.RELEASE</spring-version>
+        <ddmlib-version>25.1.0</ddmlib-version>
+        <log4j-version>1.2.17</log4j-version>
+        <main-class>com.github.xsavikx.androidscreencast.Main</main-class>
+        <jdk-version>1.7</jdk-version>
+    </properties>
+    <dependencies>
+        <dependency>
+            <groupId>com.android.tools.ddms</groupId>
+            <artifactId>ddmlib</artifactId>
+            <version>${ddmlib-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>${log4j-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-core</artifactId>
+            <version>${spring-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-beans</artifactId>
+            <version>${spring-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>${spring-version}</version>
+        </dependency>
+    </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.5.1</version>
+                <configuration>
+                    <source>${jdk-version}</source>
+                    <target>${jdk-version}</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>2.6</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <mainClass>com.github.xsavikx.androidscreencast.Main</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>2.4.3</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <shadedArtifactAttached>true</shadedArtifactAttached>
+                            <transformers>
+                                <transformer
+                                        implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <mainClass>${main-class}</mainClass>
+                                </transformer>
+                            </transformers>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+    <url>http://xsavikx.github.io/AndroidScreencast</url>
+    <ciManagement>
+        <url>https://travis-ci.org/xSAVIKx/AndroidScreencast</url>
+        <system>Travis-CI</system>
+    </ciManagement>
+    <issueManagement>
+        <system>GitHub</system>
+        <url>https://github.com/xSAVIKx/AndroidScreencast/issues</url>
+    </issueManagement>
+    <description>AndroidScreencast - View and control your android iDevice on PC.
 
-	<pluginRepositories>
-		<pluginRepository>
-			<id>onejar-maven-plugin.googlecode.com</id>
-			<url>http://onejar-maven-plugin.googlecode.com/svn/mavenrepo</url>
-		</pluginRepository>
-	</pluginRepositories>
-	<url>http://xsavikx.github.io/AndroidScreencast</url>
-	<ciManagement>
-		<url>https://drone.io/github.com/xSAVIKx/AndroidScreencast</url>
-		<system>DroneIO</system>
-	</ciManagement>
-	<issueManagement>
-		<system>GitHub</system>
-		<url>https://github.com/xSAVIKx/AndroidScreencast/issues</url>
-	</issueManagement>
-	<description>AndroidScreencast - View and control your android device on PC.
+        This project gives you opportunity to use your phone even with broken screen.
 
-This project gives you opportunity to use your phone even with broken screen.
-
-Features:
-    No client needed
-    Support for Tap and Swipe gestures
-    Write messages using PC keyboard
-    Support for landscape mode
-    Browse your phone files on PC</description>
+        Features:
+        No client needed
+        Support for Tap and Swipe gestures
+        Write messages using PC keyboard
+        Support for landscape mode
+        Browse your phone files on PC
+    </description>
 </project>
