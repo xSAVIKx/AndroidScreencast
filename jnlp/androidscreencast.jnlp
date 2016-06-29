@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<jnlp spec="1.0+" codebase="http://xsavikx.github.io/AndroidScreencast"
-      href="/jnlp/androidscreencast.jnlp"
+<jnlp spec="1.0+" codebase="http://xsavikx.github.io/AndroidScreencast/"
+      href="jnlp/androidscreencast.jnlp"
       version="0.0.7s">
     <information>
         <title>Android Screencast</title>
@@ -14,7 +14,7 @@
     </security>
     <resources>
         <j2se version="1.7+"/>
-        <jar href="/jnlp/androidscreencast.jar"/>
+        <jar href="jnlp/androidscreencast.jar"/>
     </resources>
     <application-desc main-class="com.github.xsavikx.androidscreencast.Main"/>
 </jnlp>
