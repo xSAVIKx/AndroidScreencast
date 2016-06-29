@@ -7,14 +7,15 @@
         <vendor>Iurii Sergiichuk</vendor>
         <homepage href="http://xsavikx.github.io/AndroidScreencast">AndroidScreencast</homepage>
         <description>AndroidScreencast - View and control your android iDevice on PC.</description>
+        <offline-allowed/>
+        <update check="timeout" policy="always"/>
     </information>
-    <offline-allowed>true</offline-allowed>
+    <resources>
+        <j2se version="1.7+" href="https://www.java.com/ru/download/"/>
+        <jar main="true" download="eager" href="jnlp/androidscreencast.jar"/>
+    </resources>
+    <application-desc main-class="com.github.xsavikx.androidscreencast.Main"/>
     <security>
         <all-permissions/>
     </security>
-    <resources>
-        <j2se version="1.7+"/>
-        <jar href="jnlp/androidscreencast.jar"/>
-    </resources>
-    <application-desc main-class="com.github.xsavikx.androidscreencast.Main"/>
 </jnlp>
