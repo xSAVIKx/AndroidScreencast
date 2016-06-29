@@ -11,6 +11,7 @@
         <log4j-version>1.2.17</log4j-version>
         <main-class>com.github.xsavikx.androidscreencast.Main</main-class>
         <jdk-version>1.7</jdk-version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
     <dependencies>
         <dependency>
