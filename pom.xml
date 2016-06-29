@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.github.xsavikx</groupId>
     <artifactId>androidscreencast</artifactId>
-    <version>0.0.6</version>
+    <version>0.0.7s</version>
     <name>Android Screencast</name>
     <properties>
         <spring-version>4.2.6.RELEASE</spring-version>
@@ -49,6 +49,7 @@
                     <target>${jdk-version}</target>
                 </configuration>
             </plugin>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
@@ -56,7 +57,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>com.github.xsavikx.androidscreencast.Main</mainClass>
+                            <mainClass>${main-class}</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
@@ -81,6 +82,27 @@
                         </configuration>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jarsigner-plugin</artifactId>
+                <version>1.4</version>
+                <executions>
+                    <execution>
+                        <id>sign</id>
+                        <goals>
+                            <goal>sign</goal>
+                        </goals>
+                        <phase>package</phase>
+                    </execution>
+                </executions>
+                <configuration>
+                    <archiveDirectory>${project.build.directory}</archiveDirectory>
+                    <keystore>keystore.jks</keystore>
+                    <alias>acast</alias>
+                    <storepass>{FI0aje84ll0HDfvsXBhLQHvBFso9Mam5Ae37ucXm0SU=}</storepass>
+                    <keypass>{FI0aje84ll0HDfvsXBhLQHvBFso9Mam5Ae37ucXm0SU=}</keypass>
+                </configuration>
             </plugin>
         </plugins>
     </build>
