@@ -8,14 +8,14 @@
         <homepage href="http://xsavikx.github.io/AndroidScreencast">AndroidScreencast</homepage>
         <description>AndroidScreencast - View and control your android iDevice on PC.</description>
         <offline-allowed/>
-        <update check="timeout" policy="always"/>
     </information>
-    <resources>
-        <j2se version="1.7+" href="https://www.java.com/ru/download/"/>
-        <jar main="true" download="eager" href="jnlp/androidscreencast.jar"/>
-    </resources>
-    <application-desc main-class="com.github.xsavikx.androidscreencast.Main"/>
+    <update check="timeout" policy="always"/>
     <security>
         <all-permissions/>
     </security>
+    <resources>
+        <j2se version="1.7+"/>
+        <jar main="true" download="eager" href="jnlp/androidscreencast.jar"/>
+    </resources>
+    <application-desc main-class="com.github.xsavikx.androidscreencast.Main"/>
 </jnlp>
