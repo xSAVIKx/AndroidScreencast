@@ -51,3 +51,20 @@ You can run the executable jar via `java -jar target/androidscreencast-VERSION-e
 the current version.
 
 For example, `java -jar target/androidscreencast-0.0.7s-executable.jar`.
+
+# Requirements
+
+Currently AndroidScreencast works directly with `adb input` program through `ddmlib` and abuse functionality of:
+* `adb input key`
+* `adb input tap`
+* `adb input swipe`
+
+Regarding this point, to use AndroidScreencast you need Smartphone running on Android with specific `input` program version. `adb input tap` and `adb input swipe` were introduced in [Android 4.1.1][Android_4_1_1_Input].
+
+So, right now AndroidScreencast support all Android versions equal or greater than Android 4.1.1.
+
+Also, to run AndroidScreencast you will need adb installed (or you can use bundled in [androidscreencast.7z][latest_release] adb).
+
+[Android_4_1_1_Input]: http://grepcode.com/file/repository.grepcode.com/java/ext/com.google.android/android/4.1.1_r1/com/android/commands/input/Input.java#Input
+
+[latest_release]: https://github.com/xSAVIKx/AndroidScreencast/releases/latest
