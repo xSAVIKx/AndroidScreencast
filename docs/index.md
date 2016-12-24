@@ -1,3 +1,6 @@
+---
+layout: default
+---
 AndroidScreencast - <a href="https://github.com/xSAVIKx/AndroidScreencast/releases/latest"><i>download latest</i></a>
 =================
 
