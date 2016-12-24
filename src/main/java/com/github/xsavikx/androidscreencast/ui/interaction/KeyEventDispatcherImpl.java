@@ -23,14 +23,7 @@ public class KeyEventDispatcherImpl implements KeyEventDispatcher {
             return false;
         if (e.getID() == KeyEvent.KEY_TYPED) {
             final int code = KeyCodeConverter.getKeyCode(e);
-            SwingUtilities.invokeLater(new Runnable() {
-
-                @Override
-                public void run() {
-                    getCommandExecutor().execute(AdbInputCommandFactory.getKeyCommand(code));
-
-                }
-            });
+            SwingUtilities.invokeLater(() -> getCommandExecutor().execute(AdbInputCommandFactory.getKeyCommand(code)));
 
         }
         return false;
@@ -38,7 +31,7 @@ public class KeyEventDispatcherImpl implements KeyEventDispatcher {
 
     private CommandExecutor getCommandExecutor() {
         if (commandExecutor == null) {
-            commandExecutor = ApplicationContextProvider.getApplicationContext().getBean(CommandExecutor.class);
+            commandExecutor = ApplicationContextProvider.getBean(CommandExecutor.class);
         }
         return commandExecutor;
     }

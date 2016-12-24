@@ -11,15 +11,16 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import javax.swing.*;
+import java.awt.*;
 
 @Component
 public class AndroidScreencastApplication extends SwingApplication {
     private static final Logger LOGGER = Logger.getLogger(AndroidScreencastApplication.class);
-
     private final Environment environment;
     private final JFrameMain jFrameMain;
     private final Injector injector;
     private final IDevice iDevice;
+    private transient boolean isStopped = false;
 
     @Autowired
     public AndroidScreencastApplication(Injector injector, IDevice iDevice, JFrameMain jFrameMain, Environment environment) {
@@ -30,37 +31,48 @@ public class AndroidScreencastApplication extends SwingApplication {
     }
 
     @Override
-    public void close() {
-        LOGGER.debug("close() - start");
-
-        if (injector != null)
-            injector.close();
-
-        if (iDevice != null) {
-            synchronized (iDevice) {
-                if (hasFilledAdbPath())
-                    AndroidDebugBridge.disconnectBridge();
-                AndroidDebugBridge.terminate();
+    public void stop() {
+        try {
+            LOGGER.debug("stop() - start");
+            if (isStopped) {
+                LOGGER.debug("Application is already stopped.");
+                return;
             }
+            if (injector != null)
+                injector.stop();
+
+            if (iDevice != null) {
+                synchronized (iDevice) {
+                    if (hasFilledAdbPath())
+                        AndroidDebugBridge.disconnectBridge();
+                    AndroidDebugBridge.terminate();
+                }
+            }
+            for (Frame frame : Frame.getFrames()) {
+                frame.dispose();
+            }
+            isStopped = true;
+        } finally {
+            LOGGER.debug("stop() - end");
         }
 
-        LOGGER.debug("close() - end");
     }
 
     @Override
     public void start() {
         LOGGER.debug("start() - start");
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                // Start showing the iDevice screen
-                jFrameMain.setTitle("" + iDevice);
+        if (iDevice == null) {
+            LOGGER.warn("No valid device was chosen. Please try to chose correct one.");
+            stop();
+        }
+        SwingUtilities.invokeLater(() -> {
+            // Start showing the iDevice screen
+            jFrameMain.setTitle("" + iDevice);
 
-                // Show window
-                jFrameMain.setVisible(true);
+            // Show window
+            jFrameMain.setVisible(true);
 
-                jFrameMain.launchInjector();
-            }
+            jFrameMain.launchInjector();
         });
         LOGGER.debug("start() - end");
     }

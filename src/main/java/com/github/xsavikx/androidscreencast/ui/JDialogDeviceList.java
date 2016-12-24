@@ -17,7 +17,7 @@ public class JDialogDeviceList extends JDialog implements ActionListener {
 
     private JTextField jtfHost = new JTextField(DEFAULT_HOST);
     private JFormattedTextField jftfPort = new JFormattedTextField(DEFAULT_PORT);
-    private JList<IDevice> jlDevices = new JList<IDevice>();
+    private JList<IDevice> jlDevices = new JList<>();
     private JPanel jpAgent = new JPanel();
     private JPanel jpButtons = new JPanel();
     private JButton jbOk = new JButton("OK");
@@ -28,6 +28,7 @@ public class JDialogDeviceList extends JDialog implements ActionListener {
 
     public JDialogDeviceList(IDevice[] devices) {
         super();
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setModal(true);
         this.devices = devices;
         initialize();
@@ -35,9 +36,9 @@ public class JDialogDeviceList extends JDialog implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent arg0) {
-        cancelled = arg0.getSource() == jbQuit;
-
-        setVisible(false);
+        if (arg0.getSource() == jbQuit) {
+            this.dispose();
+        }
     }
 
     public IDevice getDevice() {

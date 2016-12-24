@@ -8,11 +8,10 @@ import com.github.xsavikx.androidscreencast.ui.model.InputKeyEventTableModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 @Component
 public class JDialogExecuteKeyEvent extends JDialog {
@@ -31,13 +30,16 @@ public class JDialogExecuteKeyEvent extends JDialog {
     private static final String NO_COMMAND_CHOSEN_WARNING_MESSAGE = "Please, select command from the list";
     private static final String NO_COMMAND_CHOSEN_WARNING_DIALOG_TITLE = "Warning";
 
-    @Autowired
-    private CommandExecutor commandExecutor;
+    private final CommandExecutor commandExecutor;
 
-    /**
-     * Create the dialog.
-     */
-    public JDialogExecuteKeyEvent() {
+    @Autowired
+    public JDialogExecuteKeyEvent(CommandExecutor commandExecutor) {
+        this.commandExecutor = commandExecutor;
+    }
+
+
+    @PostConstruct
+    private void initialize() {
         setResizable(false);
         setTitle("Execute key event");
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
@@ -47,33 +49,20 @@ public class JDialogExecuteKeyEvent extends JDialog {
 
         JButton executeCommandButton = new JButton(EXECUTE_BUTTON_TEXT);
         executeCommandButton.setSize(new Dimension(BUTTON_WIDTH, BUTTON_HEIGHT));
-        executeCommandButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int rowIndex = commandListTable.getSelectedRow();
-                if (rowIndex > 0) {
-                    final String title = (String) commandList.getValueAt(rowIndex, TITLE_COLUMN_INDEX);
-                    SwingUtilities.invokeLater(new Runnable() {
-                        @Override
-                        public void run() {
-                            commandExecutor.execute(AdbInputCommandFactory.getKeyCommand(InputKeyEvent.valueOf(title),
-                                    useLongPress.getState()));
-                        }
-                    });
-                    closeDialog();
-                } else {
-                    JOptionPane.showMessageDialog(null, NO_COMMAND_CHOSEN_WARNING_MESSAGE, NO_COMMAND_CHOSEN_WARNING_DIALOG_TITLE,
-                            JOptionPane.WARNING_MESSAGE);
-                }
+        executeCommandButton.addActionListener(actionEvent -> {
+            int rowIndex = commandListTable.getSelectedRow();
+            if (rowIndex > 0) {
+                final String title = (String) commandList.getValueAt(rowIndex, TITLE_COLUMN_INDEX);
+                SwingUtilities.invokeLater(() -> commandExecutor.execute(AdbInputCommandFactory.getKeyCommand(InputKeyEvent.valueOf(title),
+                        useLongPress.getState())));
+                closeDialog();
+            } else {
+                JOptionPane.showMessageDialog(null, NO_COMMAND_CHOSEN_WARNING_MESSAGE, NO_COMMAND_CHOSEN_WARNING_DIALOG_TITLE,
+                        JOptionPane.WARNING_MESSAGE);
             }
         });
         JButton cancelButton = new JButton(CANCEL_BUTTON_TEXT);
-        cancelButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                closeDialog();
-            }
-        });
+        cancelButton.addActionListener(actionEvent -> closeDialog());
         JScrollPane listScrollPane = new JScrollPane(commandListTable, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
                 ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         listScrollPane.setPreferredSize(new Dimension(WIDTH, HEIGHT));
@@ -89,18 +78,6 @@ public class JDialogExecuteKeyEvent extends JDialog {
         getContentPane().add(splitPane);
         pack();
         setLocationRelativeTo(null);
-    }
-
-    /**
-     * Launch the application.
-     */
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                new JDialogExecuteKeyEvent().setVisible(true);
-            }
-        });
     }
 
     private void closeDialog() {

@@ -136,7 +136,7 @@ public enum InputKeyEvent {
     KEYCODE_FORWARD(125, "Key code constant: Forward key. Navigates forward in the history stack. Complement of {@link #KEYCODE_BACK}."),
     KEYCODE_MEDIA_PLAY(126, "Key code constant: Play media key. "),
     KEYCODE_MEDIA_PAUSE(127, "Key code constant: Pause media key. "),
-    KEYCODE_MEDIA_CLOSE(128, "Key code constant: Close media key. May be used to close a CD tray, for example."),
+    KEYCODE_MEDIA_CLOSE(128, "Key code constant: Close media key. May be used to stop a CD tray, for example."),
     KEYCODE_MEDIA_EJECT(129, "Key code constant: Eject media key. May be used to eject a CD tray, for example."),
     KEYCODE_MEDIA_RECORD(130, "Key code constant: Record media key. "),
     KEYCODE_F1(131, "Key code constant: F1 key. "),

@@ -9,23 +9,28 @@ import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.context.annotation.*;
 import org.springframework.core.env.Environment;
 
+import javax.annotation.PreDestroy;
+
 @Configuration
 @ComponentScan(basePackages = "com.github.xsavikx.androidscreencast")
 @PropertySources(value = {
         @PropertySource(value = "file:${user.dir}/app.properties", ignoreResourceNotFound = true)
 })
-
 public class ApplicationConfiguration {
-    @Autowired
-    private Environment env;
 
     @Bean
-    public AndroidDebugBridge initAndroidDebugBridge() {
+    public AndroidDebugBridge initAndroidDebugBridge(Environment env) {
         AndroidDebugBridge.initIfNeeded(false);
         if (env.containsProperty(Constants.ADB_PATH_PROPERTY)) {
             return AndroidDebugBridge.createBridge(env.getProperty(Constants.ADB_PATH_PROPERTY), false);
         }
         return AndroidDebugBridge.createBridge();
+    }
+
+    @PreDestroy
+    public void preDestroy() {
+        AndroidDebugBridge.disconnectBridge();
+        AndroidDebugBridge.terminate();
     }
 
     @Bean
@@ -38,7 +43,7 @@ public class ApplicationConfiguration {
     public IDevice initDevice(DeviceChooserApplication application) {
         application.init();
         application.start();
-        application.close();
+        application.stop();
         return application.getDevice();
     }
 

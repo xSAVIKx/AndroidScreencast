@@ -3,54 +3,69 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.github.xsavikx</groupId>
     <artifactId>androidscreencast</artifactId>
-    <version>0.0.7s</version>
+    <version>0.0.8s</version>
     <name>Android Screencast</name>
     <properties>
-        <spring-version>4.2.6.RELEASE</spring-version>
-        <ddmlib-version>25.1.0</ddmlib-version>
-        <log4j-version>1.2.17</log4j-version>
-        <main-class>com.github.xsavikx.androidscreencast.Main</main-class>
-        <jdk-version>1.7</jdk-version>
+        <spring.version>4.3.1.RELEASE</spring.version>
+        <ddmlib.version>25.2.0</ddmlib.version>
+        <log4j.version>1.2.17</log4j.version>
+        <main.class>com.github.xsavikx.androidscreencast.Main</main.class>
+        <jdk.version>1.8</jdk.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <adb.folder>${project.basedir}/adb</adb.folder>
+        <adb.folder.linux>${adb.folder}/linux</adb.folder.linux>
+        <adb.folder.windows>${adb.folder}/windows</adb.folder.windows>
+        <adb.folder.macosx>${adb.folder}/macosx</adb.folder.macosx>
     </properties>
     <dependencies>
         <dependency>
             <groupId>com.android.tools.ddms</groupId>
             <artifactId>ddmlib</artifactId>
-            <version>${ddmlib-version}</version>
+            <version>${ddmlib.version}</version>
         </dependency>
         <dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
-            <version>${log4j-version}</version>
+            <version>${log4j.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-core</artifactId>
-            <version>${spring-version}</version>
+            <version>${spring.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-beans</artifactId>
-            <version>${spring-version}</version>
+            <version>${spring.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
-            <version>${spring-version}</version>
+            <version>${spring.version}</version>
         </dependency>
     </dependencies>
     <build>
         <plugins>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.5.1</version>
+                <version>3.6.0</version>
                 <configuration>
-                    <source>${jdk-version}</source>
-                    <target>${jdk-version}</target>
+                    <source>${jdk.version}</source>
+                    <target>${jdk.version}</target>
                 </configuration>
             </plugin>
-
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.0.2</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <mainClass>${main.class}</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
@@ -67,25 +82,33 @@
                             <transformers>
                                 <transformer
                                         implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>${main-class}</mainClass>
+                                    <mainClass>${main.class}</mainClass>
                                 </transformer>
                             </transformers>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>2.6</version>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>3.0.0</version>
                 <configuration>
-                    <archive>
-                        <manifest>
-                            <mainClass>${main-class}</mainClass>
-                        </manifest>
-                    </archive>
+                    <descriptors>
+                        <descriptor>src/assembly/windows.xml</descriptor>
+                        <descriptor>src/assembly/linux.xml</descriptor>
+                        <descriptor>src/assembly/macosx.xml</descriptor>
+                    </descriptors>
                 </configuration>
+                <executions>
+                    <execution>
+                        <id>make-assembly</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

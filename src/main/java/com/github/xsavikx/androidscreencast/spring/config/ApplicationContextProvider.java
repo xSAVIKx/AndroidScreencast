@@ -23,4 +23,8 @@ public class ApplicationContextProvider implements ApplicationContextAware {
         ApplicationContextProvider.applicationContext = applicationContext;
     }
 
+    public static <T> T getBean(Class<T> clazz) throws BeansException {
+        return getApplicationContext().getBean(clazz);
+    }
+
 }

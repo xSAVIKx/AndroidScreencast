@@ -1246,7 +1246,7 @@ public class QuickTimeOutputStream {
      * add JPG files if you have chosen the JPEG video format.
      * <p>
      * If you add all frames from files or from input streams, then you have to explicitly set the dimension of the video track before you call finish()
-     * or close().
+     * or stop().
      *
      * @param file     The file which holds the image data.
      * @param duration The duration of the frame in time scale units.
@@ -1267,7 +1267,7 @@ public class QuickTimeOutputStream {
      * to only add JPG files if you have chosen the JPEG video format.
      * <p>
      * If you add all frames from files or from input streams, then you have to explicitly set the dimension of the video track before you call finish()
-     * or close().
+     * or stop().
      *
      * @param in       The input stream which holds the image data.
      * @param duration The duration of the frame in time scale units.

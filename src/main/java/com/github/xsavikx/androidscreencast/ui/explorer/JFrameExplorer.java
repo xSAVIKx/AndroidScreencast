@@ -6,8 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.swing.*;
-import javax.swing.event.TreeSelectionEvent;
-import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
@@ -24,37 +22,34 @@ import java.util.Vector;
 public class JFrameExplorer extends JFrame {
 
     private static final long serialVersionUID = -5209265873286028854L;
+    private final AndroidDevice androidDevice;
     private JTree jt;
     private JSplitPane jSplitPane;
-    @Autowired
-    private AndroidDevice androidDevice;
     private JList<Object> jListFichiers;
     private Map<String, List<FileInfo>> cache = new LinkedHashMap<>();
 
-    public JFrameExplorer() {
+    @Autowired
+    public JFrameExplorer(AndroidDevice androidDevice) {
 
         setTitle("Explorer");
         setLayout(new BorderLayout());
 
         jt = new JTree(new DefaultMutableTreeNode("Test"));
+        this.androidDevice = androidDevice;
     }
 
     public void launch() {
 
         jt.setModel(new DefaultTreeModel(new FolderTreeNode("Device", "/")));
         jt.setRootVisible(true);
-        jt.addTreeSelectionListener(new TreeSelectionListener() {
-
-            @Override
-            public void valueChanged(TreeSelectionEvent e) {
-                TreePath tp = e.getPath();
-                if (tp == null)
-                    return;
-                if (!(tp.getLastPathComponent() instanceof FolderTreeNode))
-                    return;
-                FolderTreeNode node = (FolderTreeNode) tp.getLastPathComponent();
-                displayFolder(node.path);
-            }
+        jt.addTreeSelectionListener(treeSelectionEvent -> {
+            TreePath tp = treeSelectionEvent.getPath();
+            if (tp == null)
+                return;
+            if (!(tp.getLastPathComponent() instanceof FolderTreeNode))
+                return;
+            FolderTreeNode node = (FolderTreeNode) tp.getLastPathComponent();
+            displayFolder(node.path);
         });
 
         JScrollPane jsp = new JScrollPane(jt);

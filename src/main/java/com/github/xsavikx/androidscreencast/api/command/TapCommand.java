@@ -11,8 +11,6 @@ public class TapCommand extends InputCommand {
 
     @Override
     protected String getCommandPart() {
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("tap ").append(x).append(' ').append(y);
-        return stringBuilder.toString();
+        return "tap " + x + ' ' + y;
     }
 }

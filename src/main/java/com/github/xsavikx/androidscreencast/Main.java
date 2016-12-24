@@ -12,12 +12,14 @@ public class Main {
 
     public static void main(String args[]) {
         LOGGER.debug("main(String[] args=" + Arrays.toString(args) + ") - start");
-        Application application = ApplicationContextProvider.getApplicationContext()
-                .getBean(AndroidScreencastApplication.class);
-        application.init();
-        application.start();
-
-        LOGGER.debug("main(String[] args=" + Arrays.toString(args) + ") - end");
+        Application application;
+        try {
+            application = ApplicationContextProvider.getBean(AndroidScreencastApplication.class);
+            application.init();
+            application.start();
+        } finally {
+            LOGGER.debug("main(String[] args=" + Arrays.toString(args) + ") - end");
+        }
     }
 
 }

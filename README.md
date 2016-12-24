@@ -41,9 +41,9 @@ To use JNLP, please follow this article: [How can I configure the Exception Site
 
 ## Building and running from source
 
-This project requires at least Java 7 and Maven 3.2.5.
+This project requires at least Java 8 and Maven 3.2.5.
 
-After cloning the project, run `mvn package`.
+After cloning the project, run `mvn install`.
 
 The resulting artifacts will be created in the `target` subdirectory.
 
@@ -51,6 +51,11 @@ You can run the executable jar via `java -jar target/androidscreencast-VERSION-e
 the current version.
 
 For example, `java -jar target/androidscreencast-0.0.7s-executable.jar`.
+
+Additionally OS-packages would be created with ADB executables bundled:
+* `androidscreencast-VERSION-windows.zip`
+* `androidscreencast-VERSION-linux.tar.gz`
+* `androidscreencast-VERSION-macosx.tar.gz`
 
 # Requirements
 
@@ -63,7 +68,7 @@ Regarding this point, to use AndroidScreencast you need Smartphone running on An
 
 So, right now AndroidScreencast support all Android versions equal or greater than Android 4.1.1.
 
-Also, to run AndroidScreencast you will need adb installed (or you can use bundled in [androidscreencast.7z][latest_release] adb).
+Also, to run AndroidScreencast you will need *adb* installed (or you can use bundled in OS bundles adb).
 
 [Android_4_1_1_Input]: http://grepcode.com/file/repository.grepcode.com/java/ext/com.google.android/android/4.1.1_r1/com/android/commands/input/Input.java#Input
 

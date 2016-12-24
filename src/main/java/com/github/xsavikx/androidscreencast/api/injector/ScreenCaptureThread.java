@@ -19,18 +19,19 @@ import java.util.concurrent.TimeUnit;
 @Component
 public class ScreenCaptureThread extends Thread {
     private static final Logger LOGGER = Logger.getLogger(ScreenCaptureThread.class);
+    private final IDevice device;
     private BufferedImage image;
     private Dimension size;
-    @Autowired
-    private IDevice device;
     private QuickTimeOutputStream qos = null;
     private boolean landscape = false;
     private ScreenCaptureListener listener = null;
 
-    public ScreenCaptureThread() {
+    @Autowired
+    public ScreenCaptureThread(IDevice device) {
         super("Screen capture");
         image = null;
         size = new Dimension();
+        this.device = device;
     }
 
     public void display(RawImage rawImage) {
@@ -100,7 +101,7 @@ public class ScreenCaptureThread extends Thread {
         if (rawImage != null) {
             display(rawImage);
         } else {
-            LOGGER.info("failed getting screenshot through ADB ok");
+            LOGGER.info("failed getting screenshot through ADB");
         }
         try {
             Thread.sleep(5);

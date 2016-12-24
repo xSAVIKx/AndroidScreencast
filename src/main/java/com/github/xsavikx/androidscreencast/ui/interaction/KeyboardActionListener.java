@@ -18,18 +18,13 @@ public class KeyboardActionListener implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                getCommandExecutor().execute(AdbInputCommandFactory.getKeyCommand(key));
-            }
-        });
+        SwingUtilities.invokeLater(() -> getCommandExecutor().execute(AdbInputCommandFactory.getKeyCommand(key)));
 
     }
 
     private CommandExecutor getCommandExecutor() {
         if (commandExecutor == null) {
-            commandExecutor = ApplicationContextProvider.getApplicationContext().getBean(CommandExecutor.class);
+            commandExecutor = ApplicationContextProvider.getBean(CommandExecutor.class);
         }
         return commandExecutor;
     }

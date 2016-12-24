@@ -3,6 +3,8 @@ package com.github.xsavikx.androidscreencast.app;
 import com.android.ddmlib.AndroidDebugBridge;
 import com.android.ddmlib.IDevice;
 import com.github.xsavikx.androidscreencast.constant.Constants;
+import com.github.xsavikx.androidscreencast.exception.NoDeviceChosenException;
+import com.github.xsavikx.androidscreencast.exception.WaitDeviceListTimeoutException;
 import com.github.xsavikx.androidscreencast.ui.JDialogDeviceList;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,15 +15,19 @@ import org.springframework.stereotype.Component;
 public class DeviceChooserApplication extends SwingApplication {
     private static final Logger LOGGER = Logger.getLogger(DeviceChooserApplication.class);
 
-    @Autowired
-    private Environment env;
-    @Autowired
-    private AndroidDebugBridge bridge;
+    private final Environment env;
+    private final AndroidDebugBridge bridge;
 
     private IDevice device;
 
+    @Autowired
+    public DeviceChooserApplication(Environment env, AndroidDebugBridge bridge) {
+        this.env = env;
+        this.bridge = bridge;
+    }
+
     @Override
-    public void close() {
+    public void stop() {
         // ignore
     }
 
@@ -29,7 +35,6 @@ public class DeviceChooserApplication extends SwingApplication {
     public void start() {
         LOGGER.debug("start() - start");
         initialize();
-
         LOGGER.debug("start() - end");
     }
 
@@ -38,10 +43,10 @@ public class DeviceChooserApplication extends SwingApplication {
     protected boolean isNativeLook() {
         LOGGER.debug("isNativeLook() - start");
 
-        boolean returnboolean = env.getProperty(Constants.APP_NATIVE_LOOK_PROPERTY, Boolean.class,
+        boolean nativeLook = env.getProperty(Constants.APP_NATIVE_LOOK_PROPERTY, Boolean.class,
                 Constants.DEFAULT_APP_NATIVE_LOOK);
         LOGGER.debug("isNativeLook() - end");
-        return returnboolean;
+        return nativeLook;
     }
 
     private void waitDeviceList(AndroidDebugBridge bridge) {
@@ -58,7 +63,7 @@ public class DeviceChooserApplication extends SwingApplication {
             }
             // let's not wait > 10 sec.
             if (count > 300) {
-                throw new RuntimeException("Timeout getting device list!");
+                throw new WaitDeviceListTimeoutException();
             }
         }
 
@@ -79,14 +84,14 @@ public class DeviceChooserApplication extends SwingApplication {
             jd.setVisible(true);
 
             device = jd.getDevice();
+            if (device == null) {
+                return;
+            }
         }
+
         if (device == null) {
-            System.exit(0);
-
-            LOGGER.debug("initialize() - end");
-            return;
+            throw new NoDeviceChosenException();
         }
-
         LOGGER.debug("initialize() - end");
     }
 

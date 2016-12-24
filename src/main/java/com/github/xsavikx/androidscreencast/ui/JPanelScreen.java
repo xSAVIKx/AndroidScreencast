@@ -1,11 +1,13 @@
 package com.github.xsavikx.androidscreencast.ui;
 
+import org.springframework.stereotype.Component;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
+@Component
 public class JPanelScreen extends JPanel {
-
     private static final long serialVersionUID = -2034873107028503004L;
     private float coef = 1;
     private double origX;

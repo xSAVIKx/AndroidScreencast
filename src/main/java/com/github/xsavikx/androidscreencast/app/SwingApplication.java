@@ -32,13 +32,7 @@ public abstract class SwingApplication extends GUIApplication {
             if (jd != null && jd.isVisible())
                 return;
             jd = new JDialogError(ex);
-            SwingUtilities.invokeLater(new Runnable() {
-
-                @Override
-                public void run() {
-                    jd.setVisible(true);
-                }
-            });
+            SwingUtilities.invokeLater(() -> jd.setVisible(true));
         } catch (Exception ex2) {
             // ignored
         }

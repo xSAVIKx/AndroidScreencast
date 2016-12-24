@@ -18,8 +18,12 @@ import java.util.concurrent.TimeUnit;
 public class ShellCommandExecutor implements CommandExecutor {
     private static final Logger LOGGER = Logger.getLogger(ShellCommandExecutor.class);
     private static final int MAX_TIME_TO_WAIT_RESPONSE = 5;
+    private final IDevice device;
+
     @Autowired
-    private IDevice device;
+    public ShellCommandExecutor(IDevice device) {
+        this.device = device;
+    }
 
     @Override
     public void execute(Command command) {

@@ -2,7 +2,7 @@ package com.github.xsavikx.androidscreencast.app;
 
 public interface Application {
 
-    void close();
+    void stop();
 
     void handleException(Thread thread, Throwable ex);
 

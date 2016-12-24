@@ -5,6 +5,7 @@ import com.android.ddmlib.SyncService;
 import com.android.ddmlib.SyncService.ISyncProgressMonitor;
 import com.github.xsavikx.androidscreencast.api.file.FileInfo;
 import com.github.xsavikx.androidscreencast.api.injector.OutputStreamShellOutputReceiver;
+import com.github.xsavikx.androidscreencast.exception.ExecuteCommandException;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -18,13 +19,9 @@ import java.util.Vector;
 @Component
 public class AndroidDeviceImpl implements AndroidDevice {
     private static final Logger logger = Logger.getLogger(AndroidDeviceImpl.class);
+    private final IDevice device;
+
     @Autowired(required = false)
-    private IDevice device;
-
-    public AndroidDeviceImpl() {
-
-    }
-
     public AndroidDeviceImpl(IDevice device) {
         this.device = device;
     }
@@ -46,7 +43,7 @@ public class AndroidDeviceImpl implements AndroidDevice {
         } catch (Exception ex) {
             logger.error("executeCommand(String)", ex);
 
-            throw new RuntimeException(ex);
+            throw new ExecuteCommandException(cmd);
         }
     }
 
@@ -64,15 +61,12 @@ public class AndroidDeviceImpl implements AndroidDevice {
                 String[] data = entry.split(" ");
                 if (data.length < 4)
                     continue;
-        /*
-         * for(int j=0; j<data.length; j++) { System.out.println(j+" = " +data[j]); }
-         */
-                String attribs = data[0];
-                boolean directory = attribs.startsWith("d");
+                String attributes = data[0];
+                boolean directory = attributes.startsWith("d");
                 String name = data[data.length - 1];
 
                 FileInfo fi = new FileInfo();
-                fi.attribs = attribs;
+                fi.attribs = attributes;
                 fi.directory = directory;
                 fi.name = name;
                 fi.path = path;

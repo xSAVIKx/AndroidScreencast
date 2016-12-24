@@ -15,7 +15,7 @@ public class FilterImageOutputStream extends FilterOutputStream {
     /**
      * Closes this output stream and releases any system resources associated with the stream.
      * <p>
-     * The <code>close</code> method of <code>FilterOutputStream</code> calls its <code>flush</code> method, and then calls the <code>close</code>
+     * The <code>stop</code> method of <code>FilterOutputStream</code> calls its <code>flush</code> method, and then calls the <code>stop</code>
      * method of its underlying output stream.
      *
      * @throws IOException if an I/O error occurs.

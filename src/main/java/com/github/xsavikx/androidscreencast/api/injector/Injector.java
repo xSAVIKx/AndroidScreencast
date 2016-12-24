@@ -7,30 +7,34 @@ import org.springframework.stereotype.Service;
 @Service
 public class Injector {
     private static final Logger LOGGER = Logger.getLogger(Injector.class);
+    public final ScreenCaptureThread screenCaptureThread;
+
     @Autowired
-    public ScreenCaptureThread screencapture;
+    public Injector(ScreenCaptureThread screenCaptureThread) {
+        this.screenCaptureThread = screenCaptureThread;
+    }
 
     public void restart() {
         LOGGER.debug("restart() - start");
 
-        close();
+        stop();
         start();
 
         LOGGER.debug("restart() - end");
     }
 
-    public void close() {
-        LOGGER.debug("close() - start");
+    public void stop() {
+        LOGGER.debug("stop() - start");
 
-        screencapture.interrupt();
+        screenCaptureThread.interrupt();
 
-        LOGGER.debug("close() - end");
+        LOGGER.debug("stop() - end");
     }
 
     public void start() {
         LOGGER.debug("start() - start");
 
-        screencapture.start();
+        screenCaptureThread.start();
 
         LOGGER.debug("start() - end");
     }
