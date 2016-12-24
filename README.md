@@ -71,5 +71,3 @@ So, right now AndroidScreencast support all Android versions equal or greater th
 Also, to run AndroidScreencast you will need *adb* installed (or you can use bundled in OS bundles adb).
 
 [Android_4_1_1_Input]: http://grepcode.com/file/repository.grepcode.com/java/ext/com.google.android/android/4.1.1_r1/com/android/commands/input/Input.java#Input
-
-[latest_release]: https://github.com/xSAVIKx/AndroidScreencast/releases/latest
