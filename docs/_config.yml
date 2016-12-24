@@ -1,0 +1,8 @@
+title: AndroidScreencast
+description: View and control your android device on PC
+google_analytics: UA-30116628-1
+show_downloads: true
+theme: jekyll-theme-cayman
+
+gems:
+  - jekyll-mentions
