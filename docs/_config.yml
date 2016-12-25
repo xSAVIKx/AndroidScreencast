@@ -6,3 +6,7 @@ theme: jekyll-theme-cayman
 
 gems:
   - jekyll-mentions
+
+site:
+  github:
+    zip: https://github.com/xSAVIKx/AndroidScreencast/archive/master.zip
