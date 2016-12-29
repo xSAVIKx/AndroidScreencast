@@ -9,4 +9,5 @@ gems:
 
 site:
   github:
-    zip: https://github.com/xSAVIKx/AndroidScreencast/archive/master.zip
+    zip_url: https://github.com/xSAVIKx/AndroidScreencast/zipball/master
+    tar_url: https://github.com/xSAVIKx/AndroidScreencast/tarball/master
