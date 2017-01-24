@@ -3,7 +3,8 @@ language: java
 branches:
   only:
   - master
-
+before_install:
+  - chmod +x mvnw
 jdk:
   - oraclejdk8
 
