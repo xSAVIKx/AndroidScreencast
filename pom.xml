@@ -6,7 +6,7 @@
     <version>0.0.9s-SNAPSHOT</version>
     <name>Android Screencast</name>
     <properties>
-        <spring.version>4.3.1.RELEASE</spring.version>
+        <spring.version>4.3.5.RELEASE</spring.version>
         <ddmlib.version>25.2.0</ddmlib.version>
         <log4j.version>1.2.17</log4j.version>
         <main.class>com.github.xsavikx.androidscreencast.Main</main.class>
