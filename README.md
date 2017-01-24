@@ -41,16 +41,16 @@ To use JNLP, please follow this article: [How can I configure the Exception Site
 
 ## Building and running from source
 
-This project requires at least Java 8 and Maven 3.2.5.
+This project requires at least Java 8.
 
-After cloning the project, run `mvn install`.
+After cloning the project, run `mvnw install`.
 
 The resulting artifacts will be created in the `target` subdirectory.
 
 You can run the executable jar via `java -jar target/androidscreencast-VERSION-executable.jar`, replacing VERSION with
 the current version.
 
-For example, `java -jar target/androidscreencast-0.0.7s-executable.jar`.
+For example, `java -jar target/androidscreencast-0.0.8s-executable.jar`.
 
 Additionally OS-packages would be created with ADB executables bundled:
 * `androidscreencast-VERSION-windows.zip`
