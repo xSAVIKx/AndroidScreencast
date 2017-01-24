@@ -4,6 +4,7 @@ import com.android.ddmlib.AdbCommandRejectedException;
 import com.android.ddmlib.IDevice;
 import com.android.ddmlib.RawImage;
 import com.android.ddmlib.TimeoutException;
+import com.github.xsavikx.androidscreencast.api.image.ImageUtils;
 import com.github.xsavikx.androidscreencast.api.recording.QuickTimeOutputStream;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +21,6 @@ import java.util.concurrent.TimeUnit;
 public class ScreenCaptureThread extends Thread {
     private static final Logger LOGGER = Logger.getLogger(ScreenCaptureThread.class);
     private final IDevice device;
-    private BufferedImage image;
     private Dimension size;
     private QuickTimeOutputStream qos = null;
     private boolean landscape = false;
@@ -29,35 +29,14 @@ public class ScreenCaptureThread extends Thread {
     @Autowired
     public ScreenCaptureThread(IDevice device) {
         super("Screen capture");
-        image = null;
         size = new Dimension();
         this.device = device;
     }
 
-    public void display(RawImage rawImage) {
-        int width2 = landscape ? rawImage.height : rawImage.width;
-        int height2 = landscape ? rawImage.width : rawImage.height;
-        if (image == null) {
-            image = new BufferedImage(width2, height2, BufferedImage.TYPE_INT_RGB);
-            size.setSize(image.getWidth(), image.getHeight());
-        } else {
-            if (image.getHeight() != height2 || image.getWidth() != width2) {
-                image = new BufferedImage(width2, height2, BufferedImage.TYPE_INT_RGB);
-                size.setSize(image.getWidth(), image.getHeight());
-            }
-        }
-        int index = 0;
-        int indexInc = rawImage.bpp >> 3;
-        for (int y = 0; y < rawImage.height; y++) {
-            for (int x = 0; x < rawImage.width; x++, index += indexInc) {
-                int value = rawImage.getARGB(index);
-                if (landscape)
-                    image.setRGB(y, rawImage.width - x - 1, value);
-                else
-                    image.setRGB(x, y, value);
-            }
-        }
-
+    private void display(RawImage rawImage) {
+        RawImage imageToProcess = landscape ? rawImage.getRotated() : rawImage;
+        BufferedImage image = ImageUtils.convertImage(imageToProcess);
+        size.setSize(image.getWidth(), image.getHeight());
         try {
             if (qos != null)
                 qos.writeFrame(image, 10);
@@ -66,14 +45,8 @@ public class ScreenCaptureThread extends Thread {
 
             throw new RuntimeException(e);
         }
-
         if (listener != null) {
-            SwingUtilities.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    listener.handleNewImage(size, image, landscape);
-                }
-            });
+            SwingUtilities.invokeLater(() -> listener.handleNewImage(size, image, landscape));
         }
 
     }
