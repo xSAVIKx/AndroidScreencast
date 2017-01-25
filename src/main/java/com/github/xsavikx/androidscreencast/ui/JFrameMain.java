@@ -1,6 +1,5 @@
 package com.github.xsavikx.androidscreencast.ui;
 
-import com.github.xsavikx.androidscreencast.api.AndroidDevice;
 import com.github.xsavikx.androidscreencast.api.injector.Injector;
 import com.github.xsavikx.androidscreencast.api.injector.InputKeyEvent;
 import com.github.xsavikx.androidscreencast.app.AndroidScreencastApplication;
@@ -23,7 +22,6 @@ import java.awt.event.MouseAdapter;
 public class JFrameMain extends JFrame {
     private static final long serialVersionUID = -2085909236767692371L;
     private final JPanelScreen jp;
-    private final AndroidDevice androidDevice;
     private final MouseAdapter ma;
     private final Injector injector;
     private final Environment env;
@@ -43,15 +41,14 @@ public class JFrameMain extends JFrame {
     private Dimension oldImageDimension;
 
     @Autowired
-    public JFrameMain(JPanelScreen jp, Environment env, Injector injector, AndroidDevice androidDevice, MouseAdapter ma) {
+    public JFrameMain(JPanelScreen jp, Environment env, Injector injector, MouseAdapter ma) {
         this.jp = jp;
         this.injector = injector;
         this.env = env;
-        this.androidDevice = androidDevice;
         this.ma = ma;
     }
 
-    private void setPrefferedWindowSize() {
+    private void setPreferredWindowSize() {
         if (env.containsProperty(Constants.DEFAULT_WINDOW_HEIGHT) && env.containsProperty(Constants.DEFAULT_WINDOW_WIDTH)) {
             Integer height = env.getProperty(Constants.DEFAULT_WINDOW_HEIGHT, Integer.class);
             Integer width = env.getProperty(Constants.DEFAULT_WINDOW_WIDTH, Integer.class);
@@ -110,7 +107,7 @@ public class JFrameMain extends JFrame {
         jsp.setPreferredSize(new Dimension(100, 100));
         pack();
         setLocationRelativeTo(null);
-        setPrefferedWindowSize();
+        setPreferredWindowSize();
 
         jp.addMouseMotionListener(ma);
         jp.addMouseListener(ma);
