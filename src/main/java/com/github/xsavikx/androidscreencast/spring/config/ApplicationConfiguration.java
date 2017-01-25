@@ -3,11 +3,11 @@ package com.github.xsavikx.androidscreencast.spring.config;
 import com.android.ddmlib.AndroidDebugBridge;
 import com.android.ddmlib.IDevice;
 import com.github.xsavikx.androidscreencast.app.DeviceChooserApplication;
-import com.github.xsavikx.androidscreencast.constant.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.context.annotation.*;
-import org.springframework.core.env.Environment;
+import org.springframework.util.StringUtils;
 
 import javax.annotation.PreDestroy;
 
@@ -17,12 +17,14 @@ import javax.annotation.PreDestroy;
         @PropertySource(value = "file:${user.dir}/app.properties", ignoreResourceNotFound = true)
 })
 public class ApplicationConfiguration {
+    @Value("${adb.path}")
+    private String adbPath;
 
     @Bean
-    public AndroidDebugBridge initAndroidDebugBridge(Environment env) {
+    public AndroidDebugBridge initAndroidDebugBridge() {
         AndroidDebugBridge.initIfNeeded(false);
-        if (env.containsProperty(Constants.ADB_PATH_PROPERTY)) {
-            return AndroidDebugBridge.createBridge(env.getProperty(Constants.ADB_PATH_PROPERTY), false);
+        if (!StringUtils.isEmpty(adbPath)) {
+            return AndroidDebugBridge.createBridge(adbPath, false);
         }
         return AndroidDebugBridge.createBridge();
     }

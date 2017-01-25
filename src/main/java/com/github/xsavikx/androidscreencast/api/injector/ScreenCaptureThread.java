@@ -8,6 +8,7 @@ import com.github.xsavikx.androidscreencast.api.image.ImageUtils;
 import com.github.xsavikx.androidscreencast.api.recording.QuickTimeOutputStream;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.swing.*;
@@ -25,6 +26,8 @@ public class ScreenCaptureThread extends Thread {
     private QuickTimeOutputStream qos = null;
     private boolean landscape = false;
     private ScreenCaptureListener listener = null;
+    @Value("${adb.command.timeout:5}")
+    private long adbCommandTimeout;
 
     @Autowired
     public ScreenCaptureThread(IDevice device) {
@@ -66,7 +69,7 @@ public class ScreenCaptureThread extends Thread {
         RawImage rawImage = null;
         synchronized (device) {
             try {
-                rawImage = device.getScreenshot(5, TimeUnit.SECONDS);
+                rawImage = device.getScreenshot(adbCommandTimeout, TimeUnit.SECONDS);
             } catch (TimeoutException | AdbCommandRejectedException e) {
                 LOGGER.error("fetchImage()", e);
             }

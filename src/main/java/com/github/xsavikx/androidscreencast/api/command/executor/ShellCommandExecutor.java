@@ -9,6 +9,7 @@ import com.github.xsavikx.androidscreencast.api.command.exception.AdbShellComman
 import com.github.xsavikx.androidscreencast.api.injector.MultiLineReceiverPrinter;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -17,8 +18,9 @@ import java.util.concurrent.TimeUnit;
 @Service
 public class ShellCommandExecutor implements CommandExecutor {
     private static final Logger LOGGER = Logger.getLogger(ShellCommandExecutor.class);
-    private static final int MAX_TIME_TO_WAIT_RESPONSE = 5;
     private final IDevice device;
+    @Value("${adb.command.timeout:5}")
+    private long adbCommandTimeout;
 
     @Autowired
     public ShellCommandExecutor(IDevice device) {
@@ -31,7 +33,7 @@ public class ShellCommandExecutor implements CommandExecutor {
 
         try {
             device.executeShellCommand(command.getFormattedCommand(), new MultiLineReceiverPrinter(),
-                    MAX_TIME_TO_WAIT_RESPONSE, TimeUnit.SECONDS);
+                    adbCommandTimeout, TimeUnit.SECONDS);
         } catch (TimeoutException | AdbCommandRejectedException | ShellCommandUnresponsiveException | IOException e) {
             LOGGER.error("execute(Command)", e);
             throw new AdbShellCommandExecutionException(command, e);

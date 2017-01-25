@@ -2,28 +2,28 @@ package com.github.xsavikx.androidscreencast.app;
 
 import com.android.ddmlib.AndroidDebugBridge;
 import com.android.ddmlib.IDevice;
-import com.github.xsavikx.androidscreencast.constant.Constants;
 import com.github.xsavikx.androidscreencast.exception.NoDeviceChosenException;
 import com.github.xsavikx.androidscreencast.exception.WaitDeviceListTimeoutException;
 import com.github.xsavikx.androidscreencast.ui.JDialogDeviceList;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
 public class DeviceChooserApplication extends SwingApplication {
     private static final Logger LOGGER = Logger.getLogger(DeviceChooserApplication.class);
-
-    private final Environment env;
+    private static final long WAIT_TIMEOUT = 100;
     private final AndroidDebugBridge bridge;
-
+    private final long adbWaitSleepCyclesAmount;
+    @Value("${adb.device.timeout:30")
+    private long adbDeviceTimeout;
     private IDevice device;
 
     @Autowired
-    public DeviceChooserApplication(Environment env, AndroidDebugBridge bridge) {
-        this.env = env;
+    public DeviceChooserApplication(AndroidDebugBridge bridge) {
         this.bridge = bridge;
+        this.adbWaitSleepCyclesAmount = adbDeviceTimeout * 10;
     }
 
     @Override
@@ -38,31 +38,20 @@ public class DeviceChooserApplication extends SwingApplication {
         LOGGER.debug("start() - end");
     }
 
-    @SuppressWarnings("boxing")
-    @Override
-    protected boolean isNativeLook() {
-        LOGGER.debug("isNativeLook() - start");
-
-        boolean nativeLook = env.getProperty(Constants.APP_NATIVE_LOOK_PROPERTY, Boolean.class,
-                Constants.DEFAULT_APP_NATIVE_LOOK);
-        LOGGER.debug("isNativeLook() - end");
-        return nativeLook;
-    }
-
     private void waitDeviceList(AndroidDebugBridge bridge) {
         LOGGER.debug("waitDeviceList(AndroidDebugBridge bridge=" + bridge + ") - start");
 
         int count = 0;
         while (!bridge.hasInitialDeviceList()) {
             try {
-                Thread.sleep(100);
+                Thread.sleep(WAIT_TIMEOUT);
                 count++;
             } catch (InterruptedException e) {
                 LOGGER.warn("waitDeviceList(AndroidDebugBridge) - exception ignored", e);
 
             }
-            // let's not wait > 10 sec.
-            if (count > 300) {
+
+            if (count > adbWaitSleepCyclesAmount) {
                 throw new WaitDeviceListTimeoutException();
             }
         }

@@ -1,6 +1,7 @@
 package com.github.xsavikx.androidscreencast.app;
 
 import com.github.xsavikx.androidscreencast.ui.JDialogError;
+import org.springframework.beans.factory.annotation.Value;
 
 import javax.swing.*;
 import java.io.PrintWriter;
@@ -8,13 +9,17 @@ import java.io.StringWriter;
 
 public abstract class SwingApplication extends GUIApplication {
     private JDialogError jd = null;
+    @Value("${app.native.look:true")
+    private boolean nativeLook;
 
-    protected abstract boolean isNativeLook();
+    private boolean useNativeLook() {
+        return nativeLook;
+    }
 
     @Override
     public void init() {
         try {
-            if (isNativeLook())
+            if (useNativeLook())
                 UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (Exception ex) {
             throw new RuntimeException(ex);
