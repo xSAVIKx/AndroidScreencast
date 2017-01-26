@@ -1,15 +1,18 @@
 AndroidScreencast
 =================
 
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/064bbd2582b544bb9659a01a2872317c)](https://www.codacy.com/app/xSAVIKx/AndroidScreencast?utm_source=github.com&utm_medium=referral&utm_content=xSAVIKx/AndroidScreencast&utm_campaign=badger)
 
-[![Build Status Travis-CI][travis_badge]][travis] [![Dependency Status][versioneye_badge]][versioneye]
+
+[![Build Status Travis-CI][travis_badge]][travis] [![Dependency Status][versioneye_badge]][versioneye] [![Codacy Badge][codacy_badge]][codacy]
 
 [travis_badge]: https://travis-ci.org/xSAVIKx/AndroidScreencast.svg?branch=master
 [travis]: https://travis-ci.org/xSAVIKx/AndroidScreencast
 
 [versioneye_badge]: https://www.versioneye.com/user/projects/588988221618a700318eafb5/badge.svg
 [versioneye]: https://www.versioneye.com/user/projects/588988221618a700318eafb5
+
+[codacy_badge]: https://api.codacy.com/project/badge/Grade/064bbd2582b544bb9659a01a2872317c
+[codacy]: https://www.codacy.com/app/xSAVIKx/AndroidScreencast?utm_source=github.com&utm_medium=referral&utm_content=xSAVIKx/AndroidScreencast&utm_campaign=badger
 
 # Description
 
