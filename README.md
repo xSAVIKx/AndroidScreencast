@@ -1,10 +1,14 @@
 AndroidScreencast
 =================
 
-[![Build Status Travis-CI][badge]][travis]
+[![Build Status Travis-CI][travis_badge]][travis] [![Dependency Status][versioneye_badge]][versioneye]
 
-[badge]: https://travis-ci.org/xSAVIKx/AndroidScreencast.svg
+[travis_badge]: https://travis-ci.org/xSAVIKx/AndroidScreencast.svg
 [travis]: https://travis-ci.org/xSAVIKx/AndroidScreencast
+
+[versioneye_badge]: https://www.versioneye.com/user/projects/588988221618a700318eafb5/badge.svg?style=flat-square
+[versioneye]: https://www.versioneye.com/user/projects/588988221618a700318eafb5
+
 
 # Description
 
