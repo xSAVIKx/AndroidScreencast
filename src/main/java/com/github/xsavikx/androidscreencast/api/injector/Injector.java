@@ -4,30 +4,23 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
+
 @Service
 public class Injector {
     private static final Logger LOGGER = Logger.getLogger(Injector.class);
-    public final ScreenCaptureThread screenCaptureThread;
+    private final ScreenCaptureRunnable screenCaptureRunnable;
+    private final Thread screenCaptureThread;
 
     @Autowired
-    public Injector(ScreenCaptureThread screenCaptureThread) {
-        this.screenCaptureThread = screenCaptureThread;
-    }
-
-    public void restart() {
-        LOGGER.debug("restart() - start");
-
-        stop();
-        start();
-
-        LOGGER.debug("restart() - end");
+    public Injector(ScreenCaptureRunnable screenCaptureRunnable) {
+        this.screenCaptureRunnable = screenCaptureRunnable;
+        this.screenCaptureThread = new Thread(screenCaptureRunnable, "Screen Capturer");
     }
 
     public void stop() {
         LOGGER.debug("stop() - start");
-
-        screenCaptureThread.interrupt();
-
+        screenCaptureRunnable.stop();
         LOGGER.debug("stop() - end");
     }
 
@@ -37,6 +30,22 @@ public class Injector {
         screenCaptureThread.start();
 
         LOGGER.debug("start() - end");
+    }
+
+    public void setScreenCaptureListener(ScreenCaptureRunnable.ScreenCaptureListener listener) {
+        this.screenCaptureRunnable.setListener(listener);
+    }
+
+    public void startRecording(File file) {
+        screenCaptureRunnable.startRecording(file);
+    }
+
+    public void stopRecording() {
+        screenCaptureRunnable.stopRecording();
+    }
+
+    public void toggleOrientation() {
+        screenCaptureRunnable.toggleOrientation();
     }
 
 }

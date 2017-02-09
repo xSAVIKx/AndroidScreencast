@@ -30,7 +30,6 @@ public class JFrameMain extends JFrame {
     private JToolBar jtbHardkeys = new JToolBar();
     private JScrollPane jsp;
     private JButton jbExplorer = new JButton("Explore");
-    private JButton jbRestartClient = new JButton("Restart client");
     private JButton jbExecuteKeyEvent = new JButton("Execute keycode");
     private JButton jbKbHome = new JButton("Home");
     private JButton jbKbMenu = new JButton("Menu");
@@ -81,7 +80,6 @@ public class JFrameMain extends JFrame {
         jbKbSearch.setFocusable(false);
         jbKbPhoneOn.setFocusable(false);
         jbKbPhoneOff.setFocusable(false);
-        jbRestartClient.setFocusable(false);
         jbExecuteKeyEvent.setFocusable(false);
 
         jbKbHome.addActionListener(KeyboardActionListenerFactory.getInstance(InputKeyEvent.KEYCODE_HOME));
@@ -121,8 +119,6 @@ public class JFrameMain extends JFrame {
         });
         jtb.add(jbExplorer);
 
-        jtb.add(jbRestartClient);
-
         jbExecuteKeyEvent.addActionListener(actionEvent -> {
             JDialogExecuteKeyEvent jdExecuteKeyEvent = ApplicationContextProvider
                     .getBean(JDialogExecuteKeyEvent.class);
@@ -133,7 +129,7 @@ public class JFrameMain extends JFrame {
     }
 
     public void launchInjector() {
-        injector.screenCaptureThread.setListener((size, image, landscape) -> {
+        injector.setScreenCaptureListener((size, image, landscape) -> {
             if (oldImageDimension == null || !size.equals(oldImageDimension)) {
                 jsp.setPreferredSize(size);
                 JFrameMain.this.pack();
@@ -150,12 +146,12 @@ public class JFrameMain extends JFrame {
         jFileChooser.setFileFilter(filter);
         int returnVal = jFileChooser.showSaveDialog(this);
         if (returnVal == JFileChooser.APPROVE_OPTION) {
-            injector.screenCaptureThread.startRecording(jFileChooser.getSelectedFile());
+            injector.startRecording(jFileChooser.getSelectedFile());
         }
     }
 
     private void stopRecording() {
-        injector.screenCaptureThread.stopRecording();
+        injector.stopRecording();
     }
 
 }

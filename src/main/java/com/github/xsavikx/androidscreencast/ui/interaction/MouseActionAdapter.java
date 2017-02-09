@@ -34,7 +34,7 @@ public class MouseActionAdapter extends MouseAdapter {
     @Override
     public void mouseClicked(MouseEvent e) {
         if (injector != null && e.getButton() == MouseEvent.BUTTON3) {
-            injector.screenCaptureThread.toogleOrientation();
+            injector.toggleOrientation();
             e.consume();
             return;
         }

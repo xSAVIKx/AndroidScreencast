@@ -50,7 +50,7 @@ public class JDialogError extends JDialog {
         errorDialogLabel.setText(ex.getClass().getSimpleName());
         if (ex.getClass() == RuntimeException.class && ex.getCause() != null)
             ex = ex.getCause();
-        try (StringWriter stringWriter = new StringWriter();) {
+        try (StringWriter stringWriter = new StringWriter()) {
             AndroidScreenCastRuntimeException realCause = getCause(ex);
             if (realCause != null) {
                 errorDialogLabel.setText(realCause.getClass().getSimpleName());
