@@ -16,7 +16,7 @@ public class DeviceChooserApplication extends SwingApplication {
     private static final long WAIT_TIMEOUT = 100;
     private final AndroidDebugBridge bridge;
     private final long adbWaitSleepCyclesAmount;
-    @Value("${adb.device.timeout:30")
+    @Value("${adb.device.timeout:30}")
     private long adbDeviceTimeout;
     private IDevice device;
 

@@ -9,7 +9,7 @@ import java.io.StringWriter;
 
 public abstract class SwingApplication extends GUIApplication {
     private JDialogError jd = null;
-    @Value("${app.native.look:true")
+    @Value("${app.native.look:true}")
     private boolean nativeLook;
 
     private boolean useNativeLook() {
