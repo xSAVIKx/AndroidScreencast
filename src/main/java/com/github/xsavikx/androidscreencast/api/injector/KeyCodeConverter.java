@@ -16,7 +16,7 @@ public class KeyCodeConverter {
         if (inputKeyEvent != null) {
             code = inputKeyEvent.getCode();
         }
-        LOGGER.debug("getKeyCode(KeyEvent e=" + e + ") - end");
+        LOGGER.debug(String.format("Received KeyEvent=%s. Produced KeyCode=%d", String.valueOf(e), code));
         return code;
     }
 

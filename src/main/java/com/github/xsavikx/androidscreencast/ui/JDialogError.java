@@ -1,6 +1,7 @@
 package com.github.xsavikx.androidscreencast.ui;
 
 import com.github.xsavikx.androidscreencast.exception.AndroidScreenCastRuntimeException;
+import com.github.xsavikx.androidscreencast.exception.IORuntimeException;
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,7 +12,6 @@ import java.io.StringWriter;
 public class JDialogError extends JDialog {
 
     private JLabel errorDialogLabel;
-    private JScrollPane scrollPane;
     private JTextArea errorDescription;
 
     public JDialogError(Throwable ex) {
@@ -21,7 +21,7 @@ public class JDialogError extends JDialog {
 
     private void initComponents(Throwable ex) {
         errorDialogLabel = new JLabel();
-        scrollPane = new JScrollPane();
+        JScrollPane scrollPane = new JScrollPane();
         errorDescription = new JTextArea();
         errorDescription.setLineWrap(true);
         errorDescription.setWrapStyleWord(true);
@@ -46,10 +46,9 @@ public class JDialogError extends JDialog {
         setAlwaysOnTop(true);
     }
 
-    private void setErrorDetails(Throwable ex) {
+    private void setErrorDetails(Throwable e) {
+        Throwable ex = getRealException(e);
         errorDialogLabel.setText(ex.getClass().getSimpleName());
-        if (ex.getClass() == RuntimeException.class && ex.getCause() != null)
-            ex = ex.getCause();
         try (StringWriter stringWriter = new StringWriter()) {
             AndroidScreenCastRuntimeException realCause = getCause(ex);
             if (realCause != null) {
@@ -61,9 +60,15 @@ public class JDialogError extends JDialog {
                 ex.printStackTrace(new PrintWriter(stringWriter));
             }
             errorDescription.setText(stringWriter.toString());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        } catch (IOException ioe) {
+            throw new IORuntimeException(ioe);
         }
+    }
+
+    private Throwable getRealException(Throwable e) {
+        if (e.getClass() == RuntimeException.class && e.getCause() != null)
+            return e.getCause();
+        return e;
     }
 
     private AndroidScreenCastRuntimeException getCause(Throwable ex) {

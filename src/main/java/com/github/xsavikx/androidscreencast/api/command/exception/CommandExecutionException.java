@@ -1,6 +1,8 @@
 package com.github.xsavikx.androidscreencast.api.command.exception;
 
-public class CommandExecutionException extends RuntimeException {
+import com.github.xsavikx.androidscreencast.exception.AndroidScreenCastRuntimeException;
+
+public class CommandExecutionException extends AndroidScreenCastRuntimeException {
 
     private static final long serialVersionUID = 8676432388325401069L;
 

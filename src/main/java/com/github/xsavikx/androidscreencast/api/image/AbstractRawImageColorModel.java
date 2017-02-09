@@ -25,11 +25,11 @@ public abstract class AbstractRawImageColorModel extends ColorModel {
 
     protected abstract int getPixel(byte[] data);
 
-    int getPixel(Object inData) {
+    protected int getPixel(Object inData) {
         return getPixel((byte[]) inData);
     }
 
-    int getMask(int length) {
+    protected int getMask(int length) {
         int res = 0;
         for (int i = 0; i < length; i++) {
             res = (res << 1) + 1;

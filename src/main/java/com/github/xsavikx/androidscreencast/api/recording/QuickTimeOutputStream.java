@@ -949,6 +949,8 @@ public class QuickTimeOutputStream {
 
                 break;
             }
+            default:
+                throw new IllegalStateException("Such video format is not supported: " + videoFormat);
         }
 
     /* Time to Sample atom ---- */
@@ -1202,9 +1204,10 @@ public class QuickTimeOutputStream {
                 byte[] bytes = new byte[imgWidth * 3]; // holds a scanline of raw
                 // image data with 3
                 // channels of 8 bit data
+                int n = imgWidth * 3;
                 for (int y = 0; y < imgHeight; y++) {
                     raster.getPixels(0, y, imgWidth, 1, raw);
-                    for (int k = 0, n = imgWidth * 3; k < n; k++) {
+                    for (int k = 0; k < n; k++) {
                         bytes[k] = (byte) raw[k];
                     }
                     mdatAtom.getOutputStream().write(bytes);
@@ -1336,15 +1339,15 @@ public class QuickTimeOutputStream {
         /**
          * Offset of the sample relative to the start of the QuickTime file.
          */
-        long offset;
+        private long offset;
         /**
          * Data length of the sample.
          */
-        long length;
+        private long length;
         /**
          * The duration of the sample in time scale units.
          */
-        int duration;
+        private int duration;
 
         /**
          * Creates a new sample.

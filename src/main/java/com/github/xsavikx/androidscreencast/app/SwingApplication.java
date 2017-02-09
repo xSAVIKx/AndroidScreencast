@@ -1,5 +1,6 @@
 package com.github.xsavikx.androidscreencast.app;
 
+import com.github.xsavikx.androidscreencast.exception.AndroidScreenCastRuntimeException;
 import com.github.xsavikx.androidscreencast.ui.JDialogError;
 import org.springframework.beans.factory.annotation.Value;
 
@@ -22,7 +23,7 @@ public abstract class SwingApplication extends GUIApplication {
             if (useNativeLook())
                 UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (Exception ex) {
-            throw new RuntimeException(ex);
+            throw new AndroidScreenCastRuntimeException(ex);
         }
     }
 
@@ -38,7 +39,7 @@ public abstract class SwingApplication extends GUIApplication {
                 return;
             jd = new JDialogError(ex);
             SwingUtilities.invokeLater(() -> jd.setVisible(true));
-        } catch (Exception ex2) {
+        } catch (Exception ignored) {
             // ignored
         }
     }

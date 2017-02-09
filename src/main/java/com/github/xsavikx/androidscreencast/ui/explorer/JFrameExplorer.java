@@ -2,6 +2,7 @@ package com.github.xsavikx.androidscreencast.ui.explorer;
 
 import com.github.xsavikx.androidscreencast.api.AndroidDevice;
 import com.github.xsavikx.androidscreencast.api.file.FileInfo;
+import com.github.xsavikx.androidscreencast.exception.AndroidScreenCastRuntimeException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -24,7 +25,6 @@ public class JFrameExplorer extends JFrame {
     private static final long serialVersionUID = -5209265873286028854L;
     private final AndroidDevice androidDevice;
     private JTree jt;
-    private JSplitPane jSplitPane;
     private JList<Object> jListFichiers;
     private Map<String, List<FileInfo>> cache = new LinkedHashMap<>();
 
@@ -57,7 +57,7 @@ public class JFrameExplorer extends JFrame {
         jListFichiers = new JList<>();
         jListFichiers.setListData(new Object[]{});
 
-        jSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, jsp, new JScrollPane(jListFichiers));
+        JSplitPane jSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, jsp, new JScrollPane(jListFichiers));
 
         add(jSplitPane, BorderLayout.CENTER);
         setSize(640, 480);
@@ -98,14 +98,14 @@ public class JFrameExplorer extends JFrame {
             File tempFile = node.downloadTemporary();
             Desktop.getDesktop().open(tempFile);
         } catch (Exception ex) {
-            throw new RuntimeException(ex);
+            throw new AndroidScreenCastRuntimeException(ex);
         }
     }
 
     private class FolderTreeNode extends LazyMutableTreeNode {
         private static final long serialVersionUID = 9131974430354670263L;
-        String name;
-        String path;
+        private final String name;
+        private final String path;
 
         public FolderTreeNode(String name, String path) {
             this.name = name;

@@ -19,17 +19,11 @@ public class Injector {
     }
 
     public void stop() {
-        LOGGER.debug("stop() - start");
         screenCaptureRunnable.stop();
-        LOGGER.debug("stop() - end");
     }
 
     public void start() {
-        LOGGER.debug("start() - start");
-
         screenCaptureThread.start();
-
-        LOGGER.debug("start() - end");
     }
 
     public void setScreenCaptureListener(ScreenCaptureRunnable.ScreenCaptureListener listener) {

@@ -6,6 +6,7 @@ import com.android.ddmlib.RawImage;
 import com.android.ddmlib.TimeoutException;
 import com.github.xsavikx.androidscreencast.api.image.ImageUtils;
 import com.github.xsavikx.androidscreencast.api.recording.QuickTimeOutputStream;
+import com.github.xsavikx.androidscreencast.exception.IORuntimeException;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,6 +23,10 @@ import java.util.concurrent.TimeUnit;
 @Component
 public class ScreenCaptureRunnable implements Runnable {
     private static final Logger LOGGER = Logger.getLogger(ScreenCaptureRunnable.class);
+    private static final String MOV_FILE_TYPE = ".mov";
+    private static final int MOV_FPS = 30;
+    private static final float MOV_COMPRESSION_RATE = 1f;
+    private static final int FRAME_DURATION = 10;
     private final IDevice device;
     private Dimension size;
     private QuickTimeOutputStream qos = null;
@@ -93,7 +98,7 @@ public class ScreenCaptureRunnable implements Runnable {
         if (qos != null) {
             SwingUtilities.invokeLater(() -> {
                 try {
-                    qos.writeFrame(image, 10);
+                    qos.writeFrame(image, FRAME_DURATION);
                 } catch (IOException e) {
                     LOGGER.error(e);
                 }
@@ -106,16 +111,17 @@ public class ScreenCaptureRunnable implements Runnable {
     }
 
 
-    public void startRecording(File f) {
+    public void startRecording(File file) {
         try {
-            if (!f.getName().toLowerCase().endsWith(".mov"))
-                f = new File(f.getAbsolutePath() + ".mov");
-            qos = new QuickTimeOutputStream(f, QuickTimeOutputStream.VideoFormat.JPG);
+            File outputFile = file;
+            if (!outputFile.getName().toLowerCase().endsWith(MOV_FILE_TYPE))
+                outputFile = new File(file.getAbsolutePath() + MOV_FILE_TYPE);
+            qos = new QuickTimeOutputStream(outputFile, QuickTimeOutputStream.VideoFormat.JPG);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new IORuntimeException(e);
         }
-        qos.setVideoCompressionQuality(1f);
-        qos.setTimeScale(30); // 30 fps
+        qos.setVideoCompressionQuality(MOV_COMPRESSION_RATE);
+        qos.setTimeScale(MOV_FPS);
     }
 
     public void stopRecording() {
@@ -124,7 +130,7 @@ public class ScreenCaptureRunnable implements Runnable {
             qos = null;
             o.close();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new IORuntimeException(e);
         }
     }
 

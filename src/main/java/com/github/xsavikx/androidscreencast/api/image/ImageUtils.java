@@ -32,8 +32,9 @@ public final class ImageUtils {
                 return rawImage16toARGB(rawImage);
             case THIRTY_TWO_BIT_IMAGE:
                 return rawImage32toARGB(rawImage);
+            default:
+                throw new IllegalStateException("Raw image contain wrong bpp: " + rawImage.bpp);
         }
-        throw new IllegalArgumentException("Raw image contain wrong bpp: " + rawImage.bpp);
     }
 
     private static BufferedImage rawImage32toARGB(RawImage rawImage) {

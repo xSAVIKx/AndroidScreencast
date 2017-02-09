@@ -1,6 +1,7 @@
 package com.github.xsavikx.androidscreencast.api.injector;
 
 import com.android.ddmlib.IShellOutputReceiver;
+import com.github.xsavikx.androidscreencast.exception.IORuntimeException;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -17,8 +18,8 @@ public class OutputStreamShellOutputReceiver implements IShellOutputReceiver {
     public void addOutput(byte[] buf, int off, int len) {
         try {
             os.write(buf, off, len);
-        } catch (IOException ex) {
-            throw new RuntimeException(ex);
+        } catch (IOException e) {
+            throw new IORuntimeException(e);
         }
     }
 
@@ -27,7 +28,7 @@ public class OutputStreamShellOutputReceiver implements IShellOutputReceiver {
         try {
             os.flush();
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new IORuntimeException(e);
         }
     }
 
