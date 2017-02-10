@@ -1,11 +1,7 @@
 AndroidScreencast
 =================
 
-[![Join the chat at https://gitter.im/AndroidScreencast/Lobby](https://badges.gitter.im/AndroidScreencast/Lobby.svg)](https://gitter.im/AndroidScreencast/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-
-
-
-[![Build Status Travis-CI][travis_badge]][travis] [![Dependency Status][versioneye_badge]][versioneye] [![Codacy Badge][codacy_badge]][codacy]
+[![Build Status Travis-CI][travis_badge]][travis] [![Dependency Status][versioneye_badge]][versioneye] [![Codacy Badge][codacy_badge]][codacy] [![Join the chat at https://gitter.im/AndroidScreencast/Lobby][gitter_badge]][gitter]
 
 [travis_badge]: https://travis-ci.org/xSAVIKx/AndroidScreencast.svg?branch=master
 [travis]: https://travis-ci.org/xSAVIKx/AndroidScreencast
@@ -15,6 +11,11 @@ AndroidScreencast
 
 [codacy_badge]: https://api.codacy.com/project/badge/Grade/064bbd2582b544bb9659a01a2872317c
 [codacy]: https://www.codacy.com/app/xSAVIKx/AndroidScreencast?utm_source=github.com&utm_medium=referral&utm_content=xSAVIKx/AndroidScreencast&utm_campaign=badger
+
+
+
+[gitter_badge]: https://badges.gitter.im/AndroidScreencast/Lobby.svg
+[gitter]: https://gitter.im/AndroidScreencast/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge
 
 # Description
 
