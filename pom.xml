@@ -9,6 +9,7 @@
         <spring.version>4.3.5.RELEASE</spring.version>
         <ddmlib.version>25.2.0</ddmlib.version>
         <log4j.version>1.2.17</log4j.version>
+        <guava.version>21.0</guava.version>
         <main.class>com.github.xsavikx.androidscreencast.Main</main.class>
         <jdk.version>1.8</jdk.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -42,6 +43,11 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
             <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>${guava.version}</version>
         </dependency>
     </dependencies>
     <build>
@@ -167,5 +173,6 @@
         Write messages using PC keyboard
         Support for landscape mode
         Browse your phone files on PC
+        Record video of your phone screen while browsing
     </description>
 </project>

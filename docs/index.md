@@ -17,6 +17,7 @@ This project gives the opportunity to use your phone even with a broken screen.
 - Write messages using PC keyboard
 - Support for landscape mode
 - Browse your phone files on PC
+- Record video of your phone screen while browsing
 
 [Small wiki of project][wiki]
 

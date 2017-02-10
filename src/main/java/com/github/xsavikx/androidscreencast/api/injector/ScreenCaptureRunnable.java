@@ -74,8 +74,8 @@ public class ScreenCaptureRunnable implements Runnable {
             }
             currentAdbCommandTimeout = defaultAdbCommandTimeout;
         } catch (TimeoutException e) {
-            LOGGER.warn("Adb command timeout happened. Timeout would be increased by 1 second for the next try.", e);
             currentAdbCommandTimeout++;
+            LOGGER.warn(String.format("Adb command timeout happened. Timeout would be set to %d for the next try.", currentAdbCommandTimeout), e);
         } catch (AdbCommandRejectedException e) {
             LOGGER.warn("ADB Command was rejected. Will try again in 100 ms.");
             Thread.sleep(100);
@@ -99,7 +99,7 @@ public class ScreenCaptureRunnable implements Runnable {
             SwingUtilities.invokeLater(() -> {
                 try {
                     qos.writeFrame(image, FRAME_DURATION);
-                } catch (IOException e) {
+                } catch (IORuntimeException e) {
                     LOGGER.error(e);
                 }
             });
@@ -125,13 +125,9 @@ public class ScreenCaptureRunnable implements Runnable {
     }
 
     public void stopRecording() {
-        try {
-            QuickTimeOutputStream o = qos;
-            qos = null;
-            o.close();
-        } catch (IOException e) {
-            throw new IORuntimeException(e);
-        }
+        QuickTimeOutputStream o = qos;
+        qos = null;
+        o.close();
     }
 
     public void toggleOrientation() {

@@ -16,6 +16,8 @@ import javax.annotation.PostConstruct;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 
 @Component
@@ -37,6 +39,7 @@ public class JFrameMain extends JFrame {
     private JButton jbKbSearch = new JButton("Search");
     private JButton jbKbPhoneOn = new JButton("Call");
     private JButton jbKbPhoneOff = new JButton("End call");
+    private JButton jbRecord = new JButton("Start record");
     private Dimension oldImageDimension;
 
     @Autowired
@@ -81,6 +84,7 @@ public class JFrameMain extends JFrame {
         jbKbPhoneOn.setFocusable(false);
         jbKbPhoneOff.setFocusable(false);
         jbExecuteKeyEvent.setFocusable(false);
+        jbRecord.setFocusable(false);
 
         jbKbHome.addActionListener(KeyboardActionListenerFactory.getInstance(InputKeyEvent.KEYCODE_HOME));
         jbKbMenu.addActionListener(KeyboardActionListenerFactory.getInstance(InputKeyEvent.KEYCODE_MENU));
@@ -88,6 +92,23 @@ public class JFrameMain extends JFrame {
         jbKbSearch.addActionListener(KeyboardActionListenerFactory.getInstance(InputKeyEvent.KEYCODE_SEARCH));
         jbKbPhoneOn.addActionListener(KeyboardActionListenerFactory.getInstance(InputKeyEvent.KEYCODE_CALL));
         jbKbPhoneOff.addActionListener(KeyboardActionListenerFactory.getInstance(InputKeyEvent.KEYCODE_ENDCALL));
+        jbRecord.addActionListener(new ActionListener() {
+            private boolean recordStarted = false;
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (!recordStarted) {
+                    recordStarted = true;
+                    jbRecord.setText("Stop record");
+                    startRecording();
+                } else {
+                    recordStarted = false;
+                    stopRecording();
+                    jbRecord.setText("Start record");
+                }
+            }
+        });
+
 
         jtbHardkeys.add(jbKbHome);
         jtbHardkeys.add(jbKbMenu);
@@ -126,6 +147,7 @@ public class JFrameMain extends JFrame {
         });
 
         jtb.add(jbExecuteKeyEvent);
+        jtb.add(jbRecord);
     }
 
     public void launchInjector() {
@@ -145,6 +167,7 @@ public class JFrameMain extends JFrame {
         FileNameExtensionFilter filter = new FileNameExtensionFilter("Video file", "mov");
         jFileChooser.setFileFilter(filter);
         int returnVal = jFileChooser.showSaveDialog(this);
+        jFileChooser.getName();
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             injector.startRecording(jFileChooser.getSelectedFile());
         }

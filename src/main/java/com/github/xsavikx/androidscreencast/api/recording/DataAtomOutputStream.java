@@ -1,5 +1,8 @@
 package com.github.xsavikx.androidscreencast.api.recording;
 
+import com.github.xsavikx.androidscreencast.api.recording.atom.AtomType;
+import com.github.xsavikx.androidscreencast.exception.IORuntimeException;
+
 import java.io.FilterOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -7,6 +10,9 @@ import java.io.UnsupportedEncodingException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 public class DataAtomOutputStream extends FilterOutputStream {
 
@@ -279,19 +285,26 @@ public class DataAtomOutputStream extends FilterOutputStream {
     /**
      * Writes an Atom Type identifier (4 bytes).
      *
-     * @param s A string with a length of 4 characters.
+     * @param type A string with a length of 4 characters.
      */
-    public void writeType(String s) throws IOException {
-        if (s.length() != 4) {
-            throw new IllegalArgumentException("type string must have 4 characters");
-        }
-
+    private void writeType(String type) throws IOException {
+        checkNotNull(type, "Type string should not be null");
+        checkArgument(type.length() == 4, "Type string must have exactly 4 characters. type=%s", type);
         try {
-            out.write(s.getBytes("ASCII"), 0, 4);
+            out.write(type.getBytes("ASCII"), 0, 4);
             incCount(4);
         } catch (UnsupportedEncodingException e) {
             throw new InternalError(e.toString());
         }
+    }
+
+    /**
+     * Writes an Atom Type identifier (4 bytes).
+     *
+     * @param atomType AtomType to be written
+     */
+    public void writeType(AtomType atomType) throws IOException {
+        writeType(atomType.toStringRepresentation());
     }
 
     /**
@@ -312,6 +325,15 @@ public class DataAtomOutputStream extends FilterOutputStream {
         out.write((v >> 8) & 0xff);
         out.write((v >>> 0) & 0xff);
         incCount(2);
+    }
+
+    @Override
+    public void close() {
+        try {
+            flush();
+        } catch (IOException e) {
+            throw new IORuntimeException(e);
+        }
     }
 
 }

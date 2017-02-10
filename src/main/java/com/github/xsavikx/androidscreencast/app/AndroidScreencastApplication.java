@@ -78,7 +78,6 @@ public class AndroidScreencastApplication extends SwingApplication {
     }
 
 
-
     private boolean hasFilledAdbPath() {
         return !StringUtils.isEmpty(adbPath);
     }
