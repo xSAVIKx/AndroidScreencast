@@ -1,6 +1,8 @@
 AndroidScreencast
 =================
 
+[![Join the chat at https://gitter.im/AndroidScreencast/Lobby](https://badges.gitter.im/AndroidScreencast/Lobby.svg)](https://gitter.im/AndroidScreencast/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 
 
 [![Build Status Travis-CI][travis_badge]][travis] [![Dependency Status][versioneye_badge]][versioneye] [![Codacy Badge][codacy_badge]][codacy]
