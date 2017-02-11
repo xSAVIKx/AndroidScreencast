@@ -19,12 +19,14 @@ import java.util.concurrent.TimeUnit;
 public class ShellCommandExecutor implements CommandExecutor {
     private static final Logger LOGGER = Logger.getLogger(ShellCommandExecutor.class);
     private final IDevice device;
+    private final MultiLineReceiverPrinter multiLineReceiverPrinter;
     @Value("${adb.command.timeout:5}")
     private long adbCommandTimeout;
 
     @Autowired
-    public ShellCommandExecutor(IDevice device) {
+    public ShellCommandExecutor(IDevice device, MultiLineReceiverPrinter multiLineReceiverPrinter) {
         this.device = device;
+        this.multiLineReceiverPrinter = multiLineReceiverPrinter;
     }
 
     @Override
@@ -32,7 +34,7 @@ public class ShellCommandExecutor implements CommandExecutor {
         LOGGER.debug("execute(Command command=" + command + ") - start");
 
         try {
-            device.executeShellCommand(command.getFormattedCommand(), new MultiLineReceiverPrinter(),
+            device.executeShellCommand(command.getFormattedCommand(), multiLineReceiverPrinter,
                     adbCommandTimeout, TimeUnit.SECONDS);
         } catch (TimeoutException | AdbCommandRejectedException | ShellCommandUnresponsiveException | IOException e) {
             LOGGER.error("execute(Command)", e);

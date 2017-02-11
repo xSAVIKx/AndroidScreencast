@@ -21,7 +21,7 @@ public class AndroidDeviceImpl implements AndroidDevice {
     private static final Logger logger = Logger.getLogger(AndroidDeviceImpl.class);
     private final IDevice device;
 
-    @Autowired(required = false)
+    @Autowired
     public AndroidDeviceImpl(IDevice device) {
         this.device = device;
     }

@@ -113,10 +113,7 @@ public class ScreenCaptureRunnable implements Runnable {
 
     public void startRecording(File file) {
         try {
-            File outputFile = file;
-            if (!outputFile.getName().toLowerCase().endsWith(MOV_FILE_TYPE))
-                outputFile = new File(file.getAbsolutePath() + MOV_FILE_TYPE);
-            qos = new QuickTimeOutputStream(outputFile, QuickTimeOutputStream.VideoFormat.JPG);
+            qos = new QuickTimeOutputStream(file, QuickTimeOutputStream.VideoFormat.JPG);
         } catch (IOException e) {
             throw new IORuntimeException(e);
         }

@@ -4,10 +4,12 @@ import com.github.xsavikx.androidscreencast.api.injector.Injector;
 import com.github.xsavikx.androidscreencast.api.injector.InputKeyEvent;
 import com.github.xsavikx.androidscreencast.app.AndroidScreencastApplication;
 import com.github.xsavikx.androidscreencast.constant.Constants;
+import com.github.xsavikx.androidscreencast.exception.IORuntimeException;
 import com.github.xsavikx.androidscreencast.spring.config.ApplicationContextProvider;
 import com.github.xsavikx.androidscreencast.ui.explorer.JFrameExplorer;
 import com.github.xsavikx.androidscreencast.ui.interaction.KeyEventDispatcherFactory;
 import com.github.xsavikx.androidscreencast.ui.interaction.KeyboardActionListenerFactory;
+import com.google.common.io.Files;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
@@ -19,6 +21,9 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
 
 @Component
 public class JFrameMain extends JFrame {
@@ -92,22 +97,7 @@ public class JFrameMain extends JFrame {
         jbKbSearch.addActionListener(KeyboardActionListenerFactory.getInstance(InputKeyEvent.KEYCODE_SEARCH));
         jbKbPhoneOn.addActionListener(KeyboardActionListenerFactory.getInstance(InputKeyEvent.KEYCODE_CALL));
         jbKbPhoneOff.addActionListener(KeyboardActionListenerFactory.getInstance(InputKeyEvent.KEYCODE_ENDCALL));
-        jbRecord.addActionListener(new ActionListener() {
-            private boolean recordStarted = false;
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (!recordStarted) {
-                    recordStarted = true;
-                    jbRecord.setText("Stop record");
-                    startRecording();
-                } else {
-                    recordStarted = false;
-                    stopRecording();
-                    jbRecord.setText("Start record");
-                }
-            }
-        });
+        jbRecord.addActionListener(createRecordActionListener());
 
 
         jtbHardkeys.add(jbKbHome);
@@ -150,6 +140,45 @@ public class JFrameMain extends JFrame {
         jtb.add(jbRecord);
     }
 
+    private ActionListener createRecordActionListener() {
+        return new ActionListener() {
+            private final Path tmpDir = Files.createTempDir().toPath();
+            private boolean recording = false;
+            private File tmpVideoFile;
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    if (!recording) {
+                        recording = true;
+                        jbRecord.setText("Stop record");
+                        tmpVideoFile = java.nio.file.Files.createTempFile(tmpDir, "androidScreenCast", ".mov.tmp").toFile();
+                        startRecording(tmpVideoFile);
+                    } else {
+                        recording = false;
+                        stopRecording();
+                        jbRecord.setText("Start record");
+                        JFileChooser jFileChooser = new JFileChooser();
+                        FileNameExtensionFilter filter = new FileNameExtensionFilter("Video file", "mov");
+                        jFileChooser.setFileFilter(filter);
+                        int returnVal = jFileChooser.showSaveDialog(JFrameMain.this);
+                        if (returnVal == JFileChooser.APPROVE_OPTION) {
+                            File resultFile = jFileChooser.getSelectedFile();
+                            if (!resultFile.getName().endsWith(".mov")) {
+                                resultFile = new File(resultFile.getAbsolutePath() + ".mov");
+                            }
+                            Files.move(tmpVideoFile, resultFile);
+                        } else {
+                            tmpVideoFile.deleteOnExit();
+                        }
+                    }
+                } catch (IOException ex) {
+                    throw new IORuntimeException(ex);
+                }
+            }
+        };
+    }
+
     public void launchInjector() {
         injector.setScreenCaptureListener((size, image, landscape) -> {
             if (oldImageDimension == null || !size.equals(oldImageDimension)) {
@@ -162,15 +191,8 @@ public class JFrameMain extends JFrame {
         injector.start();
     }
 
-    private void startRecording() {
-        JFileChooser jFileChooser = new JFileChooser();
-        FileNameExtensionFilter filter = new FileNameExtensionFilter("Video file", "mov");
-        jFileChooser.setFileFilter(filter);
-        int returnVal = jFileChooser.showSaveDialog(this);
-        jFileChooser.getName();
-        if (returnVal == JFileChooser.APPROVE_OPTION) {
-            injector.startRecording(jFileChooser.getSelectedFile());
-        }
+    private void startRecording(File file) {
+        injector.startRecording(file);
     }
 
     private void stopRecording() {

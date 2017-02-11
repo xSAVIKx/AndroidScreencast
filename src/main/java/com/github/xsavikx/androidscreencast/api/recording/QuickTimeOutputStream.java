@@ -84,6 +84,7 @@ public class QuickTimeOutputStream {
      * @throws IllegalArgumentException if videoFormat is null or if framerate is <= 0
      */
     public QuickTimeOutputStream(File file, VideoFormat format) throws IOException {
+        checkNotNull(file, "Result file should not be null.");
         checkNotNull(format, "Video format must not be null.");
         Files.deleteIfExists(file.toPath());
         out = new FileImageOutputStream(file);
