@@ -288,7 +288,6 @@ public class DataAtomOutputStream extends FilterOutputStream {
      * @param type A string with a length of 4 characters.
      */
     private void writeType(String type) throws IOException {
-        checkNotNull(type, "Type string should not be null");
         checkArgument(type.length() == 4, "Type string must have exactly 4 characters. type=%s", type);
         try {
             out.write(type.getBytes("ASCII"), 0, 4);
@@ -304,6 +303,7 @@ public class DataAtomOutputStream extends FilterOutputStream {
      * @param atomType AtomType to be written
      */
     public void writeType(AtomType atomType) throws IOException {
+        checkNotNull(atomType, "AtomType should not be null");
         writeType(atomType.toStringRepresentation());
     }
 

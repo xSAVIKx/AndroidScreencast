@@ -1,5 +1,6 @@
 package com.github.xsavikx.androidscreencast.api.recording;
 
+import com.github.xsavikx.androidscreencast.api.recording.atom.AtomType;
 import com.github.xsavikx.androidscreencast.api.recording.atom.CompositeAtom;
 import com.github.xsavikx.androidscreencast.api.recording.atom.DataAtom;
 import com.github.xsavikx.androidscreencast.api.recording.atom.WideDataAtom;
@@ -92,8 +93,6 @@ public class QuickTimeOutputStream {
 
     /**
      * Closes the movie file as well as the stream being filtered.
-     *
-     * @throws IOException if an I/O error has occurred
      */
     public void close() {
         if (state == States.STARTED) {
@@ -127,7 +126,7 @@ public class QuickTimeOutputStream {
         if (state != States.STARTED) {
             creationTime = new Date();
             writeProlog();
-            mdatAtom = new WideDataAtom(MDAT, out);
+            mdatAtom = new WideDataAtom(MEDIA_DATA, out);
             state = States.STARTED;
         }
     }
@@ -222,396 +221,385 @@ public class QuickTimeOutputStream {
             for (Sample s : videoFrames) {
                 duration += s.duration;
             }
-        /* Movie Atom ========= */
-            CompositeAtom moovAtom = new CompositeAtom(MOOV, out);
+            /* Movie Atom */
+            CompositeAtom movieAtom = new CompositeAtom(MOVIE, out);
+            movieAtom.add(createMovieHeaderAtom(modificationTime, duration, out));
+            movieAtom.add(createTrackAtom(modificationTime, duration, out));
+            movieAtom.finish();
+        } catch (IOException e) {
+            throw new IORuntimeException(e);
+        }
+    }
 
-        /*
-         * Movie Header Atom ------------- The data contained in this atom defines characteristics of the entire QuickTime movie, such as time scale and
-         * duration. It has an atom type value of 'mvhd'.
-         *
-         * typedef struct { byte version; byte[3] flags; mactimestamp creationTime; mactimestamp modificationTime; int timeScale; int duration; int
-         * preferredRate; short preferredVolume; byte[10] reserved; int[9] matrix; int previewTime; int previewDuration; int posterTime; int
-         * selectionTime; int selectionDuration; int currentTime; int nextTrackId; } movieHeaderAtom;
-         */
-            DataAtom leaf = new DataAtom(MVHD, out);
-            moovAtom.add(leaf);
-            DataAtomOutputStream d = leaf.getOutputStream();
-            d.writeByte(0); // version
-            // A 1-byte specification of the version of this movie header atom.
+    /**
+     * Track Atom
+     *
+     * @param modificationTime calendar date and time of last modification
+     * @param duration         time value that indicates duration of video
+     * @param out              ImageOutputStream for this data atom
+     * @return filled Track Atom
+     * @throws IOException if any write operation fails
+     */
+    private CompositeAtom createTrackAtom(Date modificationTime, int duration, ImageOutputStream out) throws IOException {
+        CompositeAtom trackAtom = new CompositeAtom(TRACK, out);
+        trackAtom.add(createTrackHeaderAtom(modificationTime, duration, out));
+        trackAtom.add(createMediaAtom(modificationTime, duration, out));
+        return trackAtom;
+    }
 
-            d.writeByte(0); // flags[0]
-            d.writeByte(0); // flags[1]
-            d.writeByte(0); // flags[2]
-            // Three bytes of space for future movie header flags.
 
-            d.writeMacTimestamp(creationTime); // creationTime
-            // A 32-bit integer that specifies the calendar date and time (in
-            // seconds since midnight, January 1, 1904) when the movie atom was
-            // created. It is strongly recommended that this value should be
-            // specified using coordinated universal time (UTC).
-
-            d.writeMacTimestamp(modificationTime); // modificationTime
-            // A 32-bit integer that specifies the calendar date and time (in
-            // seconds since midnight, January 1, 1904) when the movie atom was
-            // changed. BooleanIt is strongly recommended that this value should be
-            // specified using coordinated universal time (UTC).
-
-            d.writeInt(timeScale); // timeScale
-            // A time value that indicates the time scale for this movie-that is,
-            // the number of time units that pass per second in its time coordinate
-            // system. A time coordinate system that measures time in sixtieths of a
-            // second, for example, has a time scale of 60.
-
-            d.writeInt(duration); // duration
-            // A time value that indicates the duration of the movie in time scale
-            // units. Note that this property is derived from the movie's tracks.
-            // The value of this field corresponds to the duration of the longest
-            // track in the movie.
-
-            d.writeFixed16D16(1d); // preferredRate
-            // A 32-bit fixed-point number that specifies the rate at which to play
-            // this movie. A value of 1.0 indicates normal rate.
-
-            d.writeShort(256); // preferredVolume
-            // A 16-bit fixed-point number that specifies how loud to play this
-            // movie's sound. A value of 1.0 indicates full volume.
-
-            d.write(new byte[10]); // reserved;
-            // Ten bytes reserved for use by Apple. Set to 0.
-
-            d.writeFixed16D16(1f); // matrix[0]
-            d.writeFixed16D16(0f); // matrix[1]
-            d.writeFixed2D30(0f); // matrix[2]
-            d.writeFixed16D16(0f); // matrix[3]
-            d.writeFixed16D16(1f); // matrix[4]
-            d.writeFixed2D30(0); // matrix[5]
-            d.writeFixed16D16(0); // matrix[6]
-            d.writeFixed16D16(0); // matrix[7]
-            d.writeFixed2D30(1f); // matrix[8]
-            // The matrix structure associated with this movie. A matrix shows how
-            // to map points from one coordinate space into another. See "Matrices"
-            // for a discussion of how display matrices are used in QuickTime:
-            // http://developer.apple.com/documentation/QuickTime/QTFF/QTFFChap4/chapter_5_section_4.html#//apple_ref/doc/uid/TP40000939-CH206-18737
-
-            d.writeInt(0); // previewTime
-            // The time value in the movie at which the preview begins.
-
-            d.writeInt(0); // previewDuration
-            // The duration of the movie preview in movie time scale units.
-
-            d.writeInt(0); // posterTime
-            // The time value of the time of the movie poster.
-
-            d.writeInt(0); // selectionTime
-            // The time value for the start time of the current selection.
-
-            d.writeInt(0); // selectionDuration
-            // The duration of the current selection in movie time scale units.
-
-            d.writeInt(0); // currentTime;
-            // The time value for current time position within the movie.
-
-            d.writeInt(2); // nextTrackId
-            // A 32-bit integer that indicates a value to use for the track ID
-            // number of the next track added to this movie. Note that 0 is not a
-            // valid track ID value.
-
-    /* Track Atom ======== */
-            CompositeAtom trakAtom = new CompositeAtom(TRAK, out);
-            moovAtom.add(trakAtom);
-
-    /*
-     * Track Header Atom ----------- The track header atom specifies the characteristics of a single track within a movie. A track header atom
+    /**
+     * Track Header Atom
+     * The track header atom specifies the characteristics of a single track within a movie. A track header atom
      * contains a size field that specifies the number of bytes and a type field that indicates the format of the data (defined by the atom type
      * 'tkhd').
-     *
+     * <p>
      * typedef struct { byte version; byte flag0; byte flag1; byte set TrackHeaderFlags flag2; mactimestamp creationTime; mactimestamp
      * modificationTime; int trackId; byte[4] reserved; int duration; byte[8] reserved; short layer; short alternateGroup; short volume; byte[2]
      * reserved; int[9] matrix; int trackWidth; int trackHeight; } trackHeaderAtom;
+     *
+     * @param modificationTime calendar date and time of last modification
+     * @param duration         time value that indicates duration of video
+     * @param out              ImageOutputStream for this data atom
+     * @return filled Track Header Atom
+     * @throws IOException if any write operation fails
      */
-            leaf = new DataAtom(TKHD, out);
-            trakAtom.add(leaf);
-            d = leaf.getOutputStream();
-            d.write(0); // version
-            // A 1-byte specification of the version of this track header.
+    private DataAtom createTrackHeaderAtom(Date modificationTime, int duration, ImageOutputStream out) throws IOException {
+        DataAtom leaf = new DataAtom(TRACK_HEADER, out);
+        DataAtomOutputStream d = leaf.getOutputStream();
+        d.write(0); // version
+        // A 1-byte specification of the version of this track header.
 
-            d.write(0); // flag[0]
-            d.write(0); // flag[1]
-            d.write(0xf); // flag[2]
-            // Three bytes that are reserved for the track header flags. These flags
-            // indicate how the track is used in the movie. The following flags are
-            // valid (all flags are enabled when set to 1):
-            //
-            // Track enabled
-            // Indicates that the track is enabled. Flag value is 0x0001.
-            // Track in movie
-            // Indicates that the track is used in the movie. Flag value is
-            // 0x0002.
-            // Track in preview
-            // Indicates that the track is used in the movie's preview. Flag
-            // value is 0x0004.
-            // Track in poster
-            // Indicates that the track is used in the movie's poster. Flag
-            // value is 0x0008.
+        d.write(0); // flag[0]
+        d.write(0); // flag[1]
+        d.write(0xf); // flag[2]
+        // Three bytes that are reserved for the track header flags. These flags
+        // indicate how the track is used in the movie. The following flags are
+        // valid (all flags are enabled when set to 1):
+        //
+        // Track enabled
+        // Indicates that the track is enabled. Flag value is 0x0001.
+        // Track in movie
+        // Indicates that the track is used in the movie. Flag value is
+        // 0x0002.
+        // Track in preview
+        // Indicates that the track is used in the movie's preview. Flag
+        // value is 0x0004.
+        // Track in poster
+        // Indicates that the track is used in the movie's poster. Flag
+        // value is 0x0008.
 
-            d.writeMacTimestamp(creationTime); // creationTime
-            // A 32-bit integer that indicates the calendar date and time (expressed
-            // in seconds since midnight, January 1, 1904) when the track header was
-            // created. It is strongly recommended that this value should be
-            // specified using coordinated universal time (UTC).
+        d.writeMacTimestamp(creationTime); // creationTime
+        // A 32-bit integer that indicates the calendar date and time (expressed
+        // in seconds since midnight, January 1, 1904) when the track header was
+        // created. It is strongly recommended that this value should be
+        // specified using coordinated universal time (UTC).
 
-            d.writeMacTimestamp(modificationTime); // modificationTime
-            // A 32-bit integer that indicates the calendar date and time (expressed
-            // in seconds since midnight, January 1, 1904) when the track header was
-            // changed. It is strongly recommended that this value should be
-            // specified using coordinated universal time (UTC).
+        d.writeMacTimestamp(modificationTime); // modificationTime
+        // A 32-bit integer that indicates the calendar date and time (expressed
+        // in seconds since midnight, January 1, 1904) when the track header was
+        // changed. It is strongly recommended that this value should be
+        // specified using coordinated universal time (UTC).
 
-            d.writeInt(1); // trackId
-            // A 32-bit integer that uniquely identifies the track. The value 0
-            // cannot be used.
+        d.writeInt(1); // trackId
+        // A 32-bit integer that uniquely identifies the track. The value 0
+        // cannot be used.
 
-            d.writeInt(0); // reserved;
-            // A 32-bit integer that is reserved for use by Apple. Set this field to
-            // 0.
+        d.writeInt(0); // reserved;
+        // A 32-bit integer that is reserved for use by Apple. Set this field to
+        // 0.
 
-            d.writeInt(duration); // duration
-            // A time value that indicates the duration of this track (in the
-            // movie's time coordinate system). Note that this property is derived
-            // from the track's edits. The value of this field is equal to the sum
-            // of the durations of all of the track's edits. If there is no edit
-            // list, then the duration is the sum of the sample durations, converted
-            // into the movie timescale.
+        d.writeInt(duration); // duration
+        // A time value that indicates the duration of this track (in the
+        // movie's time coordinate system). Note that this property is derived
+        // from the track's edits. The value of this field is equal to the sum
+        // of the durations of all of the track's edits. If there is no edit
+        // list, then the duration is the sum of the sample durations, converted
+        // into the movie timescale.
 
-            d.writeLong(0); // reserved
-            // An 8-byte value that is reserved for use by Apple. Set this field to
-            // 0.
+        d.writeLong(0); // reserved
+        // An 8-byte value that is reserved for use by Apple. Set this field to
+        // 0.
 
-            d.writeShort(0); // layer;
-            // A 16-bit integer that indicates this track's spatial priority in its
-            // movie. The QuickTime Movie Toolbox uses this value to determine how
-            // tracks overlay one another. Tracks with lower layer values are
-            // displayed in front of tracks with higher layer values.
+        d.writeShort(0); // layer;
+        // A 16-bit integer that indicates this track's spatial priority in its
+        // movie. The QuickTime Movie Toolbox uses this value to determine how
+        // tracks overlay one another. Tracks with lower layer values are
+        // displayed in front of tracks with higher layer values.
 
-            d.writeShort(0); // alternate group
-            // A 16-bit integer that specifies a collection of movie tracks that
-            // contain alternate data for one another. QuickTime chooses one track
-            // from the group to be used when the movie is played. The choice may be
-            // based on such considerations as playback quality, language, or the
-            // capabilities of the computer.
+        d.writeShort(0); // alternate group
+        // A 16-bit integer that specifies a collection of movie tracks that
+        // contain alternate data for one another. QuickTime chooses one track
+        // from the group to be used when the movie is played. The choice may be
+        // based on such considerations as playback quality, language, or the
+        // capabilities of the computer.
 
-            d.writeShort(0); // volume
-            // A 16-bit fixed-point value that indicates how loudly this track's
-            // sound is to be played. A value of 1.0 indicates normal volume.
+        d.writeShort(0); // volume
+        // A 16-bit fixed-point value that indicates how loudly this track's
+        // sound is to be played. A value of 1.0 indicates normal volume.
 
-            d.writeShort(0); // reserved
-            // A 16-bit integer that is reserved for use by Apple. Set this field to
-            // 0.
+        d.writeShort(0); // reserved
+        // A 16-bit integer that is reserved for use by Apple. Set this field to
+        // 0.
 
-            d.writeFixed16D16(1f); // matrix[0]
-            d.writeFixed16D16(0f); // matrix[1]
-            d.writeFixed2D30(0f); // matrix[2]
-            d.writeFixed16D16(0f); // matrix[3]
-            d.writeFixed16D16(1f); // matrix[4]
-            d.writeFixed2D30(0); // matrix[5]
-            d.writeFixed16D16(0); // matrix[6]
-            d.writeFixed16D16(0); // matrix[7]
-            d.writeFixed2D30(1f); // matrix[8]
-            // The matrix structure associated with this track.
-            // See Figure 2-8 for an illustration of a matrix structure:
-            // http://developer.apple.com/documentation/QuickTime/QTFF/QTFFChap2/chapter_3_section_3.html#//apple_ref/doc/uid/TP40000939-CH204-32967
+        d.writeFixed16D16(1f); // matrix[0]
+        d.writeFixed16D16(0f); // matrix[1]
+        d.writeFixed2D30(0f); // matrix[2]
+        d.writeFixed16D16(0f); // matrix[3]
+        d.writeFixed16D16(1f); // matrix[4]
+        d.writeFixed2D30(0); // matrix[5]
+        d.writeFixed16D16(0); // matrix[6]
+        d.writeFixed16D16(0); // matrix[7]
+        d.writeFixed2D30(1f); // matrix[8]
+        // The matrix structure associated with this track.
+        // See Figure 2-8 for an illustration of a matrix structure:
+        // http://developer.apple.com/documentation/QuickTime/QTFF/QTFFChap2/chapter_3_section_3.html#//apple_ref/doc/uid/TP40000939-CH204-32967
 
-            d.writeFixed16D16(imgWidth); // width
-            // A 32-bit fixed-point number that specifies the width of this track in
-            // pixels.
+        d.writeFixed16D16(imgWidth); // width
+        // A 32-bit fixed-point number that specifies the width of this track in
+        // pixels.
 
-            d.writeFixed16D16(imgHeight); // height
-            // A 32-bit fixed-point number that indicates the height of this track
-            // in pixels.
+        d.writeFixed16D16(imgHeight); // height
+        // A 32-bit fixed-point number that indicates the height of this track
+        // in pixels.
+        return leaf;
+    }
 
-    /* Media Atom ========= */
-            CompositeAtom mdiaAtom = new CompositeAtom(MDIA, out);
-            trakAtom.add(mdiaAtom);
+    /**
+     * Media Atom
+     *
+     * @param modificationTime calendar date and time of last modification
+     * @param duration         time value that indicates duration of video
+     * @param out              ImageOutputStream for this data atom
+     * @return filled Media Atom
+     * @throws IOException if any write operation fails
+     */
+    private CompositeAtom createMediaAtom(Date modificationTime, int duration, ImageOutputStream out) throws IOException {
+        CompositeAtom mediaAtom = new CompositeAtom(MEDIA, out);
+        mediaAtom.add(createMediaHeaderAtom(modificationTime, duration, out));
+        mediaAtom.add(createMediaHandlerAtom(out));
+        mediaAtom.add(createMediaInformationAtom(out));
+        return mediaAtom;
+    }
 
-    /*
-     * Media Header atom ------- typedef struct { byte version; byte[3] flags; mactimestamp creationTime; mactimestamp modificationTime; int
+    /**
+     * Media Header atom
+     * typedef struct { byte version; byte[3] flags; mactimestamp creationTime; mactimestamp modificationTime; int
      * timeScale; int duration; short language; short quality; } mediaHeaderAtom;
+     *
+     * @param modificationTime calendar date and time of last modification
+     * @param duration         time value that indicates duration of video
+     * @param out              ImageOutputStream for this data atom
+     * @return filled Media Header Atom
+     * @throws IOException if any write operation fails
      */
-            leaf = new DataAtom(MDHD, out);
-            mdiaAtom.add(leaf);
-            d = leaf.getOutputStream();
-            d.write(0); // version
-            // One byte that specifies the version of this header atom.
+    private DataAtom createMediaHeaderAtom(Date modificationTime, int duration, ImageOutputStream out) throws IOException {
+        DataAtom mediaHangler = new DataAtom(MEDIA_HEADER, out);
+        DataAtomOutputStream d = mediaHangler.getOutputStream();
+        d.write(0); // version
+        // One byte that specifies the version of this header atom.
 
-            d.write(0); // flag[0]
-            d.write(0); // flag[1]
-            d.write(0); // flag[2]
-            // Three bytes of space for media header flags. Set this field to 0.
+        d.write(0); // flag[0]
+        d.write(0); // flag[1]
+        d.write(0); // flag[2]
+        // Three bytes of space for media header flags. Set this field to 0.
 
-            d.writeMacTimestamp(creationTime); // creationTime
-            // A 32-bit integer that specifies (in seconds since midnight, January
-            // 1, 1904) when the media atom was created. It is strongly recommended
-            // that this value should be specified using coordinated universal time
-            // (UTC).
+        d.writeMacTimestamp(creationTime); // creationTime
+        // A 32-bit integer that specifies (in seconds since midnight, January
+        // 1, 1904) when the media atom was created. It is strongly recommended
+        // that this value should be specified using coordinated universal time
+        // (UTC).
 
-            d.writeMacTimestamp(modificationTime); // modificationTime
-            // A 32-bit integer that specifies (in seconds since midnight, January
-            // 1, 1904) when the media atom was changed. It is strongly recommended
-            // that this value should be specified using coordinated universal time
-            // (UTC).
+        d.writeMacTimestamp(modificationTime); // modificationTime
+        // A 32-bit integer that specifies (in seconds since midnight, January
+        // 1, 1904) when the media atom was changed. It is strongly recommended
+        // that this value should be specified using coordinated universal time
+        // (UTC).
 
-            d.writeInt(timeScale); // timeScale
-            // A time value that indicates the time scale for this media-that is,
-            // the number of time units that pass per second in its time coordinate
-            // system.
+        d.writeInt(timeScale); // timeScale
+        // A time value that indicates the time scale for this media-that is,
+        // the number of time units that pass per second in its time coordinate
+        // system.
 
-            d.writeInt(duration); // duration
-            // The duration of this media in units of its time scale.
+        d.writeInt(duration); // duration
+        // The duration of this media in units of its time scale.
 
-            d.writeShort(0); // language;
-            // A 16-bit integer that specifies the language code for this media.
-            // See "Language Code Values" for valid language codes:
-            // http://developer.apple.com/documentation/QuickTime/QTFF/QTFFChap4/chapter_5_section_2.html#//apple_ref/doc/uid/TP40000939-CH206-27005
+        d.writeShort(0); // language;
+        // A 16-bit integer that specifies the language code for this media.
+        // See "Language Code Values" for valid language codes:
+        // http://developer.apple.com/documentation/QuickTime/QTFF/QTFFChap4/chapter_5_section_2.html#//apple_ref/doc/uid/TP40000939-CH206-27005
 
-            d.writeShort(0); // quality
-            // A 16-bit integer that specifies the media's playback quality-that is,
-            // its suitability for playback in a given environment.
+        d.writeShort(0); // quality
+        // A 16-bit integer that specifies the media's playback quality-that is,
+        // its suitability for playback in a given environment.
+        return mediaHangler;
+    }
 
-        /* Media Handler Atom ------- */
-            leaf = new DataAtom(HDLR, out);
-            mdiaAtom.add(leaf);
+    /**
+     * Create Handler Atom
+     *
+     * @param out           ImageOutputStream for this data atom
+     * @param componentType componentType - A four-character code that identifies the type of the handler.
+     *                      Only two values are valid for this field: 'mhlr' for media handlers and 'dhlr' for data handlers.
+     * @return filled Handler Atom
+     * @throws IOException if any write operation fails
+     */
+    private DataAtom createHandlerAtom(ImageOutputStream out, AtomType componentType) throws IOException {
+        DataAtom handlerAtom = new DataAtom(HANDLER, out);
+
     /*
      * typedef struct { byte version; byte[3] flags; magic componentType; magic componentSubtype; magic componentManufacturer; int componentFlags; int
      * componentFlagsMask; cstring componentName; } handlerReferenceAtom;
      */
-            d = leaf.getOutputStream();
-            d.write(0); // version
-            // A 1-byte specification of the version of this handler information.
+        DataAtomOutputStream d = handlerAtom.getOutputStream();
+        d.write(0); // version
+        // A 1-byte specification of the version of this handler information.
 
-            d.write(0); // flag[0]
-            d.write(0); // flag[1]
-            d.write(0); // flag[2]
-            // A 3-byte space for handler information flags. Set this field to 0.
+        d.write(0); // flag[0]
+        d.write(0); // flag[1]
+        d.write(0); // flag[2]
+        // A 3-byte space for handler information flags. Set this field to 0.
 
-            d.writeType(MHLR); // componentType
-            // A four-character code that identifies the type of the handler. Only
-            // two values are valid for this field: 'mhlr' for media handlers and
-            // 'dhlr' for data handlers.
+        d.writeType(componentType); // componentType
+        // A four-character code that identifies the type of the handler. Only
+        // two values are valid for this field: 'mhlr' for media handlers and
+        // 'dhlr' for data handlers.
 
-            d.writeType(VIDE); // componentSubtype
-            // A four-character code that identifies the type of the media handler
-            // or data handler. For media handlers, this field defines the type of
-            // data-for example, 'vide' for video data or 'soun' for sound data.
-            //
-            // For data handlers, this field defines the data reference type-for
-            // example, a component subtype value of 'alis' identifies a file alias.
+        d.writeType(VIDEO); // componentSubtype
+        // A four-character code that identifies the type of the media handler
+        // or data handler. For media handlers, this field defines the type of
+        // data-for example, 'vide' for video data or 'soun' for sound data.
+        //
+        // For data handlers, this field defines the data reference type-for
+        // example, a component subtype value of 'alis' identifies a file alias.
 
-            d.writeInt(0); // componentManufacturer
-            // Reserved. Set to 0.
+        d.writeInt(0); // componentManufacturer
+        // Reserved. Set to 0.
 
-            d.writeInt(0); // componentFlags
-            // Reserved. Set to 0.
+        d.writeInt(0); // componentFlags
+        // Reserved. Set to 0.
 
-            d.writeInt(0); // componentFlagsMask
-            // Reserved. Set to 0.
+        d.writeInt(0); // componentFlagsMask
+        // Reserved. Set to 0.
 
-            d.write(0); // componentName (empty string)
-            // A (counted) string that specifies the name of the component-that is,
-            // the media handler used when this media was created. This field may
-            // contain a zero-length (empty) string.
+        d.write(0); // componentName (empty string)
+        // A (counted) string that specifies the name of the component-that is,
+        // the media handler used when this media was created. This field may
+        // contain a zero-length (empty) string.
+        return handlerAtom;
+    }
 
-    /* Media Information atom ========= */
-            CompositeAtom minfAtom = new CompositeAtom(MINF, out);
-            mdiaAtom.add(minfAtom);
+    /**
+     * Media Handler Atom
+     *
+     * @param out ImageOutputStream for this data atom
+     * @return filled Media Handler Atom
+     * @throws IOException if any write operation fails
+     */
+    private DataAtom createMediaHandlerAtom(ImageOutputStream out) throws IOException {
+        return createHandlerAtom(out, MEDIA_HANDLER);
+    }
 
-    /* Video media information atom -------- */
-            leaf = new DataAtom(VMHD, out);
-            minfAtom.add(leaf);
+    /**
+     * Media Information atom
+     *
+     * @param out ImageOutputStream for this data atom
+     * @return filled Media Information Atom
+     * @throws IOException if any write operation fails
+     */
+    private CompositeAtom createMediaInformationAtom(ImageOutputStream out) throws IOException {
+        CompositeAtom mediaInformationAtom = new CompositeAtom(MEDIA_INFORMATION, out);
+        mediaInformationAtom.add(createVideoMediaInformationAtom(out));
+        mediaInformationAtom.add(createHandleReferenceAtom(out));
+        mediaInformationAtom.add(createDataInformationAtom(out));
+        mediaInformationAtom.add(createSampleTableAtom(out));
+        return mediaInformationAtom;
+    }
+
+    /**
+     * Video media information atom
+     *
+     * @param out ImageOutputStream for this data atom
+     * @return filled Video Media Information Atom
+     * @throws IOException if any write operation fails
+     */
+    private DataAtom createVideoMediaInformationAtom(ImageOutputStream out) throws IOException {
+        DataAtom videoMediaInformationAtom = new DataAtom(VIDEO_MEDIA_INFORMATION, out);
+
     /*
      * typedef struct { byte version; byte flag1; byte flag2; byte set vmhdFlags flag3; short graphicsMode; ushort[3] opcolor; }
      * videoMediaInformationHeaderAtom;
      */
-            d = leaf.getOutputStream();
-            d.write(0); // version
-            // One byte that specifies the version of this header atom.
+        DataAtomOutputStream d = videoMediaInformationAtom.getOutputStream();
+        d.write(0); // version
+        // One byte that specifies the version of this header atom.
 
-            d.write(0); // flag[0]
-            d.write(0); // flag[1]
-            d.write(0x1); // flag[2]
-            // Three bytes of space for media header flags.
-            // This is a compatibility flag that allows QuickTime to distinguish
-            // between movies created with QuickTime 1.0 and newer movies. You
-            // should always set this flag to 1, unless you are creating a movie
-            // intended for playback using version 1.0 of QuickTime. This flag's
-            // value is 0x0001.
+        d.write(0); // flag[0]
+        d.write(0); // flag[1]
+        d.write(0x1); // flag[2]
+        // Three bytes of space for media header flags.
+        // This is a compatibility flag that allows QuickTime to distinguish
+        // between movies created with QuickTime 1.0 and newer movies. You
+        // should always set this flag to 1, unless you are creating a movie
+        // intended for playback using version 1.0 of QuickTime. This flag's
+        // value is 0x0001.
 
-            d.writeShort(0x40); // graphicsMode (0x40 = ditherCopy)
-            // A 16-bit integer that specifies the transfer mode. The transfer mode
-            // specifies which Boolean operation QuickDraw should perform when
-            // drawing or transferring an image from one location to another.
-            // See "Graphics Modes" for a list of graphics modes supported by
-            // QuickTime:
-            // http://developer.apple.com/documentation/QuickTime/QTFF/QTFFChap4/chapter_5_section_5.html#//apple_ref/doc/uid/TP40000939-CH206-18741
+        d.writeShort(0x40); // graphicsMode (0x40 = ditherCopy)
+        // A 16-bit integer that specifies the transfer mode. The transfer mode
+        // specifies which Boolean operation QuickDraw should perform when
+        // drawing or transferring an image from one location to another.
+        // See "Graphics Modes" for a list of graphics modes supported by
+        // QuickTime:
+        // http://developer.apple.com/documentation/QuickTime/QTFF/QTFFChap4/chapter_5_section_5.html#//apple_ref/doc/uid/TP40000939-CH206-18741
 
-            d.writeUShort(0); // opcolor[0]
-            d.writeUShort(0); // opcolor[1]
-            d.writeUShort(0); // opcolor[2]
-            // Three 16-bit values that specify the red, green, and blue colors for
-            // the transfer mode operation indicated in the graphics mode field.
+        d.writeUShort(0); // opcolor[0]
+        d.writeUShort(0); // opcolor[1]
+        d.writeUShort(0); // opcolor[2]
+        // Three 16-bit values that specify the red, green, and blue colors for
+        // the transfer mode operation indicated in the graphics mode field.
+        return videoMediaInformationAtom;
+    }
 
-    /* Handle reference atom -------- */
-            // The handler reference atom specifies the media handler component that
-            // is to be used to interpret the media's data. The handler reference
-            // atom has an atom type value of 'hdlr'.
-            leaf = new DataAtom(HDLR, out);
-            minfAtom.add(leaf);
-    /*
-     * typedef struct { byte version; byte[3] flags; magic componentType; magic componentSubtype; magic componentManufacturer; int componentFlags; int
-     * componentFlagsMask; cstring componentName; } handlerReferenceAtom;
+    /**
+     * Handle reference atom
+     * The handler reference atom specifies the media handler component that
+     * is to be used to interpret the media's data. The handler reference
+     * atom has an atom type value of 'hdlr'.
+     *
+     * @param out ImageOutputStream for this data atom
+     * @return filled Handle Reference Atom
+     * @throws IOException if any write operation fails
      */
-            d = leaf.getOutputStream();
-            d.write(0); // version
-            // A 1-byte specification of the version of this handler information.
+    private DataAtom createHandleReferenceAtom(ImageOutputStream out) throws IOException {
+        return createHandlerAtom(out, DATA_HANDLER);
+    }
 
-            d.write(0); // flag[0]
-            d.write(0); // flag[1]
-            d.write(0); // flag[2]
-            // A 3-byte space for handler information flags. Set this field to 0.
+    /**
+     * Data Information Atom
+     *
+     * @param out ImageOutputStream for this data atom
+     * @return filled Data Information Atom
+     * @throws IOException if any write operation fails
+     */
+    private CompositeAtom createDataInformationAtom(ImageOutputStream out) throws IOException {
+        CompositeAtom dataInformationAtom = new CompositeAtom(DATA_INFORMATION, out);
+        dataInformationAtom.add(createDataReferenceAtom(out));
+        return dataInformationAtom;
+    }
 
-            d.writeType(DHLR); // componentType
-            // A four-character code that identifies the type of the handler. Only
-            // two values are valid for this field: 'mhlr' for media handlers and
-            // 'dhlr' for data handlers.
+    /**
+     * Data reference atom
+     * Data reference atoms contain tabular data that instructs the data
+     * handler component how to access the media's data.
+     *
+     * @param out ImageOutputStream for this data atom
+     * @return filled Data Reference Atom
+     * @throws IOException if any write operation fails
+     */
+    private DataAtom createDataReferenceAtom(ImageOutputStream out) throws IOException {
 
-            d.writeType(ALIS); // componentSubtype
-            // A four-character code that identifies the type of the media handler
-            // or data handler. For media handlers, this field defines the type of
-            // data-for example, 'vide' for video data or 'soun' for sound data.
-            // For data handlers, this field defines the data reference type-for
-            // example, a component subtype value of 'alis' identifies a file alias.
+        DataAtom leaf = new DataAtom(DATA_REFERENCE, out);
 
-            d.writeInt(0); // componentManufacturer
-            // Reserved. Set to 0.
-
-            d.writeInt(0); // componentFlags
-            // Reserved. Set to 0.
-
-            d.writeInt(0); // componentFlagsMask
-            // Reserved. Set to 0.
-
-            d.write(0); // componentName (empty string)
-            // A (counted) string that specifies the name of the component-that is,
-            // the media handler used when this media was created. This field may
-            // contain a zero-length (empty) string.
-
-    /* Data information atom ===== */
-            CompositeAtom dinfAtom = new CompositeAtom(DINF, out);
-            minfAtom.add(dinfAtom);
-
-    /* Data reference atom ----- */
-            // Data reference atoms contain tabular data that instructs the data
-            // handler component how to access the media's data.
-            leaf = new DataAtom(DREF, out);
-            dinfAtom.add(leaf);
     /*
      * typedef struct { ubyte version; ubyte[3] flags; int numberOfEntries; dataReferenceEntry dataReference[numberOfEntries]; } dataReferenceAtom;
      *
@@ -620,56 +608,79 @@ public class QuickTimeOutputStream {
      * typedef struct { int size; magic type; byte version; ubyte flag1; ubyte flag2; ubyte set drefEntryFlags flag3; byte[size - 12] data; }
      * dataReferenceEntry;
      */
-            d = leaf.getOutputStream();
-            d.write(0); // version
-            // A 1-byte specification of the version of this data reference atom.
+        DataAtomOutputStream d = leaf.getOutputStream();
+        d.write(0); // version
+        // A 1-byte specification of the version of this data reference atom.
 
-            d.write(0); // flag[0]
-            d.write(0); // flag[1]
-            d.write(0); // flag[2]
-            // A 3-byte space for data reference flags. Set this field to 0.
+        d.write(0); // flag[0]
+        d.write(0); // flag[1]
+        d.write(0); // flag[2]
+        // A 3-byte space for data reference flags. Set this field to 0.
 
-            d.writeInt(1); // numberOfEntries
-            // A 32-bit integer containing the count of data references that follow.
+        d.writeInt(1); // numberOfEntries
+        // A 32-bit integer containing the count of data references that follow.
 
-            d.writeInt(12); // dataReference.size
-            // A 32-bit integer that specifies the number of bytes in the data
-            // reference.
+        d.writeInt(12); // dataReference.size
+        // A 32-bit integer that specifies the number of bytes in the data
+        // reference.
 
-            d.writeType(ALIS); // dataReference.type
-            // A 32-bit integer that specifies the type of the data in the data
-            // reference. Table 2-4 lists valid type values:
-            // http://developer.apple.com/documentation/QuickTime/QTFF/QTFFChap2/chapter_3_section_4.html#//apple_ref/doc/uid/TP40000939-CH204-38840
+        d.writeType(FILE_ALIAS); // dataReference.type
+        // A 32-bit integer that specifies the type of the data in the data
+        // reference. Table 2-4 lists valid type values:
+        // http://developer.apple.com/documentation/QuickTime/QTFF/QTFFChap2/chapter_3_section_4.html#//apple_ref/doc/uid/TP40000939-CH204-38840
 
-            d.write(0); // dataReference.version
-            // A 1-byte specification of the version of the data reference.
+        d.write(0); // dataReference.version
+        // A 1-byte specification of the version of the data reference.
 
-            d.write(0); // dataReference.flag1
-            d.write(0); // dataReference.flag2
-            d.write(0x1); // dataReference.flag3
-            // A 3-byte space for data reference flags. There is one defined flag.
-            //
-            // Self reference
-            // This flag indicates that the media's data is in the same file as
-            // the movie atom. On the Macintosh, and other file systems with
-            // multifork files, set this flag to 1 even if the data resides in
-            // a different fork from the movie atom. This flag's value is
-            // 0x0001.
+        d.write(0); // dataReference.flag1
+        d.write(0); // dataReference.flag2
+        d.write(0x1); // dataReference.flag3
+        // A 3-byte space for data reference flags. There is one defined flag.
+        //
+        // Self reference
+        // This flag indicates that the media's data is in the same file as
+        // the movie atom. On the Macintosh, and other file systems with
+        // multifork files, set this flag to 1 even if the data resides in
+        // a different fork from the movie atom. This flag's value is
+        // 0x0001.
+        return leaf;
+    }
 
-    /* Sample Table atom ========= */
-            CompositeAtom stblAtom = new CompositeAtom(STBL, out);
-            minfAtom.add(stblAtom);
+    /**
+     * Sample Table Atom
+     *
+     * @param out ImageOutputStream for this data atom
+     * @return filled Sample Table Atom
+     * @throws IOException if any write operation fails
+     */
+    private CompositeAtom createSampleTableAtom(ImageOutputStream out) throws IOException {
+        CompositeAtom sampleTableAtom = new CompositeAtom(SAMPLE_TABLE, out);
+        sampleTableAtom.add(createSampleDescriptionAtom(out));
+        sampleTableAtom.add(createTimeToSampleAtom(out));
+        sampleTableAtom.add(createSamplesToChunksMappingAtom(out));
+        sampleTableAtom.add(createSamplesSizeAtom(out));
+        sampleTableAtom.add(createChunkOffsetTableAtom(out));
+        return sampleTableAtom;
+    }
 
-    /* Sample Description atom ------- */
-            // The sample description atom stores information that allows you to
-            // decode samples in the media. The data stored in the sample
-            // description varies, depending on the media type. For example, in the
-            // case of video media, the sample descriptions are image description
-            // structures. The sample description information for each media type is
-            // explained in "Media Data Atom Types":
-            // http://developer.apple.com/documentation/QuickTime/QTFF/QTFFChap3/chapter_4_section_1.html#//apple_ref/doc/uid/TP40000939-CH205-SW1
-            leaf = new DataAtom(STSD, out);
-            stblAtom.add(leaf);
+    /**
+     * Sample Description atom
+     * The sample description atom stores information that allows you to
+     * decode samples in the media. The data stored in the sample
+     * description varies, depending on the media type. For example, in the
+     * case of video media, the sample descriptions are image description
+     * structures. The sample description information for each media type is
+     * explained in "Media Data Atom Types":
+     * <p>
+     * http://developer.apple.com/documentation/QuickTime/QTFF/QTFFChap3/chapter_4_section_1.html#//apple_ref/doc/uid/TP40000939-CH205-SW1
+     *
+     * @param out ImageOutputStream for this data atom
+     * @return filled Sample Description Atom
+     * @throws IOException if any write operation fails
+     */
+    private DataAtom createSampleDescriptionAtom(ImageOutputStream out) throws IOException {
+        DataAtom sampleDescriptionAtom = new DataAtom(SAMPLE_DESCRIPTION, out);
+
     /*
      * typedef struct { byte version; byte[3] flags; int numberOfEntries; sampleDescriptionEntry sampleDescriptionTable[numberOfEntries]; }
      * sampleDescriptionAtom;
@@ -678,501 +689,665 @@ public class QuickTimeOutputStream {
      * contains the index of the data reference to use to retrieve data associated with samples that use this sample description. Data references are
      * stored in data reference atoms. byte[size - 16] data; } sampleDescriptionEntry;
      */
-            d = leaf.getOutputStream();
-            d.write(0); // version
-            // A 1-byte specification of the version of this sample description
-            // atom.
+        DataAtomOutputStream d = sampleDescriptionAtom.getOutputStream();
+        d.write(0); // version
+        // A 1-byte specification of the version of this sample description
+        // atom.
 
-            d.write(0); // flag[0]
-            d.write(0); // flag[1]
-            d.write(0); // flag[2]
-            // A 3-byte space for sample description flags. Set this field to 0.
+        d.write(0); // flag[0]
+        d.write(0); // flag[1]
+        d.write(0); // flag[2]
+        // A 3-byte space for sample description flags. Set this field to 0.
 
-            d.writeInt(1); // number of Entries
-            // A 32-bit integer containing the number of sample descriptions that
-            // follow.
+        d.writeInt(1); // number of Entries
+        // A 32-bit integer containing the number of sample descriptions that
+        // follow.
 
-            // A 32-bit integer indicating the number of bytes in the sample
-            // description.
-            switch (videoFormat) {
-                case RAW: {
-                    d.writeInt(86); // sampleDescriptionTable[0].size
-                    d.writeType(RAW); // sampleDescriptionTable[0].type
-
-                    // A 32-bit integer indicating the format of the stored data.
-                    // This depends on the media type, but is usually either the
-                    // compression format or the media type.
-
-                    d.write(new byte[6]); // sampleDescriptionTable[0].reserved
-                    // Six bytes that must be set to 0.
-
-                    d.writeShort(1); // sampleDescriptionTable[0].dataReferenceIndex
-                    // A 16-bit integer that contains the index of the data
-                    // reference to use to retrieve data associated with samples
-                    // that use this sample description. Data references are stored
-                    // in data reference atoms.
-
-                    // Video Sample Description
-                    // ------------------------
-                    // The format of the following fields is described here:
-                    // http://developer.apple.com/documentation/QuickTime/QTFF/QTFFChap3/chapter_4_section_2.html#//apple_ref/doc/uid/TP40000939-CH205-BBCGICBJ
-
-                    d.writeShort(0); // sampleDescriptionTable.videoSampleDescription.version
-                    // A 16-bit integer indicating the version number of the
-                    // compressed data. This is set to 0, unless a compressor has
-                    // changed its data format.
-
-                    d.writeShort(0); // sampleDescriptionTable.videoSampleDescription.revisionLevel
-                    // A 16-bit integer that must be set to 0.
-
-                    d.writeType(JAVA); // sampleDescriptionTable.videoSampleDescription.manufacturer
-                    // A 32-bit integer that specifies the developer of the
-                    // compressor that generated the compressed data. Often this
-                    // field contains 'appl' to indicate Apple Computer, Inc.
-
-                    d.writeInt(0); // sampleDescriptionTable.videoSampleDescription.temporalQuality
-                    // A 32-bit integer containing a value from 0 to 1023 indicating
-                    // the degree of temporal compression.
-
-                    d.writeInt(512); // sampleDescriptionTable.videoSampleDescription.spatialQuality
-                    // A 32-bit integer containing a value from 0 to 1024 indicating
-                    // the degree of spatial compression.
-
-                    d.writeUShort(imgWidth); // sampleDescriptionTable.videoSampleDescription.width
-                    // A 16-bit integer that specifies the width of the source image
-                    // in pixels.
-
-                    d.writeUShort(imgHeight); // sampleDescriptionTable.videoSampleDescription.height
-                    // A 16-bit integer that specifies the height of the source image in
-                    // pixels.
-
-                    d.writeFixed16D16(72.0); // sampleDescriptionTable.videoSampleDescription.horizontalResolution
-                    // A 32-bit fixed-point number containing the horizontal
-                    // resolution of the image in pixels per inch.
-
-                    d.writeFixed16D16(72.0); // sampleDescriptionTable.videoSampleDescription.verticalResolution
-                    // A 32-bit fixed-point number containing the vertical
-                    // resolution of the image in pixels per inch.
-
-                    d.writeInt(0); // sampleDescriptionTable.videoSampleDescription.dataSize
-                    // A 32-bit integer that must be set to 0.
-
-                    d.writeShort(1); // sampleDescriptionTable.videoSampleDescription.frameCount
-                    // A 16-bit integer that indicates how many frames of compressed
-                    // data are stored in each sample. Usually set to 1.
-
-                    d.writePString("None", 32); // sampleDescriptionTable.videoSampleDescription.compressorName
-                    // A 32-byte Pascal string containing the name of the compressor
-                    // that created the image, such as "jpeg".
-
-                    d.writeShort(24); // sampleDescriptionTable.videoSampleDescription.depth
-                    // A 16-bit integer that indicates the pixel depth of the
-                    // compressed image. Values of 1, 2, 4, 8 ,16, 24, and 32
-                    // indicate the depth of color images. The value 32 should be
-                    // used only if the image contains an alpha channel. Values of
-                    // 34, 36, and 40 indicate 2-, 4-, and 8-bit grayscale,
-                    // respectively, for grayscale images.
-
-                    d.writeShort(-1); // sampleDescriptionTable.videoSampleDescription.colorTableID
-                    // A 16-bit integer that identifies which color table to use.
-                    // If this field is set to -1, the default color table should be
-                    // used for the specified depth. For all depths below 16 bits
-                    // per pixel, this indicates a standard Macintosh color table
-                    // for the specified depth. Depths of 16, 24, and 32 have no
-                    // color table.
-
-                    break;
-                }
-                case JPG: {
-                    d.writeInt(86); // sampleDescriptionTable[0].size
-                    d.writeType(JPEG); // sampleDescriptionTable[0].type
-
-                    // A 32-bit integer indicating the format of the stored data.
-                    // This depends on the media type, but is usually either the
-                    // compression format or the media type.
-
-                    d.write(new byte[6]); // sampleDescriptionTable[0].reserved
-                    // Six bytes that must be set to 0.
-
-                    d.writeShort(1); // sampleDescriptionTable[0].dataReferenceIndex
-                    // A 16-bit integer that contains the index of the data
-                    // reference to use to retrieve data associated with samples
-                    // that use this sample description. Data references are stored
-                    // in data reference atoms.
-
-                    // Video Sample Description
-                    // ------------------------
-                    // The format of the following fields is described here:
-                    // http://developer.apple.com/documentation/QuickTime/QTFF/QTFFChap3/chapter_4_section_2.html#//apple_ref/doc/uid/TP40000939-CH205-BBCGICBJ
-
-                    d.writeShort(0); // sampleDescriptionTable.videoSampleDescription.version
-                    // A 16-bit integer indicating the version number of the
-                    // compressed data. This is set to 0, unless a compressor has
-                    // changed its data format.
-
-                    d.writeShort(0); // sampleDescriptionTable.videoSampleDescription.revisionLevel
-                    // A 16-bit integer that must be set to 0.
-
-                    d.writeType(JAVA); // sampleDescriptionTable.videoSampleDescription.manufacturer
-                    // A 32-bit integer that specifies the developer of the
-                    // compressor that generated the compressed data. Often this
-                    // field contains 'appl' to indicate Apple Computer, Inc.
-
-                    d.writeInt(0); // sampleDescriptionTable.videoSampleDescription.temporalQuality
-                    // A 32-bit integer containing a value from 0 to 1023 indicating
-                    // the degree of temporal compression.
-
-                    d.writeInt(512); // sampleDescriptionTable.videoSampleDescription.spatialQuality
-                    // A 32-bit integer containing a value from 0 to 1024 indicating
-                    // the degree of spatial compression.
-
-                    d.writeUShort(imgWidth); // sampleDescriptionTable.videoSampleDescription.width
-                    // A 16-bit integer that specifies the width of the source image
-                    // in pixels.
-
-                    d.writeUShort(imgHeight); // sampleDescriptionTable.videoSampleDescription.height
-                    // A 16-bit integer that specifies the height of the source image in
-                    // pixels.
-
-                    d.writeFixed16D16(72.0); // sampleDescriptionTable.videoSampleDescription.horizontalResolution
-                    // A 32-bit fixed-point number containing the horizontal
-                    // resolution of the image in pixels per inch.
-
-                    d.writeFixed16D16(72.0); // sampleDescriptionTable.videoSampleDescription.verticalResolution
-                    // A 32-bit fixed-point number containing the vertical
-                    // resolution of the image in pixels per inch.
-
-                    d.writeInt(0); // sampleDescriptionTable.videoSampleDescription.dataSize
-                    // A 32-bit integer that must be set to 0.
-
-                    d.writeShort(1); // sampleDescriptionTable.videoSampleDescription.frameCount
-                    // A 16-bit integer that indicates how many frames of compressed
-                    // data are stored in each sample. Usually set to 1.
-
-                    d.writePString("Photo - JPEG", 32); // sampleDescriptionTable.videoSampleDescription.compressorName
-                    // A 32-byte Pascal string containing the name of the compressor
-                    // that created the image, such as "jpeg".
-
-                    d.writeShort(24); // sampleDescriptionTable.videoSampleDescription.depth
-                    // A 16-bit integer that indicates the pixel depth of the
-                    // compressed image. Values of 1, 2, 4, 8 ,16, 24, and 32
-                    // indicate the depth of color images. The value 32 should be
-                    // used only if the image contains an alpha channel. Values of
-                    // 34, 36, and 40 indicate 2-, 4-, and 8-bit grayscale,
-                    // respectively, for grayscale images.
-
-                    d.writeShort(-1); // sampleDescriptionTable.videoSampleDescription.colorTableID
-                    // A 16-bit integer that identifies which color table to use.
-                    // If this field is set to -1, the default color table should be
-                    // used for the specified depth. For all depths below 16 bits
-                    // per pixel, this indicates a standard Macintosh color table
-                    // for the specified depth. Depths of 16, 24, and 32 have no
-                    // color table.
-
-                    break;
-                }
-                case PNG: {
-                    d.writeInt(86); // sampleDescriptionTable[0].size
-                    d.writeType(PNG); // sampleDescriptionTable[0].type
-                    // A 32-bit integer indicating the format of the stored data.
-                    // This depends on the media type, but is usually either the
-                    // compression format or the media type.
-
-                    d.write(new byte[6]); // sampleDescriptionTable[0].reserved
-                    // Six bytes that must be set to 0.
-
-                    d.writeShort(1); // sampleDescriptionTable[0].dataReferenceIndex
-                    // A 16-bit integer that contains the index of the data
-                    // reference to use to retrieve data associated with samples
-                    // that use this sample description. Data references are stored
-                    // in data reference atoms.
-
-                    // Video Sample Description
-                    // ------------------------
-                    // The format of the following fields is described here:
-                    // http://developer.apple.com/documentation/QuickTime/QTFF/QTFFChap3/chapter_4_section_2.html#//apple_ref/doc/uid/TP40000939-CH205-BBCGICBJ
-
-                    d.writeShort(0); // sampleDescriptionTable.videoSampleDescription.version
-                    // A 16-bit integer indicating the version number of the
-                    // compressed data. This is set to 0, unless a compressor has
-                    // changed its data format.
-
-                    d.writeShort(0); // sampleDescriptionTable.videoSampleDescription.revisionLevel
-                    // A 16-bit integer that must be set to 0.
-
-                    d.writeType(JAVA); // sampleDescriptionTable.videoSampleDescription.manufacturer
-                    // A 32-bit integer that specifies the developer of the
-                    // compressor that generated the compressed data. Often this
-                    // field contains 'appl' to indicate Apple Computer, Inc.
-
-                    d.writeInt(0); // sampleDescriptionTable.videoSampleDescription.temporalQuality
-                    // A 32-bit integer containing a value from 0 to 1023 indicating
-                    // the degree of temporal compression.
-
-                    d.writeInt(512); // sampleDescriptionTable.videoSampleDescription.spatialQuality
-                    // A 32-bit integer containing a value from 0 to 1024 indicating
-                    // the degree of spatial compression.
-
-                    d.writeUShort(imgWidth); // sampleDescriptionTable.videoSampleDescription.width
-                    // A 16-bit integer that specifies the width of the source image
-                    // in pixels.
-
-                    d.writeUShort(imgHeight); // sampleDescriptionTable.videoSampleDescription.height
-                    // A 16-bit integer that specifies the height of the source image in
-                    // pixels.
-
-                    d.writeFixed16D16(72.0); // sampleDescriptionTable.videoSampleDescription.horizontalResolution
-                    // A 32-bit fixed-point number containing the horizontal
-                    // resolution of the image in pixels per inch.
-
-                    d.writeFixed16D16(72.0); // sampleDescriptionTable.videoSampleDescription.verticalResolution
-                    // A 32-bit fixed-point number containing the vertical
-                    // resolution of the image in pixels per inch.
-
-                    d.writeInt(0); // sampleDescriptionTable.videoSampleDescription.dataSize
-                    // A 32-bit integer that must be set to 0.
-
-                    d.writeShort(1); // sampleDescriptionTable.videoSampleDescription.frameCount
-                    // A 16-bit integer that indicates how many frames of compressed
-                    // data are stored in each sample. Usually set to 1.
-
-                    d.writePString("PNG", 32); // sampleDescriptionTable.videoSampleDescription.compressorName
-                    // A 32-byte Pascal string containing the name of the compressor
-                    // that created the image, such as "jpeg".
-
-                    d.writeShort(24); // sampleDescriptionTable.videoSampleDescription.depth
-                    // A 16-bit integer that indicates the pixel depth of the
-                    // compressed image. Values of 1, 2, 4, 8 ,16, 24, and 32
-                    // indicate the depth of color images. The value 32 should be
-                    // used only if the image contains an alpha channel. Values of
-                    // 34, 36, and 40 indicate 2-, 4-, and 8-bit grayscale,
-                    // respectively, for grayscale images.
-
-                    d.writeShort(-1); // sampleDescriptionTable.videoSampleDescription.colorTableID
-                    // A 16-bit integer that identifies which color table to use.
-                    // If this field is set to -1, the default color table should be
-                    // used for the specified depth. For all depths below 16 bits
-                    // per pixel, this indicates a standard Macintosh color table
-                    // for the specified depth. Depths of 16, 24, and 32 have no
-                    // color table.
-
-                    break;
-                }
-                default:
-                    throw new IllegalStateException("Such video format is not supported: " + videoFormat);
+        // A 32-bit integer indicating the number of bytes in the sample
+        // description.
+        switch (videoFormat) {
+            case RAW: {
+                writeRawSampleDescriptionAtomData(d);
+                break;
             }
+            case JPG: {
+                writeJpgSampleDescriptionAtomData(d);
+                break;
+            }
+            case PNG: {
+                writePngSampleDescriptionAtomData(d);
+                break;
+            }
+            default:
+                throw new IllegalStateException("Such video format is not supported: " + videoFormat);
+        }
+        return sampleDescriptionAtom;
+    }
 
-    /* Time to Sample atom ---- */
-            // Time-to-sample atoms store duration information for a media's
-            // samples, providing a mapping from a time in a media to the
-            // corresponding data sample. The time-to-sample atom has an atom type
-            // of 'stts'.
-            leaf = new DataAtom(STTS, out);
-            stblAtom.add(leaf);
-    /*
-     * typedef struct { byte version; byte[3] flags; int numberOfEntries; timeToSampleTable timeToSampleTable[numberOfEntries]; } timeToSampleAtom;
+    private void writeRawSampleDescriptionAtomData(DataAtomOutputStream d) throws IOException {
+        d.writeInt(86); // sampleDescriptionTable[0].size
+        d.writeType(RAW); // sampleDescriptionTable[0].type
+
+        // A 32-bit integer indicating the format of the stored data.
+        // This depends on the media type, but is usually either the
+        // compression format or the media type.
+
+        d.write(new byte[6]); // sampleDescriptionTable[0].reserved
+        // Six bytes that must be set to 0.
+
+        d.writeShort(1); // sampleDescriptionTable[0].dataReferenceIndex
+        // A 16-bit integer that contains the index of the data
+        // reference to use to retrieve data associated with samples
+        // that use this sample description. Data references are stored
+        // in data reference atoms.
+
+        // Video Sample Description
+        // ------------------------
+        // The format of the following fields is described here:
+        // http://developer.apple.com/documentation/QuickTime/QTFF/QTFFChap3/chapter_4_section_2.html#//apple_ref/doc/uid/TP40000939-CH205-BBCGICBJ
+
+        d.writeShort(0); // sampleDescriptionTable.videoSampleDescription.version
+        // A 16-bit integer indicating the version number of the
+        // compressed data. This is set to 0, unless a compressor has
+        // changed its data format.
+
+        d.writeShort(0); // sampleDescriptionTable.videoSampleDescription.revisionLevel
+        // A 16-bit integer that must be set to 0.
+
+        d.writeType(JAVA); // sampleDescriptionTable.videoSampleDescription.manufacturer
+        // A 32-bit integer that specifies the developer of the
+        // compressor that generated the compressed data. Often this
+        // field contains 'appl' to indicate Apple Computer, Inc.
+
+        d.writeInt(0); // sampleDescriptionTable.videoSampleDescription.temporalQuality
+        // A 32-bit integer containing a value from 0 to 1023 indicating
+        // the degree of temporal compression.
+
+        d.writeInt(512); // sampleDescriptionTable.videoSampleDescription.spatialQuality
+        // A 32-bit integer containing a value from 0 to 1024 indicating
+        // the degree of spatial compression.
+
+        d.writeUShort(imgWidth); // sampleDescriptionTable.videoSampleDescription.width
+        // A 16-bit integer that specifies the width of the source image
+        // in pixels.
+
+        d.writeUShort(imgHeight); // sampleDescriptionTable.videoSampleDescription.height
+        // A 16-bit integer that specifies the height of the source image in
+        // pixels.
+
+        d.writeFixed16D16(72.0); // sampleDescriptionTable.videoSampleDescription.horizontalResolution
+        // A 32-bit fixed-point number containing the horizontal
+        // resolution of the image in pixels per inch.
+
+        d.writeFixed16D16(72.0); // sampleDescriptionTable.videoSampleDescription.verticalResolution
+        // A 32-bit fixed-point number containing the vertical
+        // resolution of the image in pixels per inch.
+
+        d.writeInt(0); // sampleDescriptionTable.videoSampleDescription.dataSize
+        // A 32-bit integer that must be set to 0.
+
+        d.writeShort(1); // sampleDescriptionTable.videoSampleDescription.frameCount
+        // A 16-bit integer that indicates how many frames of compressed
+        // data are stored in each sample. Usually set to 1.
+
+        d.writePString("None", 32); // sampleDescriptionTable.videoSampleDescription.compressorName
+        // A 32-byte Pascal string containing the name of the compressor
+        // that created the image, such as "jpeg".
+
+        d.writeShort(24); // sampleDescriptionTable.videoSampleDescription.depth
+        // A 16-bit integer that indicates the pixel depth of the
+        // compressed image. Values of 1, 2, 4, 8 ,16, 24, and 32
+        // indicate the depth of color images. The value 32 should be
+        // used only if the image contains an alpha channel. Values of
+        // 34, 36, and 40 indicate 2-, 4-, and 8-bit grayscale,
+        // respectively, for grayscale images.
+
+        d.writeShort(-1); // sampleDescriptionTable.videoSampleDescription.colorTableID
+        // A 16-bit integer that identifies which color table to use.
+        // If this field is set to -1, the default color table should be
+        // used for the specified depth. For all depths below 16 bits
+        // per pixel, this indicates a standard Macintosh color table
+        // for the specified depth. Depths of 16, 24, and 32 have no
+        // color table.
+    }
+
+    private void writeJpgSampleDescriptionAtomData(DataAtomOutputStream d) throws IOException {
+        d.writeInt(86); // sampleDescriptionTable[0].size
+        d.writeType(JPEG); // sampleDescriptionTable[0].type
+
+        // A 32-bit integer indicating the format of the stored data.
+        // This depends on the media type, but is usually either the
+        // compression format or the media type.
+
+        d.write(new byte[6]); // sampleDescriptionTable[0].reserved
+        // Six bytes that must be set to 0.
+
+        d.writeShort(1); // sampleDescriptionTable[0].dataReferenceIndex
+        // A 16-bit integer that contains the index of the data
+        // reference to use to retrieve data associated with samples
+        // that use this sample description. Data references are stored
+        // in data reference atoms.
+
+        // Video Sample Description
+        // ------------------------
+        // The format of the following fields is described here:
+        // http://developer.apple.com/documentation/QuickTime/QTFF/QTFFChap3/chapter_4_section_2.html#//apple_ref/doc/uid/TP40000939-CH205-BBCGICBJ
+
+        d.writeShort(0); // sampleDescriptionTable.videoSampleDescription.version
+        // A 16-bit integer indicating the version number of the
+        // compressed data. This is set to 0, unless a compressor has
+        // changed its data format.
+
+        d.writeShort(0); // sampleDescriptionTable.videoSampleDescription.revisionLevel
+        // A 16-bit integer that must be set to 0.
+
+        d.writeType(JAVA); // sampleDescriptionTable.videoSampleDescription.manufacturer
+        // A 32-bit integer that specifies the developer of the
+        // compressor that generated the compressed data. Often this
+        // field contains 'appl' to indicate Apple Computer, Inc.
+
+        d.writeInt(0); // sampleDescriptionTable.videoSampleDescription.temporalQuality
+        // A 32-bit integer containing a value from 0 to 1023 indicating
+        // the degree of temporal compression.
+
+        d.writeInt(512); // sampleDescriptionTable.videoSampleDescription.spatialQuality
+        // A 32-bit integer containing a value from 0 to 1024 indicating
+        // the degree of spatial compression.
+
+        d.writeUShort(imgWidth); // sampleDescriptionTable.videoSampleDescription.width
+        // A 16-bit integer that specifies the width of the source image
+        // in pixels.
+
+        d.writeUShort(imgHeight); // sampleDescriptionTable.videoSampleDescription.height
+        // A 16-bit integer that specifies the height of the source image in
+        // pixels.
+
+        d.writeFixed16D16(72.0); // sampleDescriptionTable.videoSampleDescription.horizontalResolution
+        // A 32-bit fixed-point number containing the horizontal
+        // resolution of the image in pixels per inch.
+
+        d.writeFixed16D16(72.0); // sampleDescriptionTable.videoSampleDescription.verticalResolution
+        // A 32-bit fixed-point number containing the vertical
+        // resolution of the image in pixels per inch.
+
+        d.writeInt(0); // sampleDescriptionTable.videoSampleDescription.dataSize
+        // A 32-bit integer that must be set to 0.
+
+        d.writeShort(1); // sampleDescriptionTable.videoSampleDescription.frameCount
+        // A 16-bit integer that indicates how many frames of compressed
+        // data are stored in each sample. Usually set to 1.
+
+        d.writePString("Photo - JPEG", 32); // sampleDescriptionTable.videoSampleDescription.compressorName
+        // A 32-byte Pascal string containing the name of the compressor
+        // that created the image, such as "jpeg".
+
+        d.writeShort(24); // sampleDescriptionTable.videoSampleDescription.depth
+        // A 16-bit integer that indicates the pixel depth of the
+        // compressed image. Values of 1, 2, 4, 8 ,16, 24, and 32
+        // indicate the depth of color images. The value 32 should be
+        // used only if the image contains an alpha channel. Values of
+        // 34, 36, and 40 indicate 2-, 4-, and 8-bit grayscale,
+        // respectively, for grayscale images.
+
+        d.writeShort(-1); // sampleDescriptionTable.videoSampleDescription.colorTableID
+        // A 16-bit integer that identifies which color table to use.
+        // If this field is set to -1, the default color table should be
+        // used for the specified depth. For all depths below 16 bits
+        // per pixel, this indicates a standard Macintosh color table
+        // for the specified depth. Depths of 16, 24, and 32 have no
+        // color table.
+    }
+
+    private void writePngSampleDescriptionAtomData(DataAtomOutputStream d) throws IOException {
+        d.writeInt(86); // sampleDescriptionTable[0].size
+        d.writeType(PNG); // sampleDescriptionTable[0].type
+        // A 32-bit integer indicating the format of the stored data.
+        // This depends on the media type, but is usually either the
+        // compression format or the media type.
+
+        d.write(new byte[6]); // sampleDescriptionTable[0].reserved
+        // Six bytes that must be set to 0.
+
+        d.writeShort(1); // sampleDescriptionTable[0].dataReferenceIndex
+        // A 16-bit integer that contains the index of the data
+        // reference to use to retrieve data associated with samples
+        // that use this sample description. Data references are stored
+        // in data reference atoms.
+
+        // Video Sample Description
+        // ------------------------
+        // The format of the following fields is described here:
+        // http://developer.apple.com/documentation/QuickTime/QTFF/QTFFChap3/chapter_4_section_2.html#//apple_ref/doc/uid/TP40000939-CH205-BBCGICBJ
+
+        d.writeShort(0); // sampleDescriptionTable.videoSampleDescription.version
+        // A 16-bit integer indicating the version number of the
+        // compressed data. This is set to 0, unless a compressor has
+        // changed its data format.
+
+        d.writeShort(0); // sampleDescriptionTable.videoSampleDescription.revisionLevel
+        // A 16-bit integer that must be set to 0.
+
+        d.writeType(JAVA); // sampleDescriptionTable.videoSampleDescription.manufacturer
+        // A 32-bit integer that specifies the developer of the
+        // compressor that generated the compressed data. Often this
+        // field contains 'appl' to indicate Apple Computer, Inc.
+
+        d.writeInt(0); // sampleDescriptionTable.videoSampleDescription.temporalQuality
+        // A 32-bit integer containing a value from 0 to 1023 indicating
+        // the degree of temporal compression.
+
+        d.writeInt(512); // sampleDescriptionTable.videoSampleDescription.spatialQuality
+        // A 32-bit integer containing a value from 0 to 1024 indicating
+        // the degree of spatial compression.
+
+        d.writeUShort(imgWidth); // sampleDescriptionTable.videoSampleDescription.width
+        // A 16-bit integer that specifies the width of the source image
+        // in pixels.
+
+        d.writeUShort(imgHeight); // sampleDescriptionTable.videoSampleDescription.height
+        // A 16-bit integer that specifies the height of the source image in
+        // pixels.
+
+        d.writeFixed16D16(72.0); // sampleDescriptionTable.videoSampleDescription.horizontalResolution
+        // A 32-bit fixed-point number containing the horizontal
+        // resolution of the image in pixels per inch.
+
+        d.writeFixed16D16(72.0); // sampleDescriptionTable.videoSampleDescription.verticalResolution
+        // A 32-bit fixed-point number containing the vertical
+        // resolution of the image in pixels per inch.
+
+        d.writeInt(0); // sampleDescriptionTable.videoSampleDescription.dataSize
+        // A 32-bit integer that must be set to 0.
+
+        d.writeShort(1); // sampleDescriptionTable.videoSampleDescription.frameCount
+        // A 16-bit integer that indicates how many frames of compressed
+        // data are stored in each sample. Usually set to 1.
+
+        d.writePString("PNG", 32); // sampleDescriptionTable.videoSampleDescription.compressorName
+        // A 32-byte Pascal string containing the name of the compressor
+        // that created the image, such as "jpeg".
+
+        d.writeShort(24); // sampleDescriptionTable.videoSampleDescription.depth
+        // A 16-bit integer that indicates the pixel depth of the
+        // compressed image. Values of 1, 2, 4, 8 ,16, 24, and 32
+        // indicate the depth of color images. The value 32 should be
+        // used only if the image contains an alpha channel. Values of
+        // 34, 36, and 40 indicate 2-, 4-, and 8-bit grayscale,
+        // respectively, for grayscale images.
+
+        d.writeShort(-1); // sampleDescriptionTable.videoSampleDescription.colorTableID
+        // A 16-bit integer that identifies which color table to use.
+        // If this field is set to -1, the default color table should be
+        // used for the specified depth. For all depths below 16 bits
+        // per pixel, this indicates a standard Macintosh color table
+        // for the specified depth. Depths of 16, 24, and 32 have no
+        // color table.
+    }
+
+    /**
+     * sample size atom
+     * The sample size atom contains the sample count and a table giving the
+     * size of each sample. This allows the media data itself to be
+     * unframed. The total number of samples in the media is always
+     * indicated in the sample count. If the default size is indicated, then
+     * no table follows.
      *
-     * typedef struct { int sampleCount; int sampleDuration; } timeToSampleTable;
+     * @param out ImageOutputStream for this data atom
+     * @return filled Sample Size Atom
+     * @throws IOException if any write operation fails
      */
-            d = leaf.getOutputStream();
-            d.write(0); // version
-            // A 1-byte specification of the version of this time-to-sample atom.
+    private DataAtom createSamplesSizeAtom(ImageOutputStream out) throws IOException {
+        DataAtom samplesSizeAtom = new DataAtom(SAMPLE_SIZE, out);
 
-            d.write(0); // flag[0]
-            d.write(0); // flag[1]
-            d.write(0); // flag[2]
-            // A 3-byte space for time-to-sample flags. Set this field to 0.
-
-            // count runs of video frame durations
-            int runCount = 1;
-            int prevDuration = videoFrames.size() == 0 ? 0 : videoFrames.get(0).duration;
-            for (Sample s : videoFrames) {
-                if (s.duration != prevDuration) {
-                    runCount++;
-                    prevDuration = s.duration;
-                }
-            }
-            d.writeInt(runCount); // numberOfEntries
-            // A 32-bit integer containing the count of entries in the
-            // time-to-sample table.
-
-            int runLength = 0;
-            prevDuration = videoFrames.size() == 0 ? 0 : videoFrames.get(0).duration;
-            for (Sample s : videoFrames) {
-                if (s.duration != prevDuration) {
-                    if (runLength > 0) {
-                        d.writeInt(runLength); // timeToSampleTable[0].sampleCount
-                        // A 32-bit integer that specifies the number of consecutive
-                        // samples that have the same duration.
-
-                        d.writeInt(prevDuration); // timeToSampleTable[0].sampleDuration
-                        // A 32-bit integer that specifies the duration of each
-                        // sample.
-                    }
-                    prevDuration = s.duration;
-                    runLength = 1;
-                } else {
-                    runLength++;
-                }
-            }
-            if (runLength > 0) {
-                d.writeInt(runLength); // timeToSampleTable[0].sampleCount
-                // A 32-bit integer that specifies the number of consecutive
-                // samples that have the same duration.
-
-                d.writeInt(prevDuration); // timeToSampleTable[0].sampleDuration
-                // A 32-bit integer that specifies the duration of each
-                // sample.
-            }
-    /* sample to chunk atom -------- */
-            // The sample-to-chunk atom contains a table that maps samples to chunks
-            // in the media data stream. By examining the sample-to-chunk atom, you
-            // can determine the chunk that contains a specific sample.
-            leaf = new DataAtom(STSC, out);
-            stblAtom.add(leaf);
-    /*
-     * typedef struct { byte version; byte[3] flags; int numberOfEntries; sampleToChunkTable sampleToChunkTable[numberOfEntries]; } sampleToChunkAtom;
-     *
-     * typedef struct { int firstChunk; int samplesPerChunk; int sampleDescription; } sampleToChunkTable;
-     */
-            d = leaf.getOutputStream();
-            d.write(0); // version
-            // A 1-byte specification of the version of this time-to-sample atom.
-
-            d.write(0); // flag[0]
-            d.write(0); // flag[1]
-            d.write(0); // flag[2]
-            // A 3-byte space for time-to-sample flags. Set this field to 0.
-
-            d.writeInt(1); // number of entries
-            // A 32-bit integer containing the count of entries in the
-            // sample-to-chunk table.
-
-            d.writeInt(1); // first chunk
-            // The first chunk number using this table entry.
-
-            d.writeInt(1); // samples per chunk
-            // The number of samples in each chunk.
-
-            d.writeInt(1); // sample description
-            // The identification number associated with the sample description for
-            // the sample. For details on sample description atoms, see "Sample
-            // Description Atoms.":
-            // http://developer.apple.com/documentation/QuickTime/QTFF/QTFFChap2/chapter_3_section_5.html#//apple_ref/doc/uid/TP40000939-CH204-25691
-
-    /* sample size atom -------- */
-            // The sample size atom contains the sample count and a table giving the
-            // size of each sample. This allows the media data itself to be
-            // unframed. The total number of samples in the media is always
-            // indicated in the sample count. If the default size is indicated, then
-            // no table follows.
-            leaf = new DataAtom(STSZ, out);
-            stblAtom.add(leaf);
     /*
      * typedef struct { byte version; byte[3] flags; int sampleSize; int numberOfEntries; sampleSizeTable sampleSizeTable[numberOfEntries]; }
      * sampleSizeAtom;
      *
      * typedef struct { int size; } sampleSizeTable;
      */
-            d = leaf.getOutputStream();
-            d.write(0); // version
-            // A 1-byte specification of the version of this time-to-sample atom.
+        DataAtomOutputStream d = samplesSizeAtom.getOutputStream();
+        d.write(0); // version
+        // A 1-byte specification of the version of this time-to-sample atom.
 
-            d.write(0); // flag[0]
-            d.write(0); // flag[1]
-            d.write(0); // flag[2]
-            // A 3-byte space for time-to-sample flags. Set this field to 0.
+        d.write(0); // flag[0]
+        d.write(0); // flag[1]
+        d.write(0); // flag[2]
+        // A 3-byte space for time-to-sample flags. Set this field to 0.
 
-            d.writeUInt(0); // sample size
-            // A 32-bit integer specifying the sample size. If all the samples are
-            // the same size, this field contains that size value. If this field is
-            // set to 0, then the samples have different sizes, and those sizes are
-            // stored in the sample size table.
+        d.writeUInt(0); // sample size
+        // A 32-bit integer specifying the sample size. If all the samples are
+        // the same size, this field contains that size value. If this field is
+        // set to 0, then the samples have different sizes, and those sizes are
+        // stored in the sample size table.
 
-            d.writeUInt(videoFrames.size()); // number of entries
-            // A 32-bit integer containing the count of entries in the sample size
-            // table.
+        d.writeUInt(videoFrames.size()); // number of entries
+        // A 32-bit integer containing the count of entries in the sample size
+        // table.
 
-            for (Sample s : videoFrames) {
-                d.writeUInt(s.length); // sample size
-                // The size field contains the size, in bytes, of the sample in
-                // question. The table is indexed by sample number-the first entry
-                // corresponds to the first sample, the second entry is for the
-                // second sample, and so on.
-            }
-            //
-    /* chunk offset atom -------- */
-            // The chunk-offset table gives the index of each chunk into the
-            // containing file. There are two variants, permitting the use of
-            // 32-bit or 64-bit offsets. The latter is useful when managing very
-            // large movies. Only one of these variants occurs in any single
-            // instance of a sample table atom.
-            if (videoFrames.size() == 0 || videoFrames.getLast().offset <= 0xffffffffL) {
-      /* 32-bit chunk offset atom -------- */
-                leaf = new DataAtom(STCO, out);
-                stblAtom.add(leaf);
+        for (Sample s : videoFrames) {
+            d.writeUInt(s.length); // sample size
+            // The size field contains the size, in bytes, of the sample in
+            // question. The table is indexed by sample number-the first entry
+            // corresponds to the first sample, the second entry is for the
+            // second sample, and so on.
+        }
+        return samplesSizeAtom;
+    }
+
+    /**
+     * chunk offset table atom
+     * The chunk-offset table gives the index of each chunk into the
+     * containing file. There are two variants, permitting the use of
+     * 32-bit or 64-bit offsets. The latter is useful when managing very
+     * large movies. Only one of these variants occurs in any single
+     * instance of a sample table atom.
+     *
+     * @param out ImageOutputStream for this data atom
+     * @return filled Chunk Offset Atom
+     * @throws IOException if any write operation fails
+     */
+    private DataAtom createChunkOffsetTableAtom(ImageOutputStream out) throws IOException {
+        if (videoFrames.size() == 0 || videoFrames.getLast().offset <= 0xffffffffL) {
+            return create32BitChunkOffsetTableAtom(out);
+        }
+        return create64BitChunkOffsetTableAtom(out);
+    }
+
+    /**
+     * 32-bit chunk offset table atom
+     *
+     * @param out ImageOutputStream for this data atom
+     * @return filled 32-bit Chunk Offset Table Atom
+     * @throws IOException if any write operation fails
+     */
+    private DataAtom create32BitChunkOffsetTableAtom(ImageOutputStream out) throws IOException {
+        DataAtom chunkOffsetAtom = new DataAtom(STANDARD_CHUNK_OFFSET_TABLE, out);
+
       /*
        * typedef struct { byte version; byte[3] flags; int numberOfEntries; chunkOffsetTable chunkOffsetTable[numberOfEntries]; } chunkOffsetAtom;
        *
        * typedef struct { int offset; } chunkOffsetTable;
        */
-                d = leaf.getOutputStream();
-                d.write(0); // version
-                // A 1-byte specification of the version of this time-to-sample
-                // atom.
+        DataAtomOutputStream d = chunkOffsetAtom.getOutputStream();
+        d.write(0); // version
+        // A 1-byte specification of the version of this time-to-sample
+        // atom.
 
-                d.write(0); // flag[0]
-                d.write(0); // flag[1]
-                d.write(0); // flag[2]
-                // A 3-byte space for time-to-sample flags. Set this field to 0.
+        d.write(0); // flag[0]
+        d.write(0); // flag[1]
+        d.write(0); // flag[2]
+        // A 3-byte space for time-to-sample flags. Set this field to 0.
 
-                d.writeUInt(videoFrames.size()); // number of entries
-                // A 32-bit integer containing the count of entries in the chunk
-                // offset table.
+        d.writeUInt(videoFrames.size()); // number of entries
+        // A 32-bit integer containing the count of entries in the chunk
+        // offset table.
 
-                for (Sample s : videoFrames) {
-                    d.writeUInt(s.offset); // offset
-                    // The offset contains the byte offset from the beginning of the
-                    // data stream to the chunk. The table is indexed by chunk
-                    // number-the first table entry corresponds to the first chunk,
-                    // the second table entry is for the second chunk, and so on.
-                }
-            } else {
-      /* 64-bit chunk offset atom -------- */
-                leaf = new DataAtom(CO64, out);
-                stblAtom.add(leaf);
+        for (Sample s : videoFrames) {
+            d.writeUInt(s.offset); // offset
+            // The offset contains the byte offset from the beginning of the
+            // data stream to the chunk. The table is indexed by chunk
+            // number-the first table entry corresponds to the first chunk,
+            // the second table entry is for the second chunk, and so on.
+        }
+        return chunkOffsetAtom;
+    }
+
+    /**
+     * 64-bit chunk offset table atom
+     *
+     * @param out ImageOutputStream for this data atom
+     * @return filled 64-bit Chunk Offset Table Atom
+     * @throws IOException if any write operation fails
+     */
+    private DataAtom create64BitChunkOffsetTableAtom(ImageOutputStream out) throws IOException {
+        DataAtom chunkOffsetAtom = new DataAtom(WIDE_CHUNK_OFFSET_TABLE, out);
+
       /*
        * typedef struct { byte version; byte[3] flags; int numberOfEntries; chunkOffsetTable chunkOffset64Table[numberOfEntries]; } chunkOffset64Atom;
        *
        * typedef struct { long offset; } chunkOffset64Table;
        */
-                d = leaf.getOutputStream();
-                d.write(0); // version
-                // A 1-byte specification of the version of this time-to-sample
-                // atom.
+        DataAtomOutputStream d = chunkOffsetAtom.getOutputStream();
+        d.write(0); // version
+        // A 1-byte specification of the version of this time-to-sample
+        // atom.
 
-                d.write(0); // flag[0]
-                d.write(0); // flag[1]
-                d.write(0); // flag[2]
-                // A 3-byte space for time-to-sample flags. Set this field to 0.
+        d.write(0); // flag[0]
+        d.write(0); // flag[1]
+        d.write(0); // flag[2]
+        // A 3-byte space for time-to-sample flags. Set this field to 0.
 
-                d.writeUInt(videoFrames.size()); // number of entries
-                // A 32-bit integer containing the count of entries in the chunk
-                // offset table.
+        d.writeUInt(videoFrames.size()); // number of entries
+        // A 32-bit integer containing the count of entries in the chunk
+        // offset table.
 
-                for (Sample s : videoFrames) {
-                    d.writeLong(s.offset); // offset
-                    // The offset contains the byte offset from the beginning of the
-                    // data stream to the chunk. The table is indexed by chunk
-                    // number-the first table entry corresponds to the first chunk,
-                    // the second table entry is for the second chunk, and so on.
-                }
-            }
-            //
-            moovAtom.finish();
-        } catch (IOException e) {
-            throw new IORuntimeException(e);
+        for (Sample s : videoFrames) {
+            d.writeLong(s.offset); // offset
+            // The offset contains the byte offset from the beginning of the
+            // data stream to the chunk. The table is indexed by chunk
+            // number-the first table entry corresponds to the first chunk,
+            // the second table entry is for the second chunk, and so on.
         }
+        return chunkOffsetAtom;
+    }
+
+    /**
+     * Sample to chunk atom
+     * The sample-to-chunk atom contains a table that maps samples to chunks
+     * in the media data stream. By examining the sample-to-chunk atom, you
+     * can determine the chunk that contains a specific sample.
+     *
+     * @param out ImageOutputStream for this data atom
+     * @return filled Sample To Chunk Atom
+     * @throws IOException if any write operation fails
+     */
+    private DataAtom createSamplesToChunksMappingAtom(ImageOutputStream out) throws IOException {
+
+        DataAtom samplesToChunksMappingAtom = new DataAtom(SAMPLE_TO_CHUNK_MAPPING, out);
+
+    /*
+     * typedef struct { byte version; byte[3] flags; int numberOfEntries; sampleToChunkTable sampleToChunkTable[numberOfEntries]; } sampleToChunkAtom;
+     *
+     * typedef struct { int firstChunk; int samplesPerChunk; int sampleDescription; } sampleToChunkTable;
+     */
+        DataAtomOutputStream d = samplesToChunksMappingAtom.getOutputStream();
+        d.write(0); // version
+        // A 1-byte specification of the version of this time-to-sample atom.
+
+        d.write(0); // flag[0]
+        d.write(0); // flag[1]
+        d.write(0); // flag[2]
+        // A 3-byte space for time-to-sample flags. Set this field to 0.
+
+        d.writeInt(1); // number of entries
+        // A 32-bit integer containing the count of entries in the
+        // sample-to-chunk table.
+
+        d.writeInt(1); // first chunk
+        // The first chunk number using this table entry.
+
+        d.writeInt(1); // samples per chunk
+        // The number of samples in each chunk.
+
+        d.writeInt(1); // sample description
+        // The identification number associated with the sample description for
+        // the sample. For details on sample description atoms, see "Sample
+        // Description Atoms.":
+        // http://developer.apple.com/documentation/QuickTime/QTFF/QTFFChap2/chapter_3_section_5.html#//apple_ref/doc/uid/TP40000939-CH204-25691
+        return samplesToChunksMappingAtom;
+    }
+
+    /**
+     * Time to Sample atom
+     * Time-to-sample atoms store duration information for a media's
+     * samples, providing a mapping from a time in a media to the
+     * corresponding data sample. The time-to-sample atom has an atom type
+     * of 'stts'.
+     *
+     * @param out ImageOutputStream for this data atom
+     * @return filled Time to Sample Atom
+     * @throws IOException if any write operation fails
+     */
+    private DataAtom createTimeToSampleAtom(ImageOutputStream out) throws IOException {
+
+        DataAtom timeToSampleAtom = new DataAtom(TIME_TO_SAMPLE_MAPPING, out);
+
+    /*
+     * typedef struct { byte version; byte[3] flags; int numberOfEntries; timeToSampleTable timeToSampleTable[numberOfEntries]; } timeToSampleAtom;
+     *
+     * typedef struct { int sampleCount; int sampleDuration; } timeToSampleTable;
+     */
+        DataAtomOutputStream d = timeToSampleAtom.getOutputStream();
+        d.write(0); // version
+        // A 1-byte specification of the version of this time-to-sample atom.
+
+        d.write(0); // flag[0]
+        d.write(0); // flag[1]
+        d.write(0); // flag[2]
+        // A 3-byte space for time-to-sample flags. Set this field to 0.
+
+        // count runs of video frame durations
+        int runCount = 1;
+        int prevDuration = videoFrames.size() == 0 ? 0 : videoFrames.get(0).duration;
+        for (Sample s : videoFrames) {
+            if (s.duration != prevDuration) {
+                runCount++;
+                prevDuration = s.duration;
+            }
+        }
+        d.writeInt(runCount); // numberOfEntries
+        // A 32-bit integer containing the count of entries in the
+        // time-to-sample table.
+
+        int runLength = 0;
+        prevDuration = videoFrames.size() == 0 ? 0 : videoFrames.get(0).duration;
+        for (Sample s : videoFrames) {
+            if (s.duration != prevDuration) {
+                if (runLength > 0) {
+                    d.writeInt(runLength); // timeToSampleTable[0].sampleCount
+                    // A 32-bit integer that specifies the number of consecutive
+                    // samples that have the same duration.
+
+                    d.writeInt(prevDuration); // timeToSampleTable[0].sampleDuration
+                    // A 32-bit integer that specifies the duration of each
+                    // sample.
+                }
+                prevDuration = s.duration;
+                runLength = 1;
+            } else {
+                runLength++;
+            }
+        }
+        if (runLength > 0) {
+            d.writeInt(runLength); // timeToSampleTable[0].sampleCount
+            // A 32-bit integer that specifies the number of consecutive
+            // samples that have the same duration.
+
+            d.writeInt(prevDuration); // timeToSampleTable[0].sampleDuration
+            // A 32-bit integer that specifies the duration of each
+            // sample.
+        }
+        return timeToSampleAtom;
+    }
+
+    /**
+     * Movie Header Atom -------------
+     * The data contained in this atom defines characteristics of the entire QuickTime movie, such as time scale and
+     * duration. It has an atom type value of 'mvhd'.
+     * <p>
+     * typedef struct { byte version; byte[3] flags; mactimestamp creationTime; mactimestamp modificationTime; int timeScale; int duration; int
+     * preferredRate; short preferredVolume; byte[10] reserved; int[9] matrix; int previewTime; int previewDuration; int posterTime; int
+     * selectionTime; int selectionDuration; int currentTime; int nextTrackId; } movieHeaderAtom;
+     *
+     * @param duration         time value that indicates duration of video
+     * @param modificationTime calendar date and time of last modification
+     * @param out              ImageOutputStream for this data atom
+     * @return filled Movie Header Atom
+     * @throws IOException if any write operation fails
+     */
+    private DataAtom createMovieHeaderAtom(Date modificationTime, int duration, ImageOutputStream out) throws IOException {
+        DataAtom movieHeader = new DataAtom(MOVIE_HEADER, out);
+        DataAtomOutputStream d = movieHeader.getOutputStream();
+        d.writeByte(0); // version
+        // A 1-byte specification of the version of this movie header atom.
+
+        d.writeByte(0); // flags[0]
+        d.writeByte(0); // flags[1]
+        d.writeByte(0); // flags[2]
+        // Three bytes of space for future movie header flags.
+
+        d.writeMacTimestamp(creationTime); // creationTime
+        // A 32-bit integer that specifies the calendar date and time (in
+        // seconds since midnight, January 1, 1904) when the movie atom was
+        // created. It is strongly recommended that this value should be
+        // specified using coordinated universal time (UTC).
+
+        d.writeMacTimestamp(modificationTime); // modificationTime
+        // A 32-bit integer that specifies the calendar date and time (in
+        // seconds since midnight, January 1, 1904) when the movie atom was
+        // changed. BooleanIt is strongly recommended that this value should be
+        // specified using coordinated universal time (UTC).
+
+        d.writeInt(timeScale); // timeScale
+        // A time value that indicates the time scale for this movie-that is,
+        // the number of time units that pass per second in its time coordinate
+        // system. A time coordinate system that measures time in sixtieths of a
+        // second, for example, has a time scale of 60.
+
+        d.writeInt(duration); // duration
+        // A time value that indicates the duration of the movie in time scale
+        // units. Note that this property is derived from the movie's tracks.
+        // The value of this field corresponds to the duration of the longest
+        // track in the movie.
+
+        d.writeFixed16D16(1d); // preferredRate
+        // A 32-bit fixed-point number that specifies the rate at which to play
+        // this movie. A value of 1.0 indicates normal rate.
+
+        d.writeShort(256); // preferredVolume
+        // A 16-bit fixed-point number that specifies how loud to play this
+        // movie's sound. A value of 1.0 indicates full volume.
+
+        d.write(new byte[10]); // reserved;
+        // Ten bytes reserved for use by Apple. Set to 0.
+
+        d.writeFixed16D16(1f); // matrix[0]
+        d.writeFixed16D16(0f); // matrix[1]
+        d.writeFixed2D30(0f); // matrix[2]
+        d.writeFixed16D16(0f); // matrix[3]
+        d.writeFixed16D16(1f); // matrix[4]
+        d.writeFixed2D30(0); // matrix[5]
+        d.writeFixed16D16(0); // matrix[6]
+        d.writeFixed16D16(0); // matrix[7]
+        d.writeFixed2D30(1f); // matrix[8]
+        // The matrix structure associated with this movie. A matrix shows how
+        // to map points from one coordinate space into another. See "Matrices"
+        // for a discussion of how display matrices are used in QuickTime:
+        // http://developer.apple.com/documentation/QuickTime/QTFF/QTFFChap4/chapter_5_section_4.html#//apple_ref/doc/uid/TP40000939-CH206-18737
+
+        d.writeInt(0); // previewTime
+        // The time value in the movie at which the preview begins.
+
+        d.writeInt(0); // previewDuration
+        // The duration of the movie preview in movie time scale units.
+
+        d.writeInt(0); // posterTime
+        // The time value of the time of the movie poster.
+
+        d.writeInt(0); // selectionTime
+        // The time value for the start time of the current selection.
+
+        d.writeInt(0); // selectionDuration
+        // The duration of the current selection in movie time scale units.
+
+        d.writeInt(0); // currentTime;
+        // The time value for current time position within the movie.
+
+        d.writeInt(2); // nextTrackId
+        // A 32-bit integer that indicates a value to use for the track ID
+        // number of the next track added to this movie. Note that 0 is not a
+        // valid track ID value.
+        return movieHeader;
     }
 
     /**
@@ -1316,13 +1491,13 @@ public class QuickTimeOutputStream {
      *
      * typedef struct { magic brand; bcd4 versionYear; bcd2 versionMonth; bcd2 versionMinor; magic[4] compatibleBrands; } ftypAtom;
      */
-            DataAtom ftypAtom = new DataAtom(FTYP, out);
+            DataAtom ftypAtom = new DataAtom(FILE_TYPE, out);
             DataAtomOutputStream d = ftypAtom.getOutputStream();
-            d.writeType(QT); // brand
+            d.writeType(QUICK_TIME); // brand
             d.writeBCD4(2005); // versionYear
             d.writeBCD2(3); // versionMonth
             d.writeBCD2(0); // versionMinor
-            d.writeType(QT); // compatibleBrands
+            d.writeType(QUICK_TIME); // compatibleBrands
             d.writeInt(0); // compatibleBrands (0 is used to denote no value)
             d.writeInt(0); // compatibleBrands (0 is used to denote no value)
             d.writeInt(0); // compatibleBrands (0 is used to denote no value)
@@ -1367,9 +1542,9 @@ public class QuickTimeOutputStream {
         /**
          * Creates a new sample.
          *
-         * @param duration
-         * @param offset
-         * @param length
+         * @param duration The duration of the sample in time scale units.
+         * @param offset   Offset of the sample relative to the start of the QuickTime file.
+         * @param length   Data length of the sample.
          */
         public Sample(int duration, long offset, long length) {
             this.duration = duration;
