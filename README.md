@@ -62,7 +62,7 @@ The resulting artifacts will be created in the `target` subdirectory.
 You can run the executable jar via `java -jar target/androidscreencast-VERSION-executable.jar`, replacing VERSION with
 the current version.
 
-For example, `java -jar target/androidscreencast-0.0.8s-executable.jar`.
+For example, `java -jar target/androidscreencast-0.0.9s-executable.jar`.
 
 Additionally OS-packages would be created with ADB executables bundled:
 * `androidscreencast-VERSION-windows.zip`
