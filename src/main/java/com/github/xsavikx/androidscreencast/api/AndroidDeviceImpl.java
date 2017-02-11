@@ -5,6 +5,7 @@ import com.android.ddmlib.SyncService;
 import com.android.ddmlib.SyncService.ISyncProgressMonitor;
 import com.github.xsavikx.androidscreencast.api.file.FileInfo;
 import com.github.xsavikx.androidscreencast.api.injector.OutputStreamShellOutputReceiver;
+import com.github.xsavikx.androidscreencast.exception.AndroidScreenCastRuntimeException;
 import com.github.xsavikx.androidscreencast.exception.ExecuteCommandException;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,8 +14,8 @@ import org.springframework.stereotype.Component;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
 
 @Component
 public class AndroidDeviceImpl implements AndroidDevice {
@@ -31,9 +32,7 @@ public class AndroidDeviceImpl implements AndroidDevice {
         if (logger.isDebugEnabled()) {
             logger.debug("executeCommand(String) - start");
         }
-
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        try {
+        try (ByteArrayOutputStream bos = new ByteArrayOutputStream();) {
             device.executeShellCommand(cmd, new OutputStreamShellOutputReceiver(bos));
             String returnString = new String(bos.toByteArray(), "UTF-8");
             if (logger.isDebugEnabled()) {
@@ -42,7 +41,6 @@ public class AndroidDeviceImpl implements AndroidDevice {
             return returnString;
         } catch (Exception ex) {
             logger.error("executeCommand(String)", ex);
-
             throw new ExecuteCommandException(cmd);
         }
     }
@@ -56,13 +54,13 @@ public class AndroidDeviceImpl implements AndroidDevice {
         try {
             String s = executeCommand("ls -l " + path);
             String[] entries = s.split("\r\n");
-            Vector<FileInfo> liste = new Vector<>();
+            List<FileInfo> fileInfos = new ArrayList<>();
             for (String entry : entries) {
                 String[] data = entry.split(" ");
                 if (data.length < 4)
                     continue;
                 String attributes = data[0];
-                boolean directory = attributes.startsWith("d");
+                boolean directory = attributes.charAt(0) == 'd';
                 String name = data[data.length - 1];
 
                 FileInfo fi = new FileInfo();
@@ -72,17 +70,16 @@ public class AndroidDeviceImpl implements AndroidDevice {
                 fi.path = path;
                 fi.device = this;
 
-                liste.add(fi);
+                fileInfos.add(fi);
             }
 
             if (logger.isDebugEnabled()) {
                 logger.debug("list(String) - end");
             }
-            return liste;
+            return fileInfos;
         } catch (Exception ex) {
             logger.error("list(String)", ex);
-
-            throw new RuntimeException(ex);
+            throw new AndroidScreenCastRuntimeException(ex);
         }
     }
 
@@ -117,7 +114,7 @@ public class AndroidDeviceImpl implements AndroidDevice {
         } catch (Exception ex) {
             logger.error("pullFile(String, File)", ex);
 
-            throw new RuntimeException(ex);
+            throw new AndroidScreenCastRuntimeException(ex);
         }
 
         if (logger.isDebugEnabled()) {
@@ -133,14 +130,14 @@ public class AndroidDeviceImpl implements AndroidDevice {
 
         try {
             if (device.getSyncService() == null)
-                throw new RuntimeException("SyncService is null, ADB crashed ?");
+                throw new AndroidScreenCastRuntimeException("SyncService is null, ADB crashed ?");
 
             device.getSyncService().pushFile(localFrom.getAbsolutePath(), remoteTo, SyncService.getNullProgressMonitor());
 
         } catch (Exception ex) {
             logger.error("pushFile(File, String)", ex);
 
-            throw new RuntimeException(ex);
+            throw new AndroidScreenCastRuntimeException(ex);
         }
 
         if (logger.isDebugEnabled()) {

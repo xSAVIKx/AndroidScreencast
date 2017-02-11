@@ -1,9 +1,11 @@
 package com.github.xsavikx.androidscreencast.api.file;
 
 import com.github.xsavikx.androidscreencast.api.AndroidDeviceImpl;
+import com.github.xsavikx.androidscreencast.exception.IORuntimeException;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
+import java.io.IOException;
 
 @Component
 public class FileInfo {
@@ -19,8 +21,8 @@ public class FileInfo {
             device.pullFile(path + name, tempFile);
             tempFile.deleteOnExit();
             return tempFile;
-        } catch (Exception ex) {
-            throw new RuntimeException(ex);
+        } catch (IOException ex) {
+            throw new IORuntimeException(ex);
         }
     }
 

@@ -8,7 +8,7 @@ import com.github.xsavikx.androidscreencast.exception.IORuntimeException;
 
 import javax.imageio.stream.ImageOutputStream;
 import java.io.IOException;
-import java.util.LinkedList;
+import java.util.List;
 
 import static com.google.common.collect.Lists.newLinkedList;
 
@@ -17,7 +17,7 @@ import static com.google.common.collect.Lists.newLinkedList;
  */
 public class CompositeAtom extends CommonAtom {
     private static final int HEADER_SIZE = 1;
-    private final LinkedList<Atom> children;
+    private final List<Atom> children;
 
     /**
      * Creates a new CompositeAtom at the current position of the ImageOutputStream.
@@ -36,7 +36,7 @@ public class CompositeAtom extends CommonAtom {
 
     public void add(Atom child) {
         if (children.size() > 0) {
-            children.getLast().finish();
+            children.get(children.size() - 1).finish();
         }
         children.add(child);
     }

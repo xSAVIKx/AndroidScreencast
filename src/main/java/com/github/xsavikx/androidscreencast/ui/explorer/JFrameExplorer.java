@@ -14,10 +14,10 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Vector;
 
 @Component
 public class JFrameExplorer extends JFrame {
@@ -64,7 +64,6 @@ public class JFrameExplorer extends JFrame {
         setLocationRelativeTo(null);
 
         jListFichiers.addMouseListener(new MouseAdapter() {
-
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (e.getClickCount() == 2) {
@@ -74,7 +73,6 @@ public class JFrameExplorer extends JFrame {
                     launchFile(item);
                 }
             }
-
         });
     }
 
@@ -83,7 +81,7 @@ public class JFrameExplorer extends JFrame {
         if (fileInfos == null)
             fileInfos = androidDevice.list(path);
 
-        List<FileInfo> files = new Vector<>();
+        List<FileInfo> files = new ArrayList<>();
         for (FileInfo fi2 : fileInfos) {
             if (fi2.directory)
                 continue;

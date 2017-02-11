@@ -23,7 +23,6 @@ import java.util.concurrent.TimeUnit;
 @Component
 public class ScreenCaptureRunnable implements Runnable {
     private static final Logger LOGGER = Logger.getLogger(ScreenCaptureRunnable.class);
-    private static final String MOV_FILE_TYPE = ".mov";
     private static final int MOV_FPS = 30;
     private static final float MOV_COMPRESSION_RATE = 1f;
     private static final int FRAME_DURATION = 10;

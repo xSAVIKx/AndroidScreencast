@@ -1,6 +1,5 @@
 package com.github.xsavikx.androidscreencast.api.injector;
 
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -8,7 +7,6 @@ import java.io.File;
 
 @Service
 public class Injector {
-    private static final Logger LOGGER = Logger.getLogger(Injector.class);
     private final ScreenCaptureRunnable screenCaptureRunnable;
     private final Thread screenCaptureThread;
 

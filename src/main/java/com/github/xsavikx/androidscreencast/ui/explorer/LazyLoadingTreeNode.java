@@ -9,7 +9,8 @@ import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreeModel;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
-import java.util.Vector;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 public abstract class LazyLoadingTreeNode extends DefaultMutableTreeNode implements TreeWillExpandListener {
@@ -242,7 +243,7 @@ public abstract class LazyLoadingTreeNode extends DefaultMutableTreeNode impleme
         /**
          * the SwingWorkers
          */
-        private Vector<com.github.xsavikx.androidscreencast.ui.worker.SwingWorker<MutableTreeNode[], ?>> workers = new Vector<>();
+        private List<com.github.xsavikx.androidscreencast.ui.worker.SwingWorker<MutableTreeNode[], ?>> workers = new ArrayList<>();
 
         /**
          * Default constructor
