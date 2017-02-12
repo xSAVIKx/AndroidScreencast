@@ -5,14 +5,15 @@ import com.android.ddmlib.IDevice;
 import com.github.xsavikx.androidscreencast.exception.NoDeviceChosenException;
 import com.github.xsavikx.androidscreencast.exception.WaitDeviceListTimeoutException;
 import com.github.xsavikx.androidscreencast.ui.JDialogDeviceList;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
 public class DeviceChooserApplication extends SwingApplication {
-    private static final Logger LOGGER = Logger.getLogger(DeviceChooserApplication.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DeviceChooserApplication.class);
     private static final long WAIT_TIMEOUT = 100;
     private final AndroidDebugBridge bridge;
     private final long adbWaitSleepCyclesAmount;

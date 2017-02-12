@@ -4,7 +4,8 @@ import com.android.ddmlib.AndroidDebugBridge;
 import com.android.ddmlib.IDevice;
 import com.github.xsavikx.androidscreencast.api.injector.Injector;
 import com.github.xsavikx.androidscreencast.ui.JFrameMain;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -15,7 +16,7 @@ import java.awt.*;
 
 @Component
 public class AndroidScreencastApplication extends SwingApplication {
-    private static final Logger LOGGER = Logger.getLogger(AndroidScreencastApplication.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AndroidScreencastApplication.class);
     private final JFrameMain jFrameMain;
     private final Injector injector;
     private final IDevice iDevice;

@@ -4,53 +4,54 @@ import com.github.xsavikx.androidscreencast.api.command.KeyCommand;
 import com.github.xsavikx.androidscreencast.api.command.SwipeCommand;
 import com.github.xsavikx.androidscreencast.api.command.TapCommand;
 import com.github.xsavikx.androidscreencast.api.injector.InputKeyEvent;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 @Service
 public final class AdbInputCommandFactory {
-    private static final Logger LOGGER = Logger.getLogger(AdbInputCommandFactory.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AdbInputCommandFactory.class);
 
     public static KeyCommand getKeyCommand(int keyCode) {
         KeyCommand returnKeyCommand = new KeyCommand(keyCode);
-        LOGGER.debug(returnKeyCommand);
+        LOGGER.debug(String.valueOf(returnKeyCommand));
         return returnKeyCommand;
     }
 
     public static KeyCommand getKeyCommand(InputKeyEvent inputKeyEvent) {
         KeyCommand returnKeyCommand = new KeyCommand(inputKeyEvent);
-        LOGGER.debug(returnKeyCommand);
+        LOGGER.debug(String.valueOf(returnKeyCommand));
         return returnKeyCommand;
     }
 
 
     public static KeyCommand getKeyCommand(int keyCode, boolean longpress) {
         KeyCommand returnKeyCommand = new KeyCommand(keyCode, longpress);
-        LOGGER.debug(returnKeyCommand);
+        LOGGER.debug(String.valueOf(returnKeyCommand));
         return returnKeyCommand;
     }
 
     public static KeyCommand getKeyCommand(InputKeyEvent inputKeyEvent, boolean longpress) {
         KeyCommand returnKeyCommand = new KeyCommand(inputKeyEvent, longpress);
-        LOGGER.debug(returnKeyCommand);
+        LOGGER.debug(String.valueOf(returnKeyCommand));
         return returnKeyCommand;
     }
 
     public static SwipeCommand getSwipeCommand(int x1, int y1, int x2, int y2, long duration) {
         SwipeCommand returnSwipeCommand = new SwipeCommand(x1, y1, x2, y2, duration);
-        LOGGER.debug(returnSwipeCommand);
+        LOGGER.debug(String.valueOf(returnSwipeCommand));
         return returnSwipeCommand;
     }
 
     public static SwipeCommand getSwipeCommand(int x1, int y1, int x2, int y2) {
         SwipeCommand returnSwipeCommand = new SwipeCommand(x1, y1, x2, y2);
-        LOGGER.debug(returnSwipeCommand);
+        LOGGER.debug(String.valueOf(returnSwipeCommand));
         return returnSwipeCommand;
     }
 
     public static TapCommand getTapCommand(int x, int y) {
         TapCommand returnTapCommand = new TapCommand(x, y);
-        LOGGER.debug(returnTapCommand);
+        LOGGER.debug(String.valueOf(returnTapCommand));
         return returnTapCommand;
     }
 }

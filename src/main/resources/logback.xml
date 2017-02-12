@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true" scanPeriod="2 minutes">
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%-30(%date{HH:mm:ss} [%thread]) %highlight(%-5level) %logger{0} - %msg%n</pattern>
+        </encoder>
+    </appender>
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <File>AndroidScreencast.log</File>
+        <encoder>
+            <pattern>%-45(%date{ISO8601} [%thread]) %highlight(%-5level) %logger - %msg%n [%file:%line]</pattern>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+            <maxIndex>10</maxIndex>
+            <FileNamePattern>AndroidScreencast.%i.log</FileNamePattern>
+        </rollingPolicy>
+        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+            <MaxFileSize>1MB</MaxFileSize>
+        </triggeringPolicy>
+    </appender>
+    <logger name="com.github.xsavikx.androidscreencast" level="DEBUG" additivity="false">
+        <appender-ref ref="FILE"/>
+    </logger>
+    <logger name="com.github.xsavikx.androidscreencast" level="INFO">
+        <appender-ref ref="STDOUT"/>
+    </logger>
+    <root level="ERROR"/>
+</configuration>

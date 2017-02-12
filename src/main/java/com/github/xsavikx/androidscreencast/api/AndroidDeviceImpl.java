@@ -7,7 +7,8 @@ import com.github.xsavikx.androidscreencast.api.file.FileInfo;
 import com.github.xsavikx.androidscreencast.api.injector.OutputStreamShellOutputReceiver;
 import com.github.xsavikx.androidscreencast.exception.AndroidScreenCastRuntimeException;
 import com.github.xsavikx.androidscreencast.exception.ExecuteCommandException;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -19,7 +20,7 @@ import java.util.List;
 
 @Component
 public class AndroidDeviceImpl implements AndroidDevice {
-    private static final Logger logger = Logger.getLogger(AndroidDeviceImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(AndroidDeviceImpl.class);
     private final IDevice device;
 
     @Autowired

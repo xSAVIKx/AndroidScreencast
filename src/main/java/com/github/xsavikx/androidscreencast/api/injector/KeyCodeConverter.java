@@ -1,11 +1,12 @@
 package com.github.xsavikx.androidscreencast.api.injector;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.awt.event.KeyEvent;
 
 public class KeyCodeConverter {
-    private static final Logger LOGGER = Logger.getLogger(KeyCodeConverter.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(KeyCodeConverter.class);
 
     public static int getKeyCode(KeyEvent e) {
         LOGGER.debug("getKeyCode(KeyEvent e=" + e + ") - start");
