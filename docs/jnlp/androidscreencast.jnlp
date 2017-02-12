@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <jnlp spec="1.0+" codebase="http://xsavikx.github.io/AndroidScreencast/"
       href="jnlp/androidscreencast.jnlp"
-      version="0.0.8s">
+      version="0.0.9s">
     <information>
         <title>Android Screencast</title>
         <vendor>Iurii Sergiichuk</vendor>
@@ -16,7 +16,7 @@
     <resources>
         <j2se version="1.8+"/>
         <jar main="true" download="eager"
-             href="https://github.com/xSAVIKx/AndroidScreencast/releases/download/0.0.8S/androidscreencast-0.0.8s-executable.jar"/>
+             href="https://github.com/xSAVIKx/AndroidScreencast/releases/download/0.0.9s/androidscreencast-0.0.9s-executable.jar"/>
     </resources>
     <application-desc main-class="com.github.xsavikx.androidscreencast.Main"/>
 </jnlp>
