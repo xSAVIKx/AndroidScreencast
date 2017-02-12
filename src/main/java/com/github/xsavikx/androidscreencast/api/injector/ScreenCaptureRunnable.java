@@ -7,7 +7,8 @@ import com.android.ddmlib.TimeoutException;
 import com.github.xsavikx.androidscreencast.api.image.ImageUtils;
 import com.github.xsavikx.androidscreencast.api.recording.QuickTimeOutputStream;
 import com.github.xsavikx.androidscreencast.exception.IORuntimeException;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -22,7 +23,7 @@ import java.util.concurrent.TimeUnit;
 
 @Component
 public class ScreenCaptureRunnable implements Runnable {
-    private static final Logger LOGGER = Logger.getLogger(ScreenCaptureRunnable.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ScreenCaptureRunnable.class);
     private static final int MOV_FPS = 30;
     private static final float MOV_COMPRESSION_RATE = 1f;
     private static final int FRAME_DURATION = 10;
@@ -45,14 +46,14 @@ public class ScreenCaptureRunnable implements Runnable {
 
     @Override
     public void run() {
-        LOGGER.info("Starting ScreenCaptureRunnable");
+        LOGGER.info("Starting screen capturing");
         while (!isStopped) {
             try {
                 RawImage screenshot = getScreenshot();
                 if (screenshot != null) {
                     display(screenshot);
                 } else {
-                    LOGGER.info("Failed to get device screenshot.");
+                    LOGGER.info("Failed to get device screenshot");
                 }
             } catch (ClosedByInterruptException e) {
                 LOGGER.error("ADB Channel closed due to interrupted exception", e);
@@ -62,7 +63,7 @@ public class ScreenCaptureRunnable implements Runnable {
                 break;
             }
         }
-        LOGGER.info("ScreenCaptureRunnable is stopped.");
+        LOGGER.info("Stopping screen capturing");
     }
 
     private RawImage getScreenshot() throws InterruptedException, ClosedByInterruptException {
@@ -99,7 +100,7 @@ public class ScreenCaptureRunnable implements Runnable {
                 try {
                     qos.writeFrame(image, FRAME_DURATION);
                 } catch (IORuntimeException e) {
-                    LOGGER.error(e);
+                    LOGGER.error("IO exception during writing video frame happened", e);
                 }
             });
         }
