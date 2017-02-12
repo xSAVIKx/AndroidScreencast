@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import static java.lang.String.format;
+
 @Component
 public class DeviceChooserApplication extends SwingApplication {
     private static final Logger LOGGER = LoggerFactory.getLogger(DeviceChooserApplication.class);
@@ -34,9 +36,27 @@ public class DeviceChooserApplication extends SwingApplication {
 
     @Override
     public void start() {
-        LOGGER.debug("start() - start");
-        initialize();
-        LOGGER.debug("start() - end");
+        LOGGER.info("Starting application");
+
+        waitDeviceList(bridge);
+
+        IDevice devices[] = bridge.getDevices();
+
+        // Let the user choose the device
+        if (devices.length == 1) {
+            device = devices[0];
+            LOGGER.info("1 device was found by ADB");
+        } else {
+            JDialogDeviceList jd = new JDialogDeviceList(devices);
+            jd.setVisible(true);
+            device = jd.getDevice();
+            LOGGER.info(format("%d devices were found by ADB", devices.length));
+        }
+
+        if (device == null) {
+            throw new NoDeviceChosenException();
+        }
+        LOGGER.info(format("%s was chosen", device.getName()));
     }
 
     private void waitDeviceList(AndroidDebugBridge bridge) {
@@ -51,38 +71,11 @@ public class DeviceChooserApplication extends SwingApplication {
                 LOGGER.warn("waitDeviceList(AndroidDebugBridge) - exception ignored", e);
 
             }
-
             if (count > adbWaitSleepCyclesAmount) {
                 throw new WaitDeviceListTimeoutException();
             }
         }
-
         LOGGER.debug("waitDeviceList(AndroidDebugBridge bridge=" + bridge + ") - end");
-    }
-
-    private void initialize() {
-        LOGGER.debug("initialize() - start");
-
-        waitDeviceList(bridge);
-
-        IDevice devices[] = bridge.getDevices();
-        // Let the user choose the device
-        if (devices.length == 1) {
-            device = devices[0];
-        } else {
-            JDialogDeviceList jd = new JDialogDeviceList(devices);
-            jd.setVisible(true);
-
-            device = jd.getDevice();
-            if (device == null) {
-                return;
-            }
-        }
-
-        if (device == null) {
-            throw new NoDeviceChosenException();
-        }
-        LOGGER.debug("initialize() - end");
     }
 
     public IDevice getDevice() {

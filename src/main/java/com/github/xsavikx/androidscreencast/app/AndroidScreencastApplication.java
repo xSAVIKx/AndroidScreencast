@@ -33,35 +33,30 @@ public class AndroidScreencastApplication extends SwingApplication {
 
     @Override
     public void stop() {
-        try {
-            LOGGER.debug("stop() - start");
-            if (isStopped) {
-                LOGGER.debug("Application is already stopped.");
-                return;
-            }
-            if (injector != null)
-                injector.stop();
-
-            if (iDevice != null) {
-                synchronized (iDevice) {
-                    if (hasFilledAdbPath())
-                        AndroidDebugBridge.disconnectBridge();
-                    AndroidDebugBridge.terminate();
-                }
-            }
-            for (Frame frame : Frame.getFrames()) {
-                frame.dispose();
-            }
-            isStopped = true;
-        } finally {
-            LOGGER.debug("stop() - end");
+        LOGGER.info("Stopping application");
+        if (isStopped) {
+            LOGGER.debug("Application is already stopped.");
+            return;
         }
+        if (injector != null)
+            injector.stop();
 
+        if (iDevice != null) {
+            synchronized (iDevice) {
+                if (hasFilledAdbPath())
+                    AndroidDebugBridge.disconnectBridge();
+                AndroidDebugBridge.terminate();
+            }
+        }
+        for (Frame frame : Frame.getFrames()) {
+            frame.dispose();
+        }
+        isStopped = true;
     }
 
     @Override
     public void start() {
-        LOGGER.debug("start() - start");
+        LOGGER.info("Starting application");
         if (iDevice == null) {
             LOGGER.warn("No valid device was chosen. Please try to chose correct one.");
             stop();
@@ -75,7 +70,6 @@ public class AndroidScreencastApplication extends SwingApplication {
 
             jFrameMain.launchInjector();
         });
-        LOGGER.debug("start() - end");
     }
 
 
