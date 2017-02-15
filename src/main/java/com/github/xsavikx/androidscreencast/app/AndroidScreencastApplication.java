@@ -20,7 +20,7 @@ public class AndroidScreencastApplication extends SwingApplication {
     private final JFrameMain jFrameMain;
     private final Injector injector;
     private final IDevice iDevice;
-    @Value("${adb.path}")
+    @Value("${adb.path:}")
     private String adbPath;
     private transient boolean isStopped = false;
 

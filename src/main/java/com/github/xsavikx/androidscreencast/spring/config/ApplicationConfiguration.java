@@ -17,7 +17,7 @@ import javax.annotation.PreDestroy;
         @PropertySource(value = "file:${user.dir}/app.properties", ignoreResourceNotFound = true)
 })
 public class ApplicationConfiguration {
-    @Value("${adb.path}")
+    @Value("${adb.path:}")
     private String adbPath;
 
     @Bean
