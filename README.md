@@ -78,8 +78,8 @@ Also, to run AndroidScreencast you will need *adb* installed (or you can use bun
 [travis_badge]: https://travis-ci.org/xSAVIKx/AndroidScreencast.svg?branch=master
 [travis]: https://travis-ci.org/xSAVIKx/AndroidScreencast
 
-[versioneye_badge]: https://www.versioneye.com/user/projects/588988221618a700318eafb5/badge.svg
-[versioneye]: https://www.versioneye.com/user/projects/588988221618a700318eafb5
+[versioneye_badge]: https://www.versioneye.com/user/projects/58a746d8b4d2a20055fcb887/badge.svg?style=flat
+[versioneye]: https://www.versioneye.com/user/projects/58a746d8b4d2a20055fcb887
 
 [codacy_badge]: https://api.codacy.com/project/badge/Grade/064bbd2582b544bb9659a01a2872317c
 [codacy]: https://www.codacy.com/app/xSAVIKx/AndroidScreencast?utm_source=github.com&utm_medium=referral&utm_content=xSAVIKx/AndroidScreencast&utm_campaign=badger
@@ -87,5 +87,5 @@ Also, to run AndroidScreencast you will need *adb* installed (or you can use bun
 [license_badge]: https://img.shields.io/badge/license-Apache%20License%202.0-blue.svg?style=flat
 [license]: http://www.apache.org/licenses/LICENSE-2.0
 
-[gitter_badge]: https://badges.gitter.im/AndroidScreencast/Lobby.svg
+[gitter_badge]: https://badges.gitter.im/AndroidScreencast/Lobby.svg?style=flat
 [gitter]: https://gitter.im/AndroidScreencast/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge
