@@ -1,21 +1,11 @@
 AndroidScreencast
 =================
 
-[![Build Status Travis-CI][travis_badge]][travis] [![Dependency Status][versioneye_badge]][versioneye] [![Codacy Badge][codacy_badge]][codacy] [![Join the chat at https://gitter.im/AndroidScreencast/Lobby][gitter_badge]][gitter]
-
-[travis_badge]: https://travis-ci.org/xSAVIKx/AndroidScreencast.svg?branch=master
-[travis]: https://travis-ci.org/xSAVIKx/AndroidScreencast
-
-[versioneye_badge]: https://www.versioneye.com/user/projects/588988221618a700318eafb5/badge.svg
-[versioneye]: https://www.versioneye.com/user/projects/588988221618a700318eafb5
-
-[codacy_badge]: https://api.codacy.com/project/badge/Grade/064bbd2582b544bb9659a01a2872317c
-[codacy]: https://www.codacy.com/app/xSAVIKx/AndroidScreencast?utm_source=github.com&utm_medium=referral&utm_content=xSAVIKx/AndroidScreencast&utm_campaign=badger
-
-
-
-[gitter_badge]: https://badges.gitter.im/AndroidScreencast/Lobby.svg
-[gitter]: https://gitter.im/AndroidScreencast/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge
+[![Build Status Travis-CI][travis_badge]][travis]&nbsp;
+[![Dependency Status][versioneye_badge]][versioneye]&nbsp;
+[![Codacy Badge][codacy_badge]][codacy]&nbsp;
+[![Join the chat at https://gitter.im/AndroidScreencast/Lobby][gitter_badge]][gitter]&nbsp;
+[![Apache License][license_badge]][license]
 
 # Description
 
@@ -83,3 +73,19 @@ So, right now AndroidScreencast support all Android versions equal or greater th
 Also, to run AndroidScreencast you will need *adb* installed (or you can use bundled in OS bundles adb).
 
 [Android_4_1_1_Input]: http://grepcode.com/file/repository.grepcode.com/java/ext/com.google.android/android/4.1.1_r1/com/android/commands/input/Input.java#Input
+
+
+[travis_badge]: https://travis-ci.org/xSAVIKx/AndroidScreencast.svg?branch=master
+[travis]: https://travis-ci.org/xSAVIKx/AndroidScreencast
+
+[versioneye_badge]: https://www.versioneye.com/user/projects/588988221618a700318eafb5/badge.svg
+[versioneye]: https://www.versioneye.com/user/projects/588988221618a700318eafb5
+
+[codacy_badge]: https://api.codacy.com/project/badge/Grade/064bbd2582b544bb9659a01a2872317c
+[codacy]: https://www.codacy.com/app/xSAVIKx/AndroidScreencast?utm_source=github.com&utm_medium=referral&utm_content=xSAVIKx/AndroidScreencast&utm_campaign=badger
+
+[license_badge]: https://img.shields.io/badge/license-Apache%20License%202.0-blue.svg?style=flat
+[license]: http://www.apache.org/licenses/LICENSE-2.0
+
+[gitter_badge]: https://badges.gitter.im/AndroidScreencast/Lobby.svg
+[gitter]: https://gitter.im/AndroidScreencast/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge
