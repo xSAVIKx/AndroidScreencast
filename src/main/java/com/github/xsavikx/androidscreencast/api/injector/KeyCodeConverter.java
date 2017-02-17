@@ -9,7 +9,7 @@ public class KeyCodeConverter {
     private static final Logger LOGGER = LoggerFactory.getLogger(KeyCodeConverter.class);
 
     public static int getKeyCode(KeyEvent e) {
-        LOGGER.debug("getKeyCode(KeyEvent e=" + e + ") - start");
+        LOGGER.debug("getKeyCode(KeyEvent e={}) - start", e);
         int code = InputKeyEvent.KEYCODE_UNKNOWN.getCode();
         char c = e.getKeyChar();
         int keyCode = e.getKeyCode();
@@ -17,7 +17,7 @@ public class KeyCodeConverter {
         if (inputKeyEvent != null) {
             code = inputKeyEvent.getCode();
         }
-        LOGGER.debug(String.format("Received KeyEvent=%s. Produced KeyCode=%d", String.valueOf(e), code));
+        LOGGER.debug("Received KeyEvent={}. Produced KeyCode={}", String.valueOf(e), code);
         return code;
     }
 

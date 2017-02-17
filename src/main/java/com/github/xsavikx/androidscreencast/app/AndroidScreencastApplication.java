@@ -1,6 +1,5 @@
 package com.github.xsavikx.androidscreencast.app;
 
-import com.android.ddmlib.AndroidDebugBridge;
 import com.android.ddmlib.IDevice;
 import com.github.xsavikx.androidscreencast.api.injector.Injector;
 import com.github.xsavikx.androidscreencast.ui.JFrameMain;
@@ -40,14 +39,6 @@ public class AndroidScreencastApplication extends SwingApplication {
         }
         if (injector != null)
             injector.stop();
-
-        if (iDevice != null) {
-            synchronized (iDevice) {
-                if (hasFilledAdbPath())
-                    AndroidDebugBridge.disconnectBridge();
-                AndroidDebugBridge.terminate();
-            }
-        }
         for (Frame frame : Frame.getFrames()) {
             frame.dispose();
         }

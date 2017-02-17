@@ -32,17 +32,17 @@ public class ShellCommandExecutor implements CommandExecutor {
 
     @Override
     public void execute(Command command) {
-        LOGGER.debug("execute(Command command=" + command + ") - start");
+        LOGGER.debug("execute(Command command={}) - start", command);
 
         try {
             device.executeShellCommand(command.getFormattedCommand(), multiLineReceiverPrinter,
                     adbCommandTimeout, TimeUnit.SECONDS);
         } catch (TimeoutException | AdbCommandRejectedException | ShellCommandUnresponsiveException | IOException e) {
-            LOGGER.error("execute(Command)", e);
+            LOGGER.error("execute(Command command={})", command, e);
             throw new AdbShellCommandExecutionException(command, e);
         }
 
-        LOGGER.debug("execute(Command command=" + command + ") - end");
+        LOGGER.debug("execute(Command command={}) - end", command);
     }
 
 }

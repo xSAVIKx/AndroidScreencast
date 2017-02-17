@@ -75,7 +75,7 @@ public class ScreenCaptureRunnable implements Runnable {
             currentAdbCommandTimeout = defaultAdbCommandTimeout;
         } catch (TimeoutException e) {
             currentAdbCommandTimeout++;
-            LOGGER.warn(String.format("Adb command timeout happened. Timeout would be set to %d for the next try.", currentAdbCommandTimeout), e);
+            LOGGER.warn("Adb command timeout happened. Timeout would be set to {} for the next try.", currentAdbCommandTimeout, e);
         } catch (AdbCommandRejectedException e) {
             LOGGER.warn("ADB Command was rejected. Will try again in 100 ms.");
             Thread.sleep(100);

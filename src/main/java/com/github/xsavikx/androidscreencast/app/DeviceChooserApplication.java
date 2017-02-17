@@ -1,7 +1,7 @@
 package com.github.xsavikx.androidscreencast.app;
 
-import com.android.ddmlib.AndroidDebugBridge;
 import com.android.ddmlib.IDevice;
+import com.github.xsavikx.androidscreencast.api.adb.AndroidDebugBridgeWrapper;
 import com.github.xsavikx.androidscreencast.exception.NoDeviceChosenException;
 import com.github.xsavikx.androidscreencast.exception.WaitDeviceListTimeoutException;
 import com.github.xsavikx.androidscreencast.ui.JDialogDeviceList;
@@ -11,20 +11,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import static java.lang.String.format;
-
 @Component
 public class DeviceChooserApplication extends SwingApplication {
     private static final Logger LOGGER = LoggerFactory.getLogger(DeviceChooserApplication.class);
     private static final long WAIT_TIMEOUT = 100;
-    private final AndroidDebugBridge bridge;
+    private final AndroidDebugBridgeWrapper bridge;
     private final long adbWaitSleepCyclesAmount;
     @Value("${adb.device.timeout:30}")
     private long adbDeviceTimeout;
     private IDevice device;
 
     @Autowired
-    public DeviceChooserApplication(AndroidDebugBridge bridge) {
+    public DeviceChooserApplication(AndroidDebugBridgeWrapper bridge) {
         this.bridge = bridge;
         this.adbWaitSleepCyclesAmount = adbDeviceTimeout * 10;
     }
@@ -50,18 +48,16 @@ public class DeviceChooserApplication extends SwingApplication {
             JDialogDeviceList jd = new JDialogDeviceList(devices);
             jd.setVisible(true);
             device = jd.getDevice();
-            LOGGER.info(format("%d devices were found by ADB", devices.length));
+            LOGGER.info("{} devices were found by ADB", devices.length);
         }
 
         if (device == null) {
             throw new NoDeviceChosenException();
         }
-        LOGGER.info(format("%s was chosen", device.getName()));
+        LOGGER.info("{} was chosen", device.getName());
     }
 
-    private void waitDeviceList(AndroidDebugBridge bridge) {
-        LOGGER.debug("waitDeviceList(AndroidDebugBridge bridge=" + bridge + ") - start");
-
+    private void waitDeviceList(AndroidDebugBridgeWrapper bridge) {
         int count = 0;
         while (!bridge.hasInitialDeviceList()) {
             try {
@@ -69,13 +65,11 @@ public class DeviceChooserApplication extends SwingApplication {
                 count++;
             } catch (InterruptedException e) {
                 LOGGER.warn("waitDeviceList(AndroidDebugBridge) - exception ignored", e);
-
             }
             if (count > adbWaitSleepCyclesAmount) {
                 throw new WaitDeviceListTimeoutException();
             }
         }
-        LOGGER.debug("waitDeviceList(AndroidDebugBridge bridge=" + bridge + ") - end");
     }
 
     public IDevice getDevice() {

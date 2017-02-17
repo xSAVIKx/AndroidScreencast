@@ -5,6 +5,8 @@ import com.github.xsavikx.androidscreencast.api.recording.FilterImageOutputStrea
 import com.github.xsavikx.androidscreencast.api.recording.exception.MaximumAtomSizeExeededException;
 import com.github.xsavikx.androidscreencast.exception.IORuntimeException;
 import com.google.common.base.Preconditions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.imageio.stream.ImageOutputStream;
 import java.io.IOException;
@@ -13,6 +15,7 @@ import java.io.IOException;
  * Data Atom.
  */
 public class DataAtom extends CommonAtom {
+    private static final Logger LOGGER = LoggerFactory.getLogger(DataAtom.class);
     private static final int HEADER_SIZE = 1;
     protected final DataAtomOutputStream data;
 
@@ -49,7 +52,7 @@ public class DataAtom extends CommonAtom {
                     finished = true;
                     long sizeAfter = size();
                     if (sizeBefore != sizeAfter) {
-                        System.err.println("size mismatch " + sizeBefore + ".." + sizeAfter);
+                        LOGGER.warn("Size mismatch. sizeBefore={}, sizeAfter={}.", sizeBefore, sizeAfter);
                     }
                 }
             } catch (IOException e) {

@@ -12,14 +12,14 @@ public class Main {
     private static final Logger LOGGER = LoggerFactory.getLogger(Main.class);
 
     public static void main(String args[]) {
-        LOGGER.debug("main(String[] args=" + Arrays.toString(args) + ") - start");
+        LOGGER.debug("main(String[] args={}) - start", Arrays.toString(args));
         Application application;
         try {
             application = ApplicationContextProvider.getBean(AndroidScreencastApplication.class);
             application.init();
             application.start();
         } finally {
-            LOGGER.debug("main(String[] args=" + Arrays.toString(args) + ") - end");
+            LOGGER.debug("main(String[] args={}) - end", Arrays.toString(args));
         }
     }
 
