@@ -6,9 +6,7 @@ import com.github.xsavikx.androidscreencast.ui.JFrameMain;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -19,8 +17,6 @@ public class AndroidScreencastApplication extends SwingApplication {
     private final JFrameMain jFrameMain;
     private final Injector injector;
     private final IDevice iDevice;
-    @Value("${adb.path:}")
-    private String adbPath;
     private transient boolean isStopped = false;
 
     @Autowired
@@ -61,10 +57,5 @@ public class AndroidScreencastApplication extends SwingApplication {
 
             jFrameMain.launchInjector();
         });
-    }
-
-
-    private boolean hasFilledAdbPath() {
-        return !StringUtils.isEmpty(adbPath);
     }
 }

@@ -28,7 +28,7 @@ public class AndroidDebugBridgeWrapper {
 
 
     @PreDestroy
-    private void cleanUp() {
+    void cleanUp() {
         AndroidDebugBridge.disconnectBridge();
         AndroidDebugBridge.terminate();
     }
