@@ -1,12 +1,10 @@
 package com.github.xsavikx.androidscreencast.ui;
 
-import org.springframework.stereotype.Component;
-
+import javax.inject.Inject;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
-@Component
 public class JPanelScreen extends JPanel {
     private static final long serialVersionUID = -2034873107028503004L;
     private float coef = 1;
@@ -15,28 +13,27 @@ public class JPanelScreen extends JPanel {
     private Dimension size = null;
     private BufferedImage image = null;
 
+    @Inject
     public JPanelScreen() {
         this.setFocusable(true);
     }
 
-    public Point getRawPoint(Point p1) {
-        Point p2 = new Point();
+    public Point getRawPoint(final Point p1) {
+        final Point p2 = new Point();
         p2.x = (int) ((p1.x - origX) / coef);
         p2.y = (int) ((p1.y - origY) / coef);
         return p2;
     }
 
-    public void handleNewImage(Dimension size, BufferedImage image) {
+    public void handleNewImage(final Dimension size, final BufferedImage image) {
         this.size = size;
         this.image = image;
         repaint();
     }
 
     @Override
-    protected void paintComponent(Graphics g) {
-        if (size == null)
-            return;
-        if (size.height == 0)
+    protected void paintComponent(final Graphics g) {
+        if (isNotInitialized())
             return;
         Graphics2D g2 = (Graphics2D) g;
         g2.clearRect(0, 0, getWidth(), getHeight());
@@ -46,6 +43,10 @@ public class JPanelScreen extends JPanel {
         origX = (getWidth() - width) / 2;
         origY = (getHeight() - height) / 2;
         g2.drawImage(image, (int) origX, (int) origY, (int) width, (int) height, this);
+    }
+
+    private boolean isNotInitialized() {
+        return size == null || size.height == 0 || size.width == 0;
     }
 
 }

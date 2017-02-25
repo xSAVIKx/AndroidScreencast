@@ -2,36 +2,38 @@ package com.github.xsavikx.androidscreencast.ui;
 
 import com.github.xsavikx.androidscreencast.api.injector.Injector;
 import com.github.xsavikx.androidscreencast.api.injector.InputKeyEvent;
-import com.github.xsavikx.androidscreencast.app.AndroidScreencastApplication;
-import com.github.xsavikx.androidscreencast.constant.Constants;
+import com.github.xsavikx.androidscreencast.dagger.MainComponentProvider;
 import com.github.xsavikx.androidscreencast.exception.IORuntimeException;
-import com.github.xsavikx.androidscreencast.spring.config.ApplicationContextProvider;
 import com.github.xsavikx.androidscreencast.ui.explorer.JFrameExplorer;
 import com.github.xsavikx.androidscreencast.ui.interaction.KeyEventDispatcherFactory;
 import com.github.xsavikx.androidscreencast.ui.interaction.KeyboardActionListenerFactory;
+import com.github.xsavikx.androidscreencast.ui.interaction.MouseActionAdapter;
 import com.google.common.io.Files;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
-import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 
-@Component
+import static com.github.xsavikx.androidscreencast.configuration.ApplicationConfigurationPropertyKeys.APP_WINDOW_HEIGHT_KEY;
+import static com.github.xsavikx.androidscreencast.configuration.ApplicationConfigurationPropertyKeys.APP_WINDOW_WIDTH_KEY;
+
+@Singleton
 public class JFrameMain extends JFrame {
     private static final long serialVersionUID = -2085909236767692371L;
     private final JPanelScreen jp;
-    private final MouseAdapter ma;
+    private final MouseActionAdapter ma;
     private final Injector injector;
-    private final Environment env;
+    private final Dimension windowSize;
+    private final JFrameExplorer frameExplorer;
+    private final JDialogExecuteKeyEvent dialogExecuteKeyEvent;
     private transient boolean isDisposed = false;
     private JToolBar jtb = new JToolBar();
     private JToolBar jtbHardkeys = new JToolBar();
@@ -47,22 +49,16 @@ public class JFrameMain extends JFrame {
     private JButton jbRecord = new JButton("Start record");
     private Dimension oldImageDimension;
 
-    @Autowired
-    public JFrameMain(JPanelScreen jp, Environment env, Injector injector, MouseAdapter ma) {
+    @Inject
+    public JFrameMain(JPanelScreen jp, Injector injector, MouseActionAdapter ma,
+                      JFrameExplorer frameExplorer, JDialogExecuteKeyEvent dialogExecuteKeyEvent, @Named(APP_WINDOW_WIDTH_KEY) int width,
+                      @Named(APP_WINDOW_HEIGHT_KEY) int height) {
         this.jp = jp;
         this.injector = injector;
-        this.env = env;
         this.ma = ma;
-    }
-
-    private void setPreferredWindowSize() {
-        if (env.containsProperty(Constants.DEFAULT_WINDOW_HEIGHT) && env.containsProperty(Constants.DEFAULT_WINDOW_WIDTH)) {
-            Integer height = env.getProperty(Constants.DEFAULT_WINDOW_HEIGHT, Integer.class);
-            Integer width = env.getProperty(Constants.DEFAULT_WINDOW_WIDTH, Integer.class);
-            if (height != null && width != null)
-                getContentPane().setPreferredSize(new Dimension(width, height));
-        }
-        pack();
+        this.frameExplorer = frameExplorer;
+        this.dialogExecuteKeyEvent = dialogExecuteKeyEvent;
+        this.windowSize = new Dimension(width, height);
     }
 
     @Override
@@ -72,10 +68,9 @@ public class JFrameMain extends JFrame {
         }
         isDisposed = true;
         super.dispose();
-        ApplicationContextProvider.getBean(AndroidScreencastApplication.class).stop();
+        MainComponentProvider.mainComponent().application().stop();
     }
 
-    @PostConstruct
     public void initialize() {
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         KeyboardFocusManager.getCurrentKeyboardFocusManager()
@@ -123,7 +118,7 @@ public class JFrameMain extends JFrame {
         jp.addMouseWheelListener(ma);
 
         jbExplorer.addActionListener(actionEvent -> {
-            JFrameExplorer jf = ApplicationContextProvider.getBean(JFrameExplorer.class);
+            JFrameExplorer jf = frameExplorer;
             jf.setIconImage(getIconImage());
             jf.launch();
             jf.setVisible(true);
@@ -131,13 +126,16 @@ public class JFrameMain extends JFrame {
         jtb.add(jbExplorer);
 
         jbExecuteKeyEvent.addActionListener(actionEvent -> {
-            JDialogExecuteKeyEvent jdExecuteKeyEvent = ApplicationContextProvider
-                    .getBean(JDialogExecuteKeyEvent.class);
-            jdExecuteKeyEvent.setVisible(true);
+            dialogExecuteKeyEvent.setVisible(true);
         });
 
         jtb.add(jbExecuteKeyEvent);
         jtb.add(jbRecord);
+    }
+
+    private void setPreferredWindowSize() {
+        getContentPane().setPreferredSize(windowSize);
+        pack();
     }
 
     private ActionListener createRecordActionListener() {

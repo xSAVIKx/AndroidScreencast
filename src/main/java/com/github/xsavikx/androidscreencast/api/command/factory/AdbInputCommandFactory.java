@@ -6,9 +6,7 @@ import com.github.xsavikx.androidscreencast.api.command.TapCommand;
 import com.github.xsavikx.androidscreencast.api.injector.InputKeyEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
 
-@Service
 public final class AdbInputCommandFactory {
     private static final Logger LOGGER = LoggerFactory.getLogger(AdbInputCommandFactory.class);
 

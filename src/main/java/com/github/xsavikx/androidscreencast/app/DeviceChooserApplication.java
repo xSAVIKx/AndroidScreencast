@@ -2,29 +2,36 @@ package com.github.xsavikx.androidscreencast.app;
 
 import com.android.ddmlib.IDevice;
 import com.github.xsavikx.androidscreencast.api.adb.AndroidDebugBridgeWrapper;
+import com.github.xsavikx.androidscreencast.configuration.ApplicationConfiguration;
 import com.github.xsavikx.androidscreencast.exception.NoDeviceChosenException;
 import com.github.xsavikx.androidscreencast.exception.WaitDeviceListTimeoutException;
 import com.github.xsavikx.androidscreencast.ui.JDialogDeviceList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 
-@Component
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
+import static com.github.xsavikx.androidscreencast.configuration.ApplicationConfigurationProperty.ADB_DEVICE_TIMEOUT;
+
+@Singleton
 public class DeviceChooserApplication extends SwingApplication {
     private static final Logger LOGGER = LoggerFactory.getLogger(DeviceChooserApplication.class);
     private static final long WAIT_TIMEOUT = 100;
     private final AndroidDebugBridgeWrapper bridge;
     private final long adbWaitSleepCyclesAmount;
-    @Value("${adb.device.timeout:30}")
-    private long adbDeviceTimeout;
     private IDevice device;
 
-    @Autowired
-    public DeviceChooserApplication(AndroidDebugBridgeWrapper bridge) {
+    @Inject
+    public DeviceChooserApplication(final AndroidDebugBridgeWrapper bridge,
+                                    final ApplicationConfiguration applicationConfiguration) {
+        super(applicationConfiguration);
         this.bridge = bridge;
-        this.adbWaitSleepCyclesAmount = adbDeviceTimeout * 10;
+        this.adbWaitSleepCyclesAmount = getAdbDeviceTimeout() * 10;
+    }
+
+    private long getAdbDeviceTimeout() {
+        return Long.valueOf(applicationConfiguration.getProperty(ADB_DEVICE_TIMEOUT));
     }
 
     @Override
@@ -35,29 +42,34 @@ public class DeviceChooserApplication extends SwingApplication {
     @Override
     public void start() {
         LOGGER.info("Starting application");
+        try {
 
-        waitDeviceList(bridge);
+            waitDeviceList(bridge);
 
-        IDevice devices[] = bridge.getDevices();
+            final IDevice devices[] = bridge.getDevices();
 
-        // Let the user choose the device
-        if (devices.length == 1) {
-            device = devices[0];
-            LOGGER.info("1 device was found by ADB");
-        } else {
-            JDialogDeviceList jd = new JDialogDeviceList(devices);
-            jd.setVisible(true);
-            device = jd.getDevice();
-            LOGGER.info("{} devices were found by ADB", devices.length);
-        }
+            // Let the user choose the device
+            if (devices.length == 1) {
+                device = devices[0];
+                LOGGER.info("1 device was found by ADB");
+            } else {
+                final JDialogDeviceList jd = new JDialogDeviceList(devices);
+                jd.setVisible(true);
+                device = jd.getDevice();
+                LOGGER.info("{} devices were found by ADB", devices.length);
+            }
 
-        if (device == null) {
-            throw new NoDeviceChosenException();
+            if (device == null) {
+                throw new NoDeviceChosenException();
+            }
+        } catch (final Throwable e) {
+            bridge.stop();
+            throw e;
         }
         LOGGER.info("{} was chosen", device.getName());
     }
 
-    private void waitDeviceList(AndroidDebugBridgeWrapper bridge) {
+    private void waitDeviceList(final AndroidDebugBridgeWrapper bridge) {
         int count = 0;
         while (!bridge.hasInitialDeviceList()) {
             try {

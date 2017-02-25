@@ -5,15 +5,13 @@ import com.github.xsavikx.androidscreencast.api.command.factory.AdbInputCommandF
 import com.github.xsavikx.androidscreencast.api.injector.InputKeyEvent;
 import com.github.xsavikx.androidscreencast.ui.model.InputKeyEventTable;
 import com.github.xsavikx.androidscreencast.ui.model.InputKeyEventTableModel;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import javax.inject.Inject;
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
 
-@Component
 public class JDialogExecuteKeyEvent extends JDialog {
     private static final long serialVersionUID = -4152020879675916776L;
     private static final int HEIGHT = 600;
@@ -32,7 +30,7 @@ public class JDialogExecuteKeyEvent extends JDialog {
 
     private final CommandExecutor commandExecutor;
 
-    @Autowired
+    @Inject
     public JDialogExecuteKeyEvent(CommandExecutor commandExecutor) {
         this.commandExecutor = commandExecutor;
     }

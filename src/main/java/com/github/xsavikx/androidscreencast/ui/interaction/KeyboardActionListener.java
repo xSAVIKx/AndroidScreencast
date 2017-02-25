@@ -2,7 +2,7 @@ package com.github.xsavikx.androidscreencast.ui.interaction;
 
 import com.github.xsavikx.androidscreencast.api.command.executor.CommandExecutor;
 import com.github.xsavikx.androidscreencast.api.command.factory.AdbInputCommandFactory;
-import com.github.xsavikx.androidscreencast.spring.config.ApplicationContextProvider;
+import com.github.xsavikx.androidscreencast.dagger.MainComponentProvider;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -23,7 +23,7 @@ public class KeyboardActionListener implements ActionListener {
 
     private CommandExecutor getCommandExecutor() {
         if (commandExecutor == null) {
-            commandExecutor = ApplicationContextProvider.getBean(CommandExecutor.class);
+            commandExecutor = MainComponentProvider.mainComponent().commandExecutor();
         }
         return commandExecutor;
     }

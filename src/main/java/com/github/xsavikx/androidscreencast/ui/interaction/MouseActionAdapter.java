@@ -4,16 +4,14 @@ import com.github.xsavikx.androidscreencast.api.command.executor.CommandExecutor
 import com.github.xsavikx.androidscreencast.api.command.factory.AdbInputCommandFactory;
 import com.github.xsavikx.androidscreencast.api.injector.Injector;
 import com.github.xsavikx.androidscreencast.ui.JPanelScreen;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
+import javax.inject.Inject;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 
-@Component
 public class MouseActionAdapter extends MouseAdapter {
     private final static long ONE_SECOND = 1000L;
     private final JPanelScreen jp;
@@ -23,7 +21,7 @@ public class MouseActionAdapter extends MouseAdapter {
     private int dragFromY = -1;
     private long timeFromPress = -1;
 
-    @Autowired
+    @Inject
     public MouseActionAdapter(JPanelScreen jp, CommandExecutor commandExecutor, Injector injector) {
         this.jp = jp;
         this.commandExecutor = commandExecutor;

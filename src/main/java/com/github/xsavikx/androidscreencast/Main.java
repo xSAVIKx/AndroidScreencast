@@ -1,8 +1,7 @@
 package com.github.xsavikx.androidscreencast;
 
-import com.github.xsavikx.androidscreencast.app.AndroidScreencastApplication;
 import com.github.xsavikx.androidscreencast.app.Application;
-import com.github.xsavikx.androidscreencast.spring.config.ApplicationContextProvider;
+import com.github.xsavikx.androidscreencast.dagger.MainComponentProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,9 +12,8 @@ public class Main {
 
     public static void main(String args[]) {
         LOGGER.debug("main(String[] args={}) - start", Arrays.toString(args));
-        Application application;
         try {
-            application = ApplicationContextProvider.getBean(AndroidScreencastApplication.class);
+            Application application = MainComponentProvider.mainComponent().application();
             application.init();
             application.start();
         } finally {

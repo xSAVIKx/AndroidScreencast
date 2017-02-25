@@ -2,7 +2,7 @@ package com.github.xsavikx.androidscreencast.ui;
 
 import com.github.xsavikx.androidscreencast.exception.AndroidScreenCastRuntimeException;
 import com.github.xsavikx.androidscreencast.exception.IORuntimeException;
-import org.springframework.util.StringUtils;
+import com.github.xsavikx.androidscreencast.util.StringUtils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -54,12 +54,12 @@ public class JDialogError extends JDialog {
             AndroidScreenCastRuntimeException realCause = getCause(ex);
             if (realCause != null) {
                 errorDialogLabel.setText(realCause.getClass().getSimpleName());
-                if (!StringUtils.isEmpty(realCause.getMessage()))
+                if (StringUtils.isNotEmpty(realCause.getMessage()))
                     stringWriter.append(realCause.getMessage()).append('\n').append('\n');
-                if (!StringUtils.isEmpty(realCause.getAdditionalInformation()))
+                if (StringUtils.isNotEmpty(realCause.getAdditionalInformation()))
                     stringWriter.append(realCause.getAdditionalInformation());
             } else {
-                if (!StringUtils.isEmpty(ex.getMessage()))
+                if (StringUtils.isNotEmpty(ex.getMessage()))
                     stringWriter.append(ex.getMessage()).append('\n').append('\n');
                 ex.printStackTrace(new PrintWriter(stringWriter));
             }

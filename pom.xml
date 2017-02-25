@@ -6,7 +6,7 @@
     <version>0.0.10s-SNAPSHOT</version>
     <name>Android Screencast</name>
     <properties>
-        <spring.version>4.3.6.RELEASE</spring.version>
+        <dagger2.version>2.9</dagger2.version>
         <ddmlib.version>25.2.0</ddmlib.version>
         <slf4j.version>1.7.22</slf4j.version>
         <logback-classic.version>1.2.1</logback-classic.version>
@@ -41,15 +41,16 @@
             <version>${slf4j.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context</artifactId>
-            <version>${spring.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>commons-logging</groupId>
-                    <artifactId>commons-logging</artifactId>
-                </exclusion>
-            </exclusions>
+            <groupId>com.google.dagger</groupId>
+            <artifactId>dagger</artifactId>
+            <version>${dagger2.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.dagger</groupId>
+            <artifactId>dagger-compiler</artifactId>
+            <version>${dagger2.version}</version>
+            <optional>true</optional>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.google.guava</groupId>

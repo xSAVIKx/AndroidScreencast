@@ -1,29 +1,35 @@
 package com.github.xsavikx.androidscreencast.app;
 
 import com.android.ddmlib.IDevice;
+import com.github.xsavikx.androidscreencast.api.adb.AndroidDebugBridgeWrapper;
 import com.github.xsavikx.androidscreencast.api.injector.Injector;
+import com.github.xsavikx.androidscreencast.configuration.ApplicationConfiguration;
 import com.github.xsavikx.androidscreencast.ui.JFrameMain;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import javax.swing.*;
 import java.awt.*;
 
-@Component
+@Singleton
 public class AndroidScreencastApplication extends SwingApplication {
     private static final Logger LOGGER = LoggerFactory.getLogger(AndroidScreencastApplication.class);
     private final JFrameMain jFrameMain;
     private final Injector injector;
     private final IDevice iDevice;
+    private final AndroidDebugBridgeWrapper wrapper;
     private transient boolean isStopped = false;
 
-    @Autowired
-    public AndroidScreencastApplication(Injector injector, IDevice iDevice, JFrameMain jFrameMain) {
+    @Inject
+    public AndroidScreencastApplication(final Injector injector, final IDevice iDevice, final JFrameMain jFrameMain,
+                                        final ApplicationConfiguration applicationConfiguration, AndroidDebugBridgeWrapper wrapper) {
+        super(applicationConfiguration);
         this.injector = injector;
         this.iDevice = iDevice;
         this.jFrameMain = jFrameMain;
+        this.wrapper = wrapper;
     }
 
     @Override
@@ -33,9 +39,9 @@ public class AndroidScreencastApplication extends SwingApplication {
             LOGGER.debug("Application is already stopped.");
             return;
         }
-        if (injector != null)
-            injector.stop();
-        for (Frame frame : Frame.getFrames()) {
+        injector.stop();
+        wrapper.stop();
+        for (final Frame frame : Frame.getFrames()) {
             frame.dispose();
         }
         isStopped = true;
@@ -49,9 +55,9 @@ public class AndroidScreencastApplication extends SwingApplication {
             stop();
         }
         SwingUtilities.invokeLater(() -> {
+            jFrameMain.initialize();
             // Start showing the iDevice screen
-            jFrameMain.setTitle("" + iDevice);
-
+            jFrameMain.setTitle(iDevice.getSerialNumber());
             // Show window
             jFrameMain.setVisible(true);
 
