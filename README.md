@@ -72,8 +72,15 @@ So, right now AndroidScreencast support all Android versions equal or greater th
 
 Also, to run AndroidScreencast you will need *adb* installed (or you can use bundled in OS bundles adb).
 
-[Android_4_1_1_Input]: http://grepcode.com/file/repository.grepcode.com/java/ext/com.google.android/android/4.1.1_r1/com/android/commands/input/Input.java#Input
+# Similar Projects
 
+* [Seven Square][seven_square] - QT implementation of Android Screencast (actively developed)
+* [Droid@Screen][droid_at_screen] - implementation of Android Screencast in Java (fancy one, last release in 2013)
+* [Android Screen Monitor][android_screen_monitor] - implementation of Android Screencast in Java (latest release in 2013)
+
+[Android_4_1_1_Input]: http://grepcode.com/file/repository.grepcode.com/java/ext/com.google.android/android/4.1.1_r1/com/android/commands/input/Input.java#Input
+[seven_square]: https://github.com/yangh/sevensquare
+[droid_at_screen]: http://droid-at-screen.org/droid-at-screen/
 
 [travis_badge]: https://travis-ci.org/xSAVIKx/AndroidScreencast.svg?branch=master
 [travis]: https://travis-ci.org/xSAVIKx/AndroidScreencast
