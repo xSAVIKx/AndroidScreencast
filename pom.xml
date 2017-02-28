@@ -8,7 +8,7 @@
     <properties>
         <dagger2.version>2.9</dagger2.version>
         <ddmlib.version>25.2.0</ddmlib.version>
-        <slf4j.version>1.7.22</slf4j.version>
+        <slf4j.version>1.7.24</slf4j.version>
         <logback-classic.version>1.2.1</logback-classic.version>
         <guava.version>21.0</guava.version>
         <main.class>com.github.xsavikx.androidscreencast.Main</main.class>
@@ -83,7 +83,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>2.4.3</version>
+                <version>3.0.0</version>
                 <executions>
                     <execution>
                         <phase>package</phase>
