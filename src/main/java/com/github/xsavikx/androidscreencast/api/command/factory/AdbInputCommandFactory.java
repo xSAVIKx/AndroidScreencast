@@ -7,49 +7,65 @@ import com.github.xsavikx.androidscreencast.api.injector.InputKeyEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public final class AdbInputCommandFactory {
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
+@Singleton
+public class AdbInputCommandFactory implements InputCommandFactory {
     private static final Logger LOGGER = LoggerFactory.getLogger(AdbInputCommandFactory.class);
 
-    public static KeyCommand getKeyCommand(int keyCode) {
-        KeyCommand returnKeyCommand = new KeyCommand(keyCode);
+    @Inject
+    public AdbInputCommandFactory() {
+
+    }
+
+    @Override
+    public KeyCommand getKeyCommand(final int keyCode) {
+        final KeyCommand returnKeyCommand = new KeyCommand(keyCode);
         LOGGER.debug(String.valueOf(returnKeyCommand));
         return returnKeyCommand;
     }
 
-    public static KeyCommand getKeyCommand(InputKeyEvent inputKeyEvent) {
-        KeyCommand returnKeyCommand = new KeyCommand(inputKeyEvent);
+    @Override
+    public KeyCommand getKeyCommand(final InputKeyEvent inputKeyEvent) {
+        final KeyCommand returnKeyCommand = new KeyCommand(inputKeyEvent);
         LOGGER.debug(String.valueOf(returnKeyCommand));
         return returnKeyCommand;
     }
 
-
-    public static KeyCommand getKeyCommand(int keyCode, boolean longpress) {
-        KeyCommand returnKeyCommand = new KeyCommand(keyCode, longpress);
+    @Override
+    public KeyCommand getKeyCommand(final int keyCode, final boolean longpress) {
+        final KeyCommand returnKeyCommand = new KeyCommand(keyCode, longpress);
         LOGGER.debug(String.valueOf(returnKeyCommand));
         return returnKeyCommand;
     }
 
-    public static KeyCommand getKeyCommand(InputKeyEvent inputKeyEvent, boolean longpress) {
-        KeyCommand returnKeyCommand = new KeyCommand(inputKeyEvent, longpress);
+    @Override
+    public KeyCommand getKeyCommand(final InputKeyEvent inputKeyEvent, final boolean longpress) {
+        final KeyCommand returnKeyCommand = new KeyCommand(inputKeyEvent, longpress);
         LOGGER.debug(String.valueOf(returnKeyCommand));
         return returnKeyCommand;
     }
 
-    public static SwipeCommand getSwipeCommand(int x1, int y1, int x2, int y2, long duration) {
-        SwipeCommand returnSwipeCommand = new SwipeCommand(x1, y1, x2, y2, duration);
+    @Override
+    public SwipeCommand getSwipeCommand(final int x1, final int y1, final int x2, final int y2, final long duration) {
+        final SwipeCommand returnSwipeCommand = new SwipeCommand(x1, y1, x2, y2, duration);
         LOGGER.debug(String.valueOf(returnSwipeCommand));
         return returnSwipeCommand;
     }
 
-    public static SwipeCommand getSwipeCommand(int x1, int y1, int x2, int y2) {
-        SwipeCommand returnSwipeCommand = new SwipeCommand(x1, y1, x2, y2);
+    @Override
+    public SwipeCommand getSwipeCommand(final int x1, final int y1, final int x2, final int y2) {
+        final SwipeCommand returnSwipeCommand = new SwipeCommand(x1, y1, x2, y2);
         LOGGER.debug(String.valueOf(returnSwipeCommand));
         return returnSwipeCommand;
     }
 
-    public static TapCommand getTapCommand(int x, int y) {
-        TapCommand returnTapCommand = new TapCommand(x, y);
+    @Override
+    public TapCommand getTapCommand(final int x, final int y) {
+        final TapCommand returnTapCommand = new TapCommand(x, y);
         LOGGER.debug(String.valueOf(returnTapCommand));
         return returnTapCommand;
     }
+
 }

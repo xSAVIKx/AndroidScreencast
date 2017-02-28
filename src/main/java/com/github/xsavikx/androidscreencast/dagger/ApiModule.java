@@ -4,6 +4,8 @@ import com.github.xsavikx.androidscreencast.api.AndroidDevice;
 import com.github.xsavikx.androidscreencast.api.AndroidDeviceImpl;
 import com.github.xsavikx.androidscreencast.api.command.executor.CommandExecutor;
 import com.github.xsavikx.androidscreencast.api.command.executor.ShellCommandExecutor;
+import com.github.xsavikx.androidscreencast.api.command.factory.AdbInputCommandFactory;
+import com.github.xsavikx.androidscreencast.api.command.factory.InputCommandFactory;
 import com.github.xsavikx.androidscreencast.configuration.ApplicationConfiguration;
 import dagger.Module;
 import dagger.Provides;
@@ -40,13 +42,19 @@ public class ApiModule {
 
     @Singleton
     @Provides
-    public CommandExecutor commandExecutor(ShellCommandExecutor shellCommandExecutor) {
+    public static CommandExecutor commandExecutor(ShellCommandExecutor shellCommandExecutor) {
         return shellCommandExecutor;
     }
 
     @Singleton
     @Provides
-    public AndroidDevice androidDevice(AndroidDeviceImpl androidDevice) {
+    public static AndroidDevice androidDevice(AndroidDeviceImpl androidDevice) {
         return androidDevice;
+    }
+
+    @Singleton
+    @Provides
+    public static InputCommandFactory inputCommandFactory(AdbInputCommandFactory adbInputCommandFactory) {
+        return adbInputCommandFactory;
     }
 }

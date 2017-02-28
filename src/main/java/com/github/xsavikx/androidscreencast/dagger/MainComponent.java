@@ -1,6 +1,7 @@
 package com.github.xsavikx.androidscreencast.dagger;
 
 import com.github.xsavikx.androidscreencast.api.command.executor.CommandExecutor;
+import com.github.xsavikx.androidscreencast.api.command.factory.InputCommandFactory;
 import com.github.xsavikx.androidscreencast.app.Application;
 import dagger.Component;
 
@@ -12,4 +13,6 @@ public interface MainComponent {
     Application application();
 
     CommandExecutor commandExecutor();
+
+    InputCommandFactory inputCommandFactory();
 }

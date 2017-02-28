@@ -1,7 +1,8 @@
 package com.github.xsavikx.androidscreencast.ui;
 
+import com.github.xsavikx.androidscreencast.api.command.KeyCommand;
 import com.github.xsavikx.androidscreencast.api.command.executor.CommandExecutor;
-import com.github.xsavikx.androidscreencast.api.command.factory.AdbInputCommandFactory;
+import com.github.xsavikx.androidscreencast.api.command.factory.InputCommandFactory;
 import com.github.xsavikx.androidscreencast.api.injector.InputKeyEvent;
 import com.github.xsavikx.androidscreencast.ui.model.InputKeyEventTable;
 
@@ -30,11 +31,13 @@ public class JDialogExecuteKeyEvent extends JDialog {
 
     private final CommandExecutor commandExecutor;
     private final InputKeyEventTable commandListTable;
+    private final InputCommandFactory inputCommandFactory;
 
     @Inject
-    public JDialogExecuteKeyEvent(CommandExecutor commandExecutor, InputKeyEventTable commandListTable) {
+    public JDialogExecuteKeyEvent(CommandExecutor commandExecutor, InputKeyEventTable commandListTable, InputCommandFactory inputCommandFactory) {
         this.commandExecutor = commandExecutor;
         this.commandListTable = commandListTable;
+        this.inputCommandFactory = inputCommandFactory;
         init();
     }
 
@@ -56,8 +59,12 @@ public class JDialogExecuteKeyEvent extends JDialog {
             if (rowIndex > 0) {
 
                 final String title = (String) commandListTable.getModel().getValueAt(rowIndex, TITLE_COLUMN_INDEX);
-                SwingUtilities.invokeLater(() -> commandExecutor.execute(AdbInputCommandFactory.getKeyCommand(InputKeyEvent.valueOf(title),
-                        useLongPress.getState())));
+                SwingUtilities.invokeLater(() -> {
+                    final InputKeyEvent inputKeyEvent = InputKeyEvent.valueOf(title);
+                    final boolean longPress = useLongPress.getState();
+                    final KeyCommand keyCommand = inputCommandFactory.getKeyCommand(inputKeyEvent, longPress);
+                    commandExecutor.execute(keyCommand);
+                });
                 closeDialog();
             } else {
                 JOptionPane.showMessageDialog(null, NO_COMMAND_CHOSEN_WARNING_MESSAGE, NO_COMMAND_CHOSEN_WARNING_DIALOG_TITLE,
