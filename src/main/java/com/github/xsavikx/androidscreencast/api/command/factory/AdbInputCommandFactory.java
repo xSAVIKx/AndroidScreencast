@@ -27,20 +27,6 @@ public class AdbInputCommandFactory implements InputCommandFactory {
     }
 
     @Override
-    public KeyCommand getKeyCommand(final InputKeyEvent inputKeyEvent) {
-        final KeyCommand returnKeyCommand = new KeyCommand(inputKeyEvent);
-        LOGGER.debug(String.valueOf(returnKeyCommand));
-        return returnKeyCommand;
-    }
-
-    @Override
-    public KeyCommand getKeyCommand(final int keyCode, final boolean longpress) {
-        final KeyCommand returnKeyCommand = new KeyCommand(keyCode, longpress);
-        LOGGER.debug(String.valueOf(returnKeyCommand));
-        return returnKeyCommand;
-    }
-
-    @Override
     public KeyCommand getKeyCommand(final InputKeyEvent inputKeyEvent, final boolean longpress) {
         final KeyCommand returnKeyCommand = new KeyCommand(inputKeyEvent, longpress);
         LOGGER.debug(String.valueOf(returnKeyCommand));
@@ -50,13 +36,6 @@ public class AdbInputCommandFactory implements InputCommandFactory {
     @Override
     public SwipeCommand getSwipeCommand(final int x1, final int y1, final int x2, final int y2, final long duration) {
         final SwipeCommand returnSwipeCommand = new SwipeCommand(x1, y1, x2, y2, duration);
-        LOGGER.debug(String.valueOf(returnSwipeCommand));
-        return returnSwipeCommand;
-    }
-
-    @Override
-    public SwipeCommand getSwipeCommand(final int x1, final int y1, final int x2, final int y2) {
-        final SwipeCommand returnSwipeCommand = new SwipeCommand(x1, y1, x2, y2);
         LOGGER.debug(String.valueOf(returnSwipeCommand));
         return returnSwipeCommand;
     }
