@@ -6,12 +6,14 @@ import com.github.xsavikx.androidscreencast.api.injector.Injector;
 import com.github.xsavikx.androidscreencast.ui.JPanelScreen;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 
+@Singleton
 public class MouseActionAdapter extends MouseAdapter {
     private final static long ONE_SECOND = 1000L;
     private final JPanelScreen jp;

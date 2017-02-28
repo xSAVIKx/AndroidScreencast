@@ -7,7 +7,7 @@ abstract class GUIApplication implements Application {
     private static final Logger LOGGER = LoggerFactory.getLogger(GUIApplication.class);
 
     GUIApplication() {
-        Runtime.getRuntime().addShutdownHook(new Thread(GUIApplication.this::stop));
+        Runtime.getRuntime().addShutdownHook(new Thread(this::stop));
         Thread.setDefaultUncaughtExceptionHandler((thread, ex) -> {
             try {
                 handleException(thread, ex);

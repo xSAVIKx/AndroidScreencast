@@ -102,7 +102,6 @@ public class JFrameMain extends JFrame {
         jtbHardkeys.add(jbKbPhoneOn);
         jtbHardkeys.add(jbKbPhoneOff);
 
-        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setLayout(new BorderLayout());
         add(jtb, BorderLayout.NORTH);
         add(jtbHardkeys, BorderLayout.SOUTH);

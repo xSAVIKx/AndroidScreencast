@@ -1,10 +1,12 @@
 package com.github.xsavikx.androidscreencast.ui;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
+@Singleton
 public class JPanelScreen extends JPanel {
     private static final long serialVersionUID = -2034873107028503004L;
     private float coef = 1;
@@ -15,7 +17,7 @@ public class JPanelScreen extends JPanel {
 
     @Inject
     public JPanelScreen() {
-        this.setFocusable(true);
+        setFocusable(true);
     }
 
     public Point getRawPoint(final Point p1) {
@@ -35,11 +37,11 @@ public class JPanelScreen extends JPanel {
     protected void paintComponent(final Graphics g) {
         if (isNotInitialized())
             return;
-        Graphics2D g2 = (Graphics2D) g;
+        final Graphics2D g2 = (Graphics2D) g;
         g2.clearRect(0, 0, getWidth(), getHeight());
-        double width = Math.min(getWidth(), size.width * getHeight() / size.height);
+        final double width = Math.min(getWidth(), size.width * getHeight() / size.height);
         coef = (float) width / size.width;
-        double height = width * size.height / size.width;
+        final double height = width * size.height / size.width;
         origX = (getWidth() - width) / 2;
         origY = (getHeight() - height) / 2;
         g2.drawImage(image, (int) origX, (int) origY, (int) width, (int) height, this);

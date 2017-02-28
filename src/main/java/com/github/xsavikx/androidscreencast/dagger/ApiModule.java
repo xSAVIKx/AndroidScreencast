@@ -14,6 +14,7 @@ import javax.inject.Singleton;
 import static com.github.xsavikx.androidscreencast.configuration.ApplicationConfigurationProperty.*;
 import static com.github.xsavikx.androidscreencast.configuration.ApplicationConfigurationPropertyKeys.*;
 
+@Singleton
 @Module
 public class ApiModule {
     @Singleton

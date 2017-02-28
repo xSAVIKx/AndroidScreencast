@@ -36,35 +36,30 @@ public class DeviceChooserApplication extends SwingApplication {
 
     @Override
     public void stop() {
-        // ignore
+        bridge.stop();
     }
 
     @Override
     public void start() {
         LOGGER.info("Starting application");
-        try {
 
-            waitDeviceList(bridge);
+        waitDeviceList(bridge);
 
-            final IDevice devices[] = bridge.getDevices();
+        final IDevice devices[] = bridge.getDevices();
 
-            // Let the user choose the device
-            if (devices.length == 1) {
-                device = devices[0];
-                LOGGER.info("1 device was found by ADB");
-            } else {
-                final JDialogDeviceList jd = new JDialogDeviceList(devices);
-                jd.setVisible(true);
-                device = jd.getDevice();
-                LOGGER.info("{} devices were found by ADB", devices.length);
-            }
+        // Let the user choose the device
+        if (devices.length == 1) {
+            device = devices[0];
+            LOGGER.info("1 device was found by ADB");
+        } else {
+            final JDialogDeviceList jd = new JDialogDeviceList(devices);
+            jd.setVisible(true);
+            device = jd.getDevice();
+            LOGGER.info("{} devices were found by ADB", devices.length);
+        }
 
-            if (device == null) {
-                throw new NoDeviceChosenException();
-            }
-        } catch (final Throwable e) {
-            bridge.stop();
-            throw e;
+        if (device == null) {
+            throw new NoDeviceChosenException();
         }
         LOGGER.info("{} was chosen", device.getName());
     }

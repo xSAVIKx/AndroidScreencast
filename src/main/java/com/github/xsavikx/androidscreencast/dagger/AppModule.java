@@ -9,6 +9,7 @@ import dagger.Provides;
 
 import javax.inject.Singleton;
 
+@Singleton
 @Module
 public class AppModule {
     @Singleton
@@ -20,10 +21,14 @@ public class AppModule {
     @Singleton
     @Provides
     public static IDevice iDevice(final DeviceChooserApplication application) {
-        application.init();
-        application.start();
-        application.stop();
-        IDevice device = application.getDevice();
-        return device;
+        try {
+            application.init();
+            application.start();
+            IDevice device = application.getDevice();
+            return device;
+        } catch (Throwable e) {
+            application.stop();
+            throw e;
+        }
     }
 }
