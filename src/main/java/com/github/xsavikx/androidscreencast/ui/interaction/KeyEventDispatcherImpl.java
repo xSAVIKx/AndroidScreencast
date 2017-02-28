@@ -24,7 +24,6 @@ public class KeyEventDispatcherImpl implements KeyEventDispatcher {
         if (e.getID() == KeyEvent.KEY_TYPED) {
             final int code = KeyCodeConverter.getKeyCode(e);
             SwingUtilities.invokeLater(() -> getCommandExecutor().execute(AdbInputCommandFactory.getKeyCommand(code)));
-
         }
         return false;
     }

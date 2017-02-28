@@ -1,5 +1,6 @@
 package com.github.xsavikx.androidscreencast.dagger;
 
+import com.github.xsavikx.androidscreencast.api.injector.InputKeyEvent;
 import com.github.xsavikx.androidscreencast.configuration.ApplicationConfiguration;
 import com.github.xsavikx.androidscreencast.configuration.ApplicationConfigurationProperty;
 import dagger.Module;
@@ -25,5 +26,11 @@ public class UiModule {
     @Provides
     public static int appWindowWidth(final ApplicationConfiguration applicationConfiguration) {
         return Integer.valueOf(applicationConfiguration.getProperty(ApplicationConfigurationProperty.APP_WINDOW_WIDTH));
+    }
+
+    @Singleton
+    @Provides
+    public static InputKeyEvent[] initialData() {
+        return InputKeyEvent.values();
     }
 }

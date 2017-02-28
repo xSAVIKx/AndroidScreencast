@@ -4,14 +4,14 @@ import com.github.xsavikx.androidscreencast.api.command.executor.CommandExecutor
 import com.github.xsavikx.androidscreencast.api.command.factory.AdbInputCommandFactory;
 import com.github.xsavikx.androidscreencast.api.injector.InputKeyEvent;
 import com.github.xsavikx.androidscreencast.ui.model.InputKeyEventTable;
-import com.github.xsavikx.androidscreencast.ui.model.InputKeyEventTableModel;
 
-import javax.annotation.PostConstruct;
 import javax.inject.Inject;
+import javax.inject.Singleton;
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
 
+@Singleton
 public class JDialogExecuteKeyEvent extends JDialog {
     private static final long serialVersionUID = -4152020879675916776L;
     private static final int HEIGHT = 600;
@@ -20,7 +20,7 @@ public class JDialogExecuteKeyEvent extends JDialog {
     private static final int BUTTON_WIDTH = WIDTH >> 1 - 5;
 
     private static final int TITLE_COLUMN_INDEX = 1;
-
+    private static final String TITLE = "Execute key event";
     private static final String EXECUTE_BUTTON_TEXT = "Execute";
     private static final String USE_LONG_PRESS_BUTTON_TEXT = "Long press";
     private static final String CANCEL_BUTTON_TEXT = "Cancel";
@@ -29,20 +29,24 @@ public class JDialogExecuteKeyEvent extends JDialog {
     private static final String NO_COMMAND_CHOSEN_WARNING_DIALOG_TITLE = "Warning";
 
     private final CommandExecutor commandExecutor;
+    private final InputKeyEventTable commandListTable;
 
     @Inject
-    public JDialogExecuteKeyEvent(CommandExecutor commandExecutor) {
+    public JDialogExecuteKeyEvent(CommandExecutor commandExecutor, InputKeyEventTable commandListTable) {
         this.commandExecutor = commandExecutor;
+        this.commandListTable = commandListTable;
+        init();
     }
 
+    public void open() {
+        setVisible(true);
+    }
 
-    @PostConstruct
-    private void initialize() {
-        setResizable(false);
-        setTitle("Execute key event");
+    private void init() {
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        final InputKeyEventTableModel commandList = new InputKeyEventTableModel(InputKeyEvent.values());
-        final InputKeyEventTable commandListTable = new InputKeyEventTable(commandList);
+        setResizable(false);
+        setTitle(TITLE);
+        setAlwaysOnTop(true);
         final JCheckBoxMenuItem useLongPress = new JCheckBoxMenuItem(USE_LONG_PRESS_BUTTON_TEXT, false);
 
         JButton executeCommandButton = new JButton(EXECUTE_BUTTON_TEXT);
@@ -50,7 +54,8 @@ public class JDialogExecuteKeyEvent extends JDialog {
         executeCommandButton.addActionListener(actionEvent -> {
             int rowIndex = commandListTable.getSelectedRow();
             if (rowIndex > 0) {
-                final String title = (String) commandList.getValueAt(rowIndex, TITLE_COLUMN_INDEX);
+
+                final String title = (String) commandListTable.getModel().getValueAt(rowIndex, TITLE_COLUMN_INDEX);
                 SwingUtilities.invokeLater(() -> commandExecutor.execute(AdbInputCommandFactory.getKeyCommand(InputKeyEvent.valueOf(title),
                         useLongPress.getState())));
                 closeDialog();

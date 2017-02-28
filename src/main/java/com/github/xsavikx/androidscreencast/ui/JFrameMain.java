@@ -118,15 +118,17 @@ public class JFrameMain extends JFrame {
         jp.addMouseWheelListener(ma);
 
         jbExplorer.addActionListener(actionEvent -> {
-            JFrameExplorer jf = frameExplorer;
-            jf.setIconImage(getIconImage());
-            jf.launch();
-            jf.setVisible(true);
+            SwingUtilities.invokeLater(() -> {
+                JFrameExplorer jf = frameExplorer;
+                jf.setIconImage(getIconImage());
+                jf.launch();
+                jf.setVisible(true);
+            });
         });
         jtb.add(jbExplorer);
 
         jbExecuteKeyEvent.addActionListener(actionEvent -> {
-            dialogExecuteKeyEvent.setVisible(true);
+            SwingUtilities.invokeLater(dialogExecuteKeyEvent::open);
         });
 
         jtb.add(jbExecuteKeyEvent);
