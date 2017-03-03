@@ -1,10 +1,16 @@
 package com.github.xsavikx.androidscreencast.api.injector;
 
 import com.android.ddmlib.MultiLineReceiver;
-import org.springframework.stereotype.Component;
 
-@Component
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
+@Singleton
 public class MultiLineReceiverPrinter extends MultiLineReceiver {
+    @Inject
+    public MultiLineReceiverPrinter() {
+
+    }
 
     @Override
     public boolean isCancelled() {

@@ -2,18 +2,24 @@ package com.github.xsavikx.androidscreencast.api.file;
 
 import com.github.xsavikx.androidscreencast.api.AndroidDeviceImpl;
 import com.github.xsavikx.androidscreencast.exception.IORuntimeException;
-import org.springframework.stereotype.Component;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.io.File;
 import java.io.IOException;
 
-@Component
+@Singleton
 public class FileInfo {
     public AndroidDeviceImpl device;
     public String path;
     public String attribs;
     public boolean directory;
     public String name;
+
+    @Inject
+    public FileInfo() {
+
+    }
 
     public File downloadTemporary() {
         try {

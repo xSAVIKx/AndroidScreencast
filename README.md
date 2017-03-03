@@ -1,21 +1,11 @@
 AndroidScreencast
 =================
 
-[![Build Status Travis-CI][travis_badge]][travis] [![Dependency Status][versioneye_badge]][versioneye] [![Codacy Badge][codacy_badge]][codacy] [![Join the chat at https://gitter.im/AndroidScreencast/Lobby][gitter_badge]][gitter]
-
-[travis_badge]: https://travis-ci.org/xSAVIKx/AndroidScreencast.svg?branch=master
-[travis]: https://travis-ci.org/xSAVIKx/AndroidScreencast
-
-[versioneye_badge]: https://www.versioneye.com/user/projects/588988221618a700318eafb5/badge.svg
-[versioneye]: https://www.versioneye.com/user/projects/588988221618a700318eafb5
-
-[codacy_badge]: https://api.codacy.com/project/badge/Grade/064bbd2582b544bb9659a01a2872317c
-[codacy]: https://www.codacy.com/app/xSAVIKx/AndroidScreencast?utm_source=github.com&utm_medium=referral&utm_content=xSAVIKx/AndroidScreencast&utm_campaign=badger
-
-
-
-[gitter_badge]: https://badges.gitter.im/AndroidScreencast/Lobby.svg
-[gitter]: https://gitter.im/AndroidScreencast/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge
+[![Build Status Travis-CI][travis_badge]][travis]&nbsp;
+[![Dependency Status][versioneye_badge]][versioneye]&nbsp;
+[![Codacy Badge][codacy_badge]][codacy]&nbsp;
+[![Join the chat at https://gitter.im/AndroidScreencast/Lobby][gitter_badge]][gitter]&nbsp;
+[![Apache License][license_badge]][license]
 
 # Description
 
@@ -62,7 +52,7 @@ The resulting artifacts will be created in the `target` subdirectory.
 You can run the executable jar via `java -jar target/androidscreencast-VERSION-executable.jar`, replacing VERSION with
 the current version.
 
-For example, `java -jar target/androidscreencast-0.0.9s-executable.jar`.
+For example, `java -jar target/androidscreencast-0.0.10s-executable.jar`.
 
 Additionally OS-packages would be created with ADB executables bundled:
 * `androidscreencast-VERSION-windows.zip`
@@ -82,4 +72,27 @@ So, right now AndroidScreencast support all Android versions equal or greater th
 
 Also, to run AndroidScreencast you will need *adb* installed (or you can use bundled in OS bundles adb).
 
+# Similar Projects
+
+* [Seven Square][seven_square] - QT implementation of Android Screencast (actively developed)
+* [Droid@Screen][droid_at_screen] - implementation of Android Screencast in Java (fancy one, last release in 2013)
+* [Android Screen Monitor][android_screen_monitor] - implementation of Android Screencast in Java (latest release in 2013)
+
 [Android_4_1_1_Input]: http://grepcode.com/file/repository.grepcode.com/java/ext/com.google.android/android/4.1.1_r1/com/android/commands/input/Input.java#Input
+[seven_square]: https://github.com/yangh/sevensquare
+[droid_at_screen]: http://droid-at-screen.org/droid-at-screen/
+
+[travis_badge]: https://travis-ci.org/xSAVIKx/AndroidScreencast.svg?branch=master
+[travis]: https://travis-ci.org/xSAVIKx/AndroidScreencast
+
+[versioneye_badge]: https://www.versioneye.com/user/projects/58a746d8b4d2a20055fcb887/badge.svg?style=flat
+[versioneye]: https://www.versioneye.com/user/projects/58a746d8b4d2a20055fcb887
+
+[codacy_badge]: https://api.codacy.com/project/badge/Grade/064bbd2582b544bb9659a01a2872317c
+[codacy]: https://www.codacy.com/app/xSAVIKx/AndroidScreencast?utm_source=github.com&utm_medium=referral&utm_content=xSAVIKx/AndroidScreencast&utm_campaign=badger
+
+[license_badge]: https://img.shields.io/badge/license-Apache%20License%202.0-blue.svg?style=flat
+[license]: http://www.apache.org/licenses/LICENSE-2.0
+
+[gitter_badge]: https://badges.gitter.im/AndroidScreencast/Lobby.svg?style=flat
+[gitter]: https://gitter.im/AndroidScreencast/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge

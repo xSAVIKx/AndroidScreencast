@@ -372,6 +372,7 @@ public abstract class SwingWorker<T, V> implements Future<T>, Runnable {
      * @see #get
      */
     protected void done() {
+        //
     }
 
     // Future methods START
@@ -605,6 +606,7 @@ public abstract class SwingWorker<T, V> implements Future<T>, Runnable {
      * @see #publish
      */
     protected void process(List<V> chunks) {
+        //
     }
 
     // PropertyChangeSupports methods END

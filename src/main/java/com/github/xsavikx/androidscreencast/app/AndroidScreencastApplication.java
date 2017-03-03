@@ -1,84 +1,67 @@
 package com.github.xsavikx.androidscreencast.app;
 
-import com.android.ddmlib.AndroidDebugBridge;
 import com.android.ddmlib.IDevice;
+import com.github.xsavikx.androidscreencast.api.adb.AndroidDebugBridgeWrapper;
 import com.github.xsavikx.androidscreencast.api.injector.Injector;
+import com.github.xsavikx.androidscreencast.configuration.ApplicationConfiguration;
 import com.github.xsavikx.androidscreencast.ui.JFrameMain;
-import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import javax.swing.*;
 import java.awt.*;
 
-@Component
+@Singleton
 public class AndroidScreencastApplication extends SwingApplication {
-    private static final Logger LOGGER = Logger.getLogger(AndroidScreencastApplication.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AndroidScreencastApplication.class);
     private final JFrameMain jFrameMain;
     private final Injector injector;
     private final IDevice iDevice;
-    @Value("${adb.path}")
-    private String adbPath;
+    private final AndroidDebugBridgeWrapper wrapper;
     private transient boolean isStopped = false;
 
-    @Autowired
-    public AndroidScreencastApplication(Injector injector, IDevice iDevice, JFrameMain jFrameMain) {
+    @Inject
+    public AndroidScreencastApplication(final Injector injector, final IDevice iDevice, final JFrameMain jFrameMain,
+                                        final ApplicationConfiguration applicationConfiguration, AndroidDebugBridgeWrapper wrapper) {
+        super(applicationConfiguration);
         this.injector = injector;
         this.iDevice = iDevice;
         this.jFrameMain = jFrameMain;
+        this.wrapper = wrapper;
     }
 
     @Override
     public void stop() {
-        try {
-            LOGGER.debug("stop() - start");
-            if (isStopped) {
-                LOGGER.debug("Application is already stopped.");
-                return;
-            }
-            if (injector != null)
-                injector.stop();
-
-            if (iDevice != null) {
-                synchronized (iDevice) {
-                    if (hasFilledAdbPath())
-                        AndroidDebugBridge.disconnectBridge();
-                    AndroidDebugBridge.terminate();
-                }
-            }
-            for (Frame frame : Frame.getFrames()) {
-                frame.dispose();
-            }
-            isStopped = true;
-        } finally {
-            LOGGER.debug("stop() - end");
+        LOGGER.info("Stopping application");
+        if (isStopped) {
+            LOGGER.debug("Application is already stopped.");
+            return;
         }
-
+        injector.stop();
+        wrapper.stop();
+        for (final Frame frame : Frame.getFrames()) {
+            frame.dispose();
+        }
+        isStopped = true;
     }
 
     @Override
     public void start() {
-        LOGGER.debug("start() - start");
+        LOGGER.info("Starting application");
         if (iDevice == null) {
             LOGGER.warn("No valid device was chosen. Please try to chose correct one.");
             stop();
         }
         SwingUtilities.invokeLater(() -> {
+            jFrameMain.initialize();
             // Start showing the iDevice screen
-            jFrameMain.setTitle("" + iDevice);
-
+            jFrameMain.setTitle(iDevice.getSerialNumber());
             // Show window
             jFrameMain.setVisible(true);
 
             jFrameMain.launchInjector();
         });
-        LOGGER.debug("start() - end");
-    }
-
-
-    private boolean hasFilledAdbPath() {
-        return !StringUtils.isEmpty(adbPath);
     }
 }

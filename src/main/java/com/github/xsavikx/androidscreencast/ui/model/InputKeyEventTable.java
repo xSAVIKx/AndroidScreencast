@@ -1,19 +1,23 @@
 package com.github.xsavikx.androidscreencast.ui.model;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import javax.swing.*;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import java.awt.*;
 
+@Singleton
 public class InputKeyEventTable extends JTable {
     private static final long serialVersionUID = 3978642864003531967L;
 
     private final static int MIN_COLUMN_WIDTH = 20;
 
+    @Inject
     public InputKeyEventTable(InputKeyEventTableModel tableModel) {
         super(tableModel);
-        setTableColumnsNames(tableModel.columnNames);
+        setTableColumnsNames(InputKeyEventTableModel.COLUMN_NAMES);
         setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         setTableColumnsPreferredSize();
         setSelectionMode(ListSelectionModel.SINGLE_SELECTION);

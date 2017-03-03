@@ -1,20 +1,29 @@
 package com.github.xsavikx.androidscreencast.app;
 
+import com.github.xsavikx.androidscreencast.configuration.ApplicationConfiguration;
 import com.github.xsavikx.androidscreencast.exception.AndroidScreenCastRuntimeException;
 import com.github.xsavikx.androidscreencast.ui.JDialogError;
-import org.springframework.beans.factory.annotation.Value;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
+import static com.github.xsavikx.androidscreencast.configuration.ApplicationConfigurationProperty.APP_NATIVE_LOOK;
+
 public abstract class SwingApplication extends GUIApplication {
+    private static final Logger LOGGER = LoggerFactory.getLogger(DeviceChooserApplication.class);
+    private static final String SYNC_TREE_UI = "SynthTreeUI";
+    protected final ApplicationConfiguration applicationConfiguration;
     private JDialogError jd = null;
-    @Value("${app.native.look:true}")
-    private boolean nativeLook;
+
+    protected SwingApplication(final ApplicationConfiguration applicationConfiguration) {
+        this.applicationConfiguration = applicationConfiguration;
+    }
 
     private boolean useNativeLook() {
-        return nativeLook;
+        return Boolean.valueOf(applicationConfiguration.getProperty(APP_NATIVE_LOOK));
     }
 
     @Override
@@ -28,19 +37,21 @@ public abstract class SwingApplication extends GUIApplication {
     }
 
     @Override
-    public void handleException(Thread thread, Throwable ex) {
+    public void handleException(final Thread thread, final Throwable ex) {
         try {
-            StringWriter sw = new StringWriter();
+            final StringWriter sw = new StringWriter();
             ex.printStackTrace(new PrintWriter(sw));
-            if (sw.toString().contains("SynthTreeUI"))
+            if (sw.toString().contains(SYNC_TREE_UI))
                 return;
-            ex.printStackTrace(System.err);
+            LOGGER.error(ex.getClass().getSimpleName(), ex);
             if (jd != null && jd.isVisible())
                 return;
             jd = new JDialogError(ex);
-            SwingUtilities.invokeLater(() -> jd.setVisible(true));
-        } catch (Exception ignored) {
-            // ignored
+            SwingUtilities.invokeLater(() -> {
+                jd.setVisible(true);
+            });
+        } catch (Exception e) {
+            LOGGER.warn("Exception occurred during exception handling.", e);
         }
     }
 
