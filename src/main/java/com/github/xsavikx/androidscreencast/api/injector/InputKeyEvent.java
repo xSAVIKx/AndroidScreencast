@@ -1,12 +1,10 @@
 //@formatter:off
 package com.github.xsavikx.androidscreencast.api.injector;
 
-import javax.annotation.Resource;
 import java.awt.event.KeyEvent;
 import java.util.EnumSet;
 import java.util.Set;
 
-@Resource
 public enum InputKeyEvent {
     KEYCODE_UNKNOWN(0, "Key code constant: Unknown key code."),
     KEYCODE_SOFT_LEFT(1, "Key code constant: Soft Left key. Usually situated below the display on phones and used as a multi-function feature key for selecting a software defined function shown on the bottom left of the display."),

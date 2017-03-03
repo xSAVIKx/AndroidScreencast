@@ -3,9 +3,8 @@ package com.github.xsavikx.androidscreencast.ui.explorer;
 import com.github.xsavikx.androidscreencast.api.AndroidDevice;
 import com.github.xsavikx.androidscreencast.api.file.FileInfo;
 import com.github.xsavikx.androidscreencast.exception.AndroidScreenCastRuntimeException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
+import javax.inject.Inject;
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
@@ -19,7 +18,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-@Component
 public class JFrameExplorer extends JFrame {
 
     private static final long serialVersionUID = -5209265873286028854L;
@@ -28,7 +26,7 @@ public class JFrameExplorer extends JFrame {
     private JList<Object> jListFichiers;
     private Map<String, List<FileInfo>> cache = new LinkedHashMap<>();
 
-    @Autowired
+    @Inject
     public JFrameExplorer(AndroidDevice androidDevice) {
 
         setTitle("Explorer");

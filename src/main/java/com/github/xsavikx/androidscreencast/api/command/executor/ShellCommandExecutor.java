@@ -9,25 +9,29 @@ import com.github.xsavikx.androidscreencast.api.command.exception.AdbShellComman
 import com.github.xsavikx.androidscreencast.api.injector.MultiLineReceiverPrinter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
-@Service
+import static com.github.xsavikx.androidscreencast.configuration.ApplicationConfigurationPropertyKeys.ADB_COMMAND_TIMEOUT_KEY;
+
+@Singleton
 public class ShellCommandExecutor implements CommandExecutor {
     private static final Logger LOGGER = LoggerFactory.getLogger(ShellCommandExecutor.class);
     private final IDevice device;
     private final MultiLineReceiverPrinter multiLineReceiverPrinter;
-    @Value("${adb.command.timeout:5}")
-    private long adbCommandTimeout;
+    private final long adbCommandTimeout;
 
-    @Autowired
-    public ShellCommandExecutor(IDevice device, MultiLineReceiverPrinter multiLineReceiverPrinter) {
+    @Inject
+    public ShellCommandExecutor(final IDevice device,
+                                final MultiLineReceiverPrinter multiLineReceiverPrinter,
+                                @Named(ADB_COMMAND_TIMEOUT_KEY) long adbCommandTimeout) {
         this.device = device;
         this.multiLineReceiverPrinter = multiLineReceiverPrinter;
+        this.adbCommandTimeout = adbCommandTimeout;
     }
 
     @Override

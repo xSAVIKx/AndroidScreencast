@@ -3,34 +3,43 @@ package com.github.xsavikx.androidscreencast.api.adb;
 import com.android.ddmlib.AndroidDebugBridge;
 import com.android.ddmlib.IDevice;
 import com.github.xsavikx.androidscreencast.exception.IllegalAdbConfigurationException;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
+import com.github.xsavikx.androidscreencast.util.StringUtils;
 
-import javax.annotation.PreDestroy;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
 import java.io.IOException;
 
-@Service
+import static com.github.xsavikx.androidscreencast.configuration.ApplicationConfigurationPropertyKeys.ADB_PATH_KEY;
+
+@Singleton
 public class AndroidDebugBridgeWrapper {
-    @Value("${adb.path:}")
-    private String adbPath;
+    private final String adbPath;
     private AndroidDebugBridge adb;
 
+    @Inject
+    public AndroidDebugBridgeWrapper(@Named(ADB_PATH_KEY) String adbPath) {
+        this.adbPath = adbPath;
+    }
+
     public IDevice[] getDevices() {
-        init();
-        return adb.getDevices();
+        return getAdb().getDevices();
     }
 
     public boolean hasInitialDeviceList() {
-        init();
-        return adb.hasInitialDeviceList();
+        return getAdb().hasInitialDeviceList();
     }
 
-
-    @PreDestroy
-    void cleanUp() {
+    public void stop() {
         AndroidDebugBridge.disconnectBridge();
         AndroidDebugBridge.terminate();
+    }
+
+    private AndroidDebugBridge getAdb() {
+        if (adb == null) {
+            init();
+        }
+        return adb;
     }
 
     private void init() {
@@ -39,7 +48,7 @@ public class AndroidDebugBridgeWrapper {
         }
         try {
             AndroidDebugBridge.initIfNeeded(false);
-            if (!StringUtils.isEmpty(adbPath)) {
+            if (StringUtils.isNotEmpty(adbPath)) {
                 adb = AndroidDebugBridge.createBridge(adbPath, false);
             } else {
                 adb = AndroidDebugBridge.createBridge();
