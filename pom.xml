@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.github.xsavikx</groupId>
     <artifactId>androidscreencast</artifactId>
-    <version>0.0.10s-SNAPSHOT</version>
+    <version>0.0.10s</version>
     <name>Android Screencast</name>
     <properties>
         <dagger2.version>2.9</dagger2.version>
