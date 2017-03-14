@@ -81,6 +81,7 @@ Also, to run AndroidScreencast you will need *adb* installed (or you can use bun
 [Android_4_1_1_Input]: http://grepcode.com/file/repository.grepcode.com/java/ext/com.google.android/android/4.1.1_r1/com/android/commands/input/Input.java#Input
 [seven_square]: https://github.com/yangh/sevensquare
 [droid_at_screen]: http://droid-at-screen.org/droid-at-screen/
+[android_screen_monitor]: https://github.com/adakoda/android-screen-monitor
 
 [travis_badge]: https://travis-ci.org/xSAVIKx/AndroidScreencast.svg?branch=master
 [travis]: https://travis-ci.org/xSAVIKx/AndroidScreencast
