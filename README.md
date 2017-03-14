@@ -26,6 +26,35 @@ This project gives the opportunity to use your phone even with a broken screen.
 
 [wiki]: https://github.com/xSAVIKx/AndroidScreencast/wiki
 
+## Configuration
+
+Right now to successfully run application you **should** create `app.properties` file near the runnable `.jar` 
+and provide at least one property - `adb.path` which should point to the `adb` executable file within your OS, for example
+such location could be configured for Windows OS:
+```properties
+adb.path=adb/windows/adb.exe
+```
+
+Both absolute and relative paths are supported.
+
+### Additional properties
+Here is the full list of available properties for application configuration.
+Properties should be places in the `app.properties` file near the executable `.jar` file.
+
+```properties
+#relative or absolute path to ADB
+adb.path=./adb
+#maximum time to wait for device (in seconds)
+adb.device.timeout=30
+#maximum time to execute adb command (in seconds)
+adb.command.timeout=5
+#initial application window width (in pixels)
+default.window.width=1024
+#initial application window height (in pixels)
+default.window.height=768
+#Defines whether application should look 'natively' to OS. Possible values: true/false
+app.native.look=false
+```
 ## JNLP
 
 Application is available using Java web start technology via [androidscreencast.jnlp][jnlp].
