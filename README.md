@@ -28,18 +28,28 @@ This project gives the opportunity to use your phone even with a broken screen.
 
 ## Configuration
 
-Right now to successfully run application you **should** create `app.properties` file near the runnable `.jar` 
-and provide at least one property - `adb.path` which should point to the `adb` executable file within your OS, for example
-such location could be configured for Windows OS:
+Right now to successfully run application you **should** create `app.properties` file in the same folder as
+AndroidScreencast's jar and provide at least one property - `adb.path` which should point to the `adb` executable file
+within your OS, for example such location could be configured for Windows OS:
 ```properties
 adb.path=adb/windows/adb.exe
 ```
 
 Both absolute and relative paths are supported.
 
+Example of valid `app.properties` could be find [here](app.properties).
+
+Also we have got some valid OS-specific examples:
+* [OSX app.properties](adb/macosx/app.properties)
+* [Windows app.properties](adb/windows/app.properties)
+* [Linux app.properties](adb/linux/app.properties)
+
+They are actually the same, just `adb.path` is OS-specific. Files listed above are automatically included into OS-specific bundles.
+
+
 ### Additional properties
 Here is the full list of available properties for application configuration.
-Properties should be places in the `app.properties` file near the executable `.jar` file.
+Properties should be places in the `app.properties` file in the same folder as AndroidScreencast's jar file.
 
 ```properties
 #relative or absolute path to ADB
