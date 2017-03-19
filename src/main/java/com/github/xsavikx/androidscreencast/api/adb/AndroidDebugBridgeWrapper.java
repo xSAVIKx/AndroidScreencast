@@ -4,6 +4,7 @@ import com.android.ddmlib.AndroidDebugBridge;
 import com.android.ddmlib.IDevice;
 import com.github.xsavikx.androidscreencast.exception.IllegalAdbConfigurationException;
 import com.github.xsavikx.androidscreencast.util.StringUtils;
+import com.google.common.annotations.VisibleForTesting;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -31,7 +32,9 @@ public class AndroidDebugBridgeWrapper {
     }
 
     public void stop() {
-        AndroidDebugBridge.disconnectBridge();
+        if (hasAdbPathFilled()) {
+            AndroidDebugBridge.disconnectBridge();
+        }
         AndroidDebugBridge.terminate();
     }
 
@@ -47,18 +50,26 @@ public class AndroidDebugBridgeWrapper {
             return;
         }
         try {
-            AndroidDebugBridge.initIfNeeded(false);
-            if (StringUtils.isNotEmpty(adbPath)) {
-                adb = AndroidDebugBridge.createBridge(adbPath, false);
-            } else {
-                adb = AndroidDebugBridge.createBridge();
-            }
+            adb = createAndroidDebugBridge();
         } catch (IllegalArgumentException e) {
             if (hasAdbProcFailed(e)) {
                 throw new IllegalAdbConfigurationException(adbPath);
             }
             throw e;
         }
+    }
+
+    @VisibleForTesting
+    AndroidDebugBridge createAndroidDebugBridge() {
+        AndroidDebugBridge.initIfNeeded(false);
+        if (hasAdbPathFilled()) {
+            return AndroidDebugBridge.createBridge(adbPath, false);
+        }
+        return AndroidDebugBridge.createBridge();
+    }
+
+    private boolean hasAdbPathFilled() {
+        return StringUtils.isNotEmpty(adbPath);
     }
 
     private boolean hasAdbProcFailed(IllegalArgumentException e) {

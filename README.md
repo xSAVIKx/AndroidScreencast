@@ -28,6 +28,27 @@ This project gives the opportunity to use your phone even with a broken screen.
 
 ## Configuration
 
+There are 2 ways to run application:
+1. Run ADB server on your own
+2. Provide correct `app.properties` file
+
+### Run ADB server on your own
+
+In order to run server on your own you have to run already installed (or one from our OS-specific bundle) `adb`
+with following command:
+```
+adb start-server
+```
+
+**Note**:
+
+If `app.properties` will have `adb.path` filled - AndroidScreencast will shutdown ADB server on application termination.
+
+Additionally, in order to use, for example, remote ADB server with ssh forwarding you should not use `app.properties` or `adb.path`
+property should be commented.
+
+### Provide correct `app.properties` file
+
 Right now to successfully run application you **should** create `app.properties` file in the same folder as
 AndroidScreencast's jar and provide at least one property - `adb.path` which should point to the `adb` executable file
 within your OS, for example such location could be configured for Windows OS:
@@ -97,6 +118,10 @@ Additionally OS-packages would be created with ADB executables bundled:
 * `androidscreencast-VERSION-windows.zip`
 * `androidscreencast-VERSION-linux.tar.gz`
 * `androidscreencast-VERSION-macosx.tar.gz`
+
+In order to provide correct configuration see [configuration][configuration_section] section.
+
+[configuration_section]: https://github.com/xSAVIKx/AndroidScreencast/blob/develop/README.md#configuration
 
 # Requirements
 
