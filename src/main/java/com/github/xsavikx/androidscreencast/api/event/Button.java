@@ -1,4 +1,4 @@
-package com.github.xsavikx.androidscreencast.api.command.sendevent.event;
+package com.github.xsavikx.androidscreencast.api.event;
 
 /**
  * Represents Button event codes
@@ -81,7 +81,8 @@ public enum Button implements EventCode {
 
     BTN_WHEEL(0x150),
     BTN_GEAR_DOWN(0x150),
-    BTN_GEAR_UP(0x151);
+    BTN_GEAR_UP(0x151),
+    STUB(Integer.MAX_VALUE);
     private final int code;
 
     Button(int code) {
@@ -92,8 +93,27 @@ public enum Button implements EventCode {
         this.code = alias.code;
     }
 
+    public static EventCode forCode(int code) {
+        for (Button b : values()) {
+            if (b.code == code) {
+                return b;
+            }
+        }
+        return UNKNOWN;
+    }
+
     @Override
     public int getCode() {
         return code;
+    }
+
+    @Override
+    public EventCode fromCode(int code) {
+        for (Button b : values()) {
+            if (b.code == code) {
+                return b;
+            }
+        }
+        return UNKNOWN;
     }
 }

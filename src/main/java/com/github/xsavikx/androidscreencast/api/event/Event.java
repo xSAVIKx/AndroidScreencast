@@ -1,4 +1,4 @@
-package com.github.xsavikx.androidscreencast.api.command.sendevent.event;
+package com.github.xsavikx.androidscreencast.api.event;
 
 public interface Event extends Valueable, Codeable, Typeable {
 

@@ -1,4 +1,4 @@
-package com.github.xsavikx.androidscreencast.api.command.sendevent.event;
+package com.github.xsavikx.androidscreencast.api.event;
 
 /**
  * Represents Absolute Axes event codes.
@@ -46,7 +46,8 @@ public enum AbsoluteAxes implements EventCode {
     ABS_MT_TOOL_X(0x3c),
     ABS_MT_TOOL_Y(0x3d),
     ABS_MAX(0x3f),
-    ABS_CNT(ABS_MAX.code + 1); //ABS_MAX+1
+    ABS_CNT(ABS_MAX.code + 1),
+    STUB(Integer.MAX_VALUE); //ABS_MAX+1
 
     private final int code;
 
@@ -54,8 +55,27 @@ public enum AbsoluteAxes implements EventCode {
         this.code = keyCode;
     }
 
+    public static EventCode forCode(int code) {
+        for (AbsoluteAxes e : values()) {
+            if (e.code == code) {
+                return e;
+            }
+        }
+        return UNKNOWN;
+    }
+
     @Override
     public int getCode() {
         return code;
+    }
+
+    @Override
+    public EventCode fromCode(int code) {
+        for (AbsoluteAxes e : values()) {
+            if (e.code == code) {
+                return e;
+            }
+        }
+        return UNKNOWN;
     }
 }

@@ -1,11 +1,11 @@
-package com.github.xsavikx.androidscreencast.api.command.sendevent;
+package com.github.xsavikx.androidscreencast.api.event.sendevent;
 
 import com.android.ddmlib.AdbCommandRejectedException;
 import com.android.ddmlib.IDevice;
 import com.android.ddmlib.ShellCommandUnresponsiveException;
 import com.android.ddmlib.TimeoutException;
 import com.github.xsavikx.androidscreencast.api.adb.AndroidDebugBridgeWrapper;
-import com.github.xsavikx.androidscreencast.api.command.sendevent.event.*;
+import com.github.xsavikx.androidscreencast.api.event.*;
 import com.github.xsavikx.androidscreencast.api.injector.MultiLineReceiverPrinter;
 
 import java.io.IOException;

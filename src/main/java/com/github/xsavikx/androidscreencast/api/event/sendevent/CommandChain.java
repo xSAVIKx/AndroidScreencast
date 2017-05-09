@@ -1,6 +1,6 @@
-package com.github.xsavikx.androidscreencast.api.command.sendevent;
+package com.github.xsavikx.androidscreencast.api.event.sendevent;
 
-import com.github.xsavikx.androidscreencast.api.command.sendevent.event.Event;
+import com.github.xsavikx.androidscreencast.api.event.Event;
 
 import java.util.LinkedList;
 import java.util.List;

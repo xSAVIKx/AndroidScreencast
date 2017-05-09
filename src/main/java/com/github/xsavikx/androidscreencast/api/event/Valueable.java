@@ -1,4 +1,4 @@
-package com.github.xsavikx.androidscreencast.api.command.sendevent.event;
+package com.github.xsavikx.androidscreencast.api.event;
 
 public interface Valueable {
     int MIN_VALUE = 0x0;

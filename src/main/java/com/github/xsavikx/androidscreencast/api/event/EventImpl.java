@@ -1,4 +1,4 @@
-package com.github.xsavikx.androidscreencast.api.command.sendevent.event;
+package com.github.xsavikx.androidscreencast.api.event;
 
 class EventImpl implements Event {
     private final EventCode code;
@@ -25,5 +25,6 @@ class EventImpl implements Event {
     public int getValue() {
         return value;
     }
+
 
 }

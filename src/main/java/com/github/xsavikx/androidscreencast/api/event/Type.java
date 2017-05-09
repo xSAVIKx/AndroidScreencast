@@ -1,4 +1,4 @@
-package com.github.xsavikx.androidscreencast.api.command.sendevent.event;
+package com.github.xsavikx.androidscreencast.api.event;
 
 /**
  * Represents possible event types.
@@ -17,7 +17,8 @@ public enum Type implements EventType {
     EV_PWR(0x16),
     EV_FF_STATUS(0x17),
     EV_MAX(0x1f),
-    EV_CNT(EV_MAX.code + 1);
+    EV_CNT(EV_MAX.code + 1),
+    STUB(Integer.MAX_VALUE);
 
     private final int code;
 
@@ -25,6 +26,14 @@ public enum Type implements EventType {
         this.code = code;
     }
 
+    public static EventType forCode(int code) {
+        for (Type t : values()) {
+            if (t.code == code) {
+                return t;
+            }
+        }
+        return UNKNOWN;
+    }
 
     @Override
     public int getType() {
