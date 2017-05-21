@@ -1,0 +1,23 @@
+#!/bin/bash
+# WF 2017-05-21
+jar=target/androidscreencast-0.0.11s-SNAPSHOT-executable.jar
+if [ ! -f $jar ]
+then
+  mvn package
+fi
+adb=`which adb`
+if [ $? -ne 0 ]
+then
+  echo "adb not on path "
+  echo "you might want to check your app.properties"
+  grep adb app.properties
+  exit 1
+fi
+grep $adb app.properties 
+if [  $? -ne 0 ]
+then
+  mv app.properties app.org
+  echo "adb=$adb" > app.properties
+  grep -v adb app.org >> app.properties
+fi
+java -jar $jar
