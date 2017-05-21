@@ -37,6 +37,9 @@ public class ScreenCaptureRunnable implements Runnable {
     private ScreenCaptureListener listener = null;
     private long currentAdbCommandTimeout;
     private boolean isStopped = false;
+    private double fps;
+    private long starttime;
+    private int frames;
 
     @Inject
     public ScreenCaptureRunnable(final IDevice device, @Named(ADB_COMMAND_TIMEOUT_KEY) long adbCommandTimeout) {
@@ -50,10 +53,14 @@ public class ScreenCaptureRunnable implements Runnable {
     public void run() {
         LOGGER.info("Starting screen capturing");
         while (!isStopped) {
+            // prepare timing calculation
+            starttime=System.nanoTime();
+            frames=0;
             try {
                 final RawImage screenshot = getScreenshot();
                 if (screenshot != null) {
                     display(screenshot);
+                    calcfps();
                 } else {
                     LOGGER.info("Failed to get device screenshot");
                 }
@@ -68,6 +75,23 @@ public class ScreenCaptureRunnable implements Runnable {
         LOGGER.info("Stopping screen capturing");
     }
 
+    /**
+     * calculate the frames per second
+     */
+    private void calcfps() {
+      frames++;
+      long time = System.nanoTime();
+      long millis = (time-starttime)/1000000;
+      fps=(1000.0*frames)/millis;
+      LOGGER.info(String.format("%4.2f fps %4d msecs/frame",fps,millis/frames));
+    }
+
+    /**
+     * get a screen shot from the device via adb
+     * @return a raw image
+     * @throws InterruptedException
+     * @throws ClosedByInterruptException
+     */
     private RawImage getScreenshot() throws InterruptedException, ClosedByInterruptException {
         RawImage rawImage = null;
         try {
@@ -90,6 +114,10 @@ public class ScreenCaptureRunnable implements Runnable {
         return rawImage;
     }
 
+    /**
+     * display the given rawImage
+     * @param rawImage
+     */
     private void display(final RawImage rawImage) {
         final RawImage imageToProcess = landscape ? rawImage.getRotated() : rawImage;
         final BufferedImage image = ImageUtils.convertImage(imageToProcess);
