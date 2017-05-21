@@ -7,9 +7,18 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
 
+/**
+ * main class
+ * @author wf
+ *
+ */
 public class Main {
     private static final Logger LOGGER = LoggerFactory.getLogger(Main.class);
 
+    /**
+     * start the application
+     * @param args
+     */
     public static void main(String args[]) {
         LOGGER.debug("main(String[] args={}) - start", Arrays.toString(args));
         try {
