@@ -80,9 +80,9 @@ adb.device.timeout=30
 #maximum time to execute adb command (in seconds)
 adb.command.timeout=5
 #initial application window width (in pixels)
-default.window.width=1024
+app.window.width=1024
 #initial application window height (in pixels)
-default.window.height=768
+app.window.height=768
 #Defines whether application should look 'natively' to OS. Possible values: true/false
 app.native.look=false
 ```
