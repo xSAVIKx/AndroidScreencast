@@ -3,15 +3,15 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.github.xsavikx</groupId>
     <artifactId>androidscreencast</artifactId>
-    <version>0.0.11s-SNAPSHOT</version>
+    <version>0.0.12s-SNAPSHOT</version>
     <name>Android Screencast</name>
     <packaging>jar</packaging>
     <properties>
-        <dagger2.version>2.10</dagger2.version>
+        <dagger2.version>2.12</dagger2.version>
         <ddmlib.version>25.3.0</ddmlib.version>
         <slf4j.version>1.7.25</slf4j.version>
         <logback-classic.version>1.2.3</logback-classic.version>
-        <guava.version>21.0</guava.version>
+        <guava.version>23.2-jre</guava.version>
         <main.class>com.github.xsavikx.androidscreencast.Main</main.class>
         <jdk.version>1.8</jdk.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -63,7 +63,7 @@
         <plugins>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.6.1</version>
+                <version>3.7.0</version>
                 <configuration>
                     <source>${jdk.version}</source>
                     <target>${jdk.version}</target>
@@ -84,7 +84,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>3.0.0</version>
+                <version>3.1.0</version>
                 <executions>
                     <execution>
                         <phase>package</phase>
@@ -107,7 +107,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
-                <version>3.0.0</version>
+                <version>3.1.0</version>
                 <configuration>
                     <descriptors>
                         <descriptor>src/assembly/windows.xml</descriptor>
