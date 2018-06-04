@@ -8,7 +8,8 @@ public enum ApplicationConfigurationProperty {
     ADB_COMMAND_TIMEOUT(ADB_COMMAND_TIMEOUT_KEY, "5"),
     APP_WINDOW_WIDTH(APP_WINDOW_WIDTH_KEY, "1024"),
     APP_WINDOW_HEIGHT(APP_WINDOW_HEIGHT_KEY, "768"),
-    APP_NATIVE_LOOK(APP_NATIVE_LOOK_KEY, "true");
+    APP_NATIVE_LOOK(APP_NATIVE_LOOK_KEY, "true"),
+    APP_DEBUG_ENABLED(APP_DEBUG_ENABLED_KEY, "false");
     private final String propertyKey;
     private final String defaultValue;
 

@@ -26,6 +26,66 @@ This project gives the opportunity to use your phone even with a broken screen.
 
 [wiki]: https://github.com/xSAVIKx/AndroidScreencast/wiki
 
+## Configuration
+
+There are 2 ways to run application:
+1. Run ADB server on your own
+2. Provide correct `app.properties` file
+
+### Run ADB server on your own
+
+In order to run server on your own you have to run already installed (or one from our OS-specific bundle) `adb`
+with following command:
+```
+adb start-server
+```
+
+**Note**:
+
+If `app.properties` will have `adb.path` filled - AndroidScreencast will shutdown ADB server on application termination.
+
+Additionally, in order to use, for example, remote ADB server with ssh forwarding you should not use `app.properties` or `adb.path`
+property should be commented.
+
+### Provide correct `app.properties` file
+
+Right now to successfully run application you **should** create `app.properties` file in the same folder as
+AndroidScreencast's jar and provide at least one property - `adb.path` which should point to the `adb` executable file
+within your OS, for example such location could be configured for Windows OS:
+```properties
+adb.path=adb/windows/adb.exe
+```
+
+Both absolute and relative paths are supported.
+
+Example of valid `app.properties` could be find [here](app.properties).
+
+Also we have got some valid OS-specific examples:
+* [OSX app.properties](adb/macosx/app.properties)
+* [Windows app.properties](adb/windows/app.properties)
+* [Linux app.properties](adb/linux/app.properties)
+
+They are actually the same, just `adb.path` is OS-specific. Files listed above are automatically included into OS-specific bundles.
+
+
+### Additional properties
+Here is the full list of available properties for application configuration.
+Properties should be places in the `app.properties` file in the same folder as AndroidScreencast's jar file.
+
+```properties
+#relative or absolute path to ADB
+adb.path=./adb
+#maximum time to wait for device (in seconds)
+adb.device.timeout=30
+#maximum time to execute adb command (in seconds)
+adb.command.timeout=5
+#initial application window width (in pixels)
+app.window.width=1024
+#initial application window height (in pixels)
+app.window.height=768
+#Defines whether application should look 'natively' to OS. Possible values: true/false
+app.native.look=false
+```
 ## JNLP
 
 Application is available using Java web start technology via [androidscreencast.jnlp][jnlp].
@@ -59,6 +119,10 @@ Additionally OS-packages would be created with ADB executables bundled:
 * `androidscreencast-VERSION-linux.tar.gz`
 * `androidscreencast-VERSION-macosx.tar.gz`
 
+In order to provide correct configuration see [configuration][configuration_section] section.
+
+[configuration_section]: https://github.com/xSAVIKx/AndroidScreencast/blob/develop/README.md#configuration
+
 # Requirements
 
 Currently AndroidScreencast works directly with `adb input` program through `ddmlib` and abuse functionality of:
@@ -81,6 +145,7 @@ Also, to run AndroidScreencast you will need *adb* installed (or you can use bun
 [Android_4_1_1_Input]: http://grepcode.com/file/repository.grepcode.com/java/ext/com.google.android/android/4.1.1_r1/com/android/commands/input/Input.java#Input
 [seven_square]: https://github.com/yangh/sevensquare
 [droid_at_screen]: http://droid-at-screen.org/droid-at-screen/
+[android_screen_monitor]: https://github.com/adakoda/android-screen-monitor
 
 [travis_badge]: https://travis-ci.org/xSAVIKx/AndroidScreencast.svg?branch=master
 [travis]: https://travis-ci.org/xSAVIKx/AndroidScreencast
