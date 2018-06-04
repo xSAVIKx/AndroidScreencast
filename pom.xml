@@ -157,6 +157,7 @@
                             <alias>acast</alias>
                             <storepass>{FI0aje84ll0HDfvsXBhLQHvBFso9Mam5Ae37ucXm0SU=}</storepass>
                             <keypass>{FI0aje84ll0HDfvsXBhLQHvBFso9Mam5Ae37ucXm0SU=}</keypass>
+                            <tsa>http://sha256timestamp.ws.symantec.com/sha256/timestamp</tsa>
                         </configuration>
                     </plugin>
                 </plugins>
