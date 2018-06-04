@@ -7,11 +7,11 @@
     <name>Android Screencast</name>
     <packaging>jar</packaging>
     <properties>
-        <dagger2.version>2.14.1</dagger2.version>
-        <ddmlib.version>25.3.0</ddmlib.version>
+        <dagger2.version>2.16</dagger2.version>
+        <ddmlib.version>26.1.2</ddmlib.version>
         <slf4j.version>1.7.25</slf4j.version>
         <logback-classic.version>1.2.3</logback-classic.version>
-        <guava.version>24.0-jre</guava.version>
+        <guava.version>25.1-jre</guava.version>
         <main.class>com.github.xsavikx.androidscreencast.Main</main.class>
         <jdk.version>1.8</jdk.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -72,7 +72,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
-                <version>3.0.2</version>
+                <version>3.1.0</version>
                 <configuration>
                     <archive>
                         <manifest>
@@ -84,7 +84,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>3.1.0</version>
+                <version>3.1.1</version>
                 <executions>
                     <execution>
                         <phase>package</phase>
@@ -163,6 +163,13 @@
             </build>
         </profile>
     </profiles>
+    <repositories>
+        <repository>
+            <id>google</id>
+            <name>Google Maven Repository</name>
+            <url>https://maven.google.com/</url>
+        </repository>
+    </repositories>
     <url>http://xsavikx.github.io/AndroidScreencast</url>
     <ciManagement>
         <url>https://travis-ci.org/xSAVIKx/AndroidScreencast</url>
