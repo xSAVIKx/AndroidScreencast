@@ -27,7 +27,7 @@ This project gives the opportunity to use your phone even with a broken screen.
 
 Application is available using Java web start technology via [androidscreencast.jnlp][jnlp].
 
-[jnlp]: http://xsavikx.github.io/AndroidScreencast/jnlp/androidscreencast.jnlp
+[jnlp]: https://xsavikx.github.io/AndroidScreencast/jnlp/androidscreencast.jnlp
 
 ### Java security configuration
 
