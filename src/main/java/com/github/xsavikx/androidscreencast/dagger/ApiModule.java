@@ -19,7 +19,6 @@ import javax.inject.Singleton;
 import static com.github.xsavikx.androidscreencast.configuration.ApplicationConfigurationProperty.*;
 import static com.github.xsavikx.androidscreencast.configuration.ApplicationConfigurationPropertyKeys.*;
 
-@Singleton
 @Module
 public class ApiModule {
     @Singleton
@@ -67,6 +66,7 @@ public class ApiModule {
     public static boolean isDebugEnabled(ApplicationConfiguration applicationConfiguration) {
         return Boolean.valueOf(applicationConfiguration.getProperty(APP_DEBUG_ENABLED));
     }
+
     @Singleton
     @Provides
     public static IShellOutputReceiver iShellOutputReceiver(@Named(APP_DEBUG_ENABLED_KEY) boolean isDebugEnabled, MultiLineReceiverPrinter multiLineReceiverPrinter) {

@@ -12,7 +12,6 @@ import javax.inject.Singleton;
 import static com.github.xsavikx.androidscreencast.configuration.ApplicationConfigurationPropertyKeys.APP_WINDOW_HEIGHT_KEY;
 import static com.github.xsavikx.androidscreencast.configuration.ApplicationConfigurationPropertyKeys.APP_WINDOW_WIDTH_KEY;
 
-@Singleton
 @Module
 public class UiModule {
     @Singleton
