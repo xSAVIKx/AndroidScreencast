@@ -2,7 +2,6 @@ AndroidScreencast
 =================
 
 [![Build Status Travis-CI][travis_badge]][travis]&nbsp;
-[![Dependency Status][versioneye_badge]][versioneye]&nbsp;
 [![Codacy Badge][codacy_badge]][codacy]&nbsp;
 [![Join the chat at https://gitter.im/AndroidScreencast/Lobby][gitter_badge]][gitter]&nbsp;
 [![Apache License][license_badge]][license]
