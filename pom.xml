@@ -7,11 +7,11 @@
     <name>Android Screencast</name>
     <packaging>jar</packaging>
     <properties>
-        <dagger2.version>2.16</dagger2.version>
-        <ddmlib.version>26.1.2</ddmlib.version>
+        <dagger2.version>2.19</dagger2.version>
+        <ddmlib.version>26.2.1</ddmlib.version>
         <slf4j.version>1.7.25</slf4j.version>
         <logback-classic.version>1.2.3</logback-classic.version>
-        <guava.version>25.1-jre</guava.version>
+        <guava.version>26.0-jre</guava.version>
         <main.class>com.github.xsavikx.androidscreencast.Main</main.class>
         <jdk.version>1.8</jdk.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -63,7 +63,7 @@
         <plugins>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.7.0</version>
+                <version>3.8.0</version>
                 <configuration>
                     <source>${jdk.version}</source>
                     <target>${jdk.version}</target>
