@@ -81,7 +81,7 @@ public class QuickTimeOutputStream {
      *
      * @param file   the output file
      * @param format Selects an encoder for the video format "JPG" or "PNG".
-     * @throws IllegalArgumentException if videoFormat is null or if framerate is <= 0
+     * @throws IllegalArgumentException if videoFormat is null or if framerate is less or equal to 0
      */
     public QuickTimeOutputStream(File file, VideoFormat format) throws IOException {
         checkNotNull(file, "Result file should not be null.");
