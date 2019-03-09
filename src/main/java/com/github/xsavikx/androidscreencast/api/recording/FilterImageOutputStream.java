@@ -33,7 +33,6 @@ public class FilterImageOutputStream extends FilterOutputStream {
      * <p>
      * The <code>flush</code> method of <code>FilterOutputStream</code> calls the <code>flush</code> method of its underlying output stream.
      *
-     * @throws IOException if an I/O error occurs.
      * @see java.io.FilterOutputStream#out
      */
     @Override
