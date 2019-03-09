@@ -15,6 +15,7 @@
         <main.class>com.github.xsavikx.androidscreencast.Main</main.class>
         <jdk.version>1.8</jdk.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <adb.folder>${project.basedir}/adb</adb.folder>
         <adb.folder.linux>${adb.folder}/linux</adb.folder.linux>
         <adb.folder.windows>${adb.folder}/windows</adb.folder.windows>
