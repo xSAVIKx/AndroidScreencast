@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.github.xsavikx</groupId>
     <artifactId>androidscreencast</artifactId>
-    <version>0.0.14s-SNAPSHOT</version>
+    <version>0.0.15s-SNAPSHOT</version>
     <name>Android Screencast</name>
     <packaging>jar</packaging>
     <properties>
@@ -205,4 +205,10 @@
         Browse your phone files on PC
         Record video of your phone screen while browsing
     </description>
+    <licenses>
+        <license>
+            <name>Apache License 2.0</name>
+            <url>https://github.com/xSAVIKx/AndroidScreencast/blob/master/LICENSE</url>
+        </license>
+    </licenses>
 </project>
