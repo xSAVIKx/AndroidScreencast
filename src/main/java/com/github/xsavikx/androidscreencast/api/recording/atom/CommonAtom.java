@@ -5,7 +5,8 @@ import com.github.xsavikx.androidscreencast.exception.IORuntimeException;
 import javax.imageio.stream.ImageOutputStream;
 import java.io.IOException;
 
-public abstract class CommonAtom extends Atom {
+abstract class CommonAtom extends Atom {
+
     protected static final long HEADER_ELEMENT_SIZE = 8;
 
     public CommonAtom(AtomType type, ImageOutputStream imageOutputStream) {

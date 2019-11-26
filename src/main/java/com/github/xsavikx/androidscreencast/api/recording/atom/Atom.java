@@ -10,29 +10,30 @@ import static com.google.common.base.Preconditions.checkNotNull;
 /**
  * Atom base class.
  */
-public abstract class Atom {
-    protected static final long MAXIMUM_ATOM_SIZE = 0xffffffffL;
+abstract class Atom {
+
+    static final long MAXIMUM_ATOM_SIZE = 0xffffffffL;
 
     /**
      * The type of the atom. A String with the length of 4 characters.
      */
-    protected final AtomType type;
+    final AtomType type;
     protected final ImageOutputStream out;
     /**
      * The offset of the atom relative to the start of the ImageOutputStream.
      */
-    protected long offset;
+    long offset;
     /**
      * Shows whether current atom processing is finished or not
      */
-    protected boolean finished;
+    boolean finished;
 
     /**
      * Creates a new Atom at the current position of the ImageOutputStream.
      *
      * @param type The type of the atom. A string with a length of 4 characters.
      */
-    public Atom(AtomType type, ImageOutputStream imageOutputStream) {
+    Atom(AtomType type, ImageOutputStream imageOutputStream) {
         checkNotNull(type, "Type should not be null");
         checkNotNull(imageOutputStream, "ImageOutputStream should not be null");
         this.out = imageOutputStream;

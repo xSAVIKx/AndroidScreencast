@@ -1,6 +1,7 @@
 package com.github.xsavikx.androidscreencast.api.command;
 
-public class TapCommand extends InputCommand {
+public final class TapCommand extends InputCommand {
+
     private int x;
     private int y;
 

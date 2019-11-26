@@ -266,6 +266,7 @@ public enum InputKeyEvent {
     KEYCODE_TV_MEDIA_CONTEXT_MENU(257, "Key code constant: Media context menu key. Goes to the context menu of media contents. Corresponds to Media Context-sensitive Menu (0x11) of CEC User Control Code."),
     KEYCODE_TV_TIMER_PROGRAMMING(258, "Key code constant: Timer programming key. Goes to the timer recording menu. Corresponds to Timer Programming (0x54) of CEC User Control Code."),
     KEYCODE_HELP(259, "Key code constant: Help key. ");
+
     private static final Set<InputKeyEvent> eventsWithCharacters = fillEventsWithCharacters();
     private static Set<InputKeyEvent> eventsWithKeyCodes = fillEventsWithKeyCodes();
     private int keyCode;
@@ -348,6 +349,4 @@ public enum InputKeyEvent {
     public char getCharacterToReplace() {
         return characterToReplace;
     }
-
-
 }

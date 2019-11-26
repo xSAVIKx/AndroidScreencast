@@ -4,7 +4,8 @@ import javax.imageio.stream.ImageOutputStream;
 import java.io.FilterOutputStream;
 import java.io.IOException;
 
-public class FilterImageOutputStream extends FilterOutputStream {
+public final class FilterImageOutputStream extends FilterOutputStream {
+
     private ImageOutputStream imgOut;
 
     public FilterImageOutputStream(ImageOutputStream iOut) {
@@ -57,7 +58,7 @@ public class FilterImageOutputStream extends FilterOutputStream {
      * @see java.io.FilterOutputStream#write(int)
      */
     @Override
-    public void write(byte b[], int off, int len) throws IOException {
+    public void write(byte[] b, int off, int len) throws IOException {
         imgOut.write(b, off, len);
     }
 

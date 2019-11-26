@@ -1,6 +1,7 @@
 package com.github.xsavikx.androidscreencast.api.command;
 
-public abstract class InputCommand implements Command {
+abstract class InputCommand implements Command {
+
     private static final String TO_STRING_PATTERN = "%s [%s]";
 
     @Override

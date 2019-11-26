@@ -5,7 +5,7 @@ import java.io.IOException;
 /**
  * Runtime Exception wrapper for {@link IOException}
  */
-public class IORuntimeException extends AndroidScreenCastRuntimeException {
+public final class IORuntimeException extends AndroidScreenCastRuntimeException {
 
     public IORuntimeException(String message, IOException cause) {
         super(message, cause);

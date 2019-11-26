@@ -18,7 +18,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-public class JFrameExplorer extends JFrame {
+public final class JFrameExplorer extends JFrame {
 
     private static final long serialVersionUID = -5209265873286028854L;
     private final AndroidDevice androidDevice;
@@ -27,7 +27,7 @@ public class JFrameExplorer extends JFrame {
     private Map<String, List<FileInfo>> cache = new LinkedHashMap<>();
 
     @Inject
-    public JFrameExplorer(AndroidDevice androidDevice) {
+    JFrameExplorer(AndroidDevice androidDevice) {
 
         setTitle("Explorer");
         setLayout(new BorderLayout());
@@ -103,7 +103,7 @@ public class JFrameExplorer extends JFrame {
         private final String name;
         private final String path;
 
-        public FolderTreeNode(String name, String path) {
+        FolderTreeNode(String name, String path) {
             this.name = name;
             this.path = path;
         }
@@ -125,7 +125,5 @@ public class JFrameExplorer extends JFrame {
         public String toString() {
             return name;
         }
-
     }
-
 }

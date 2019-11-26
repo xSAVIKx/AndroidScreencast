@@ -3,22 +3,35 @@ package com.github.xsavikx.androidscreencast;
 import com.github.xsavikx.androidscreencast.app.Application;
 import com.github.xsavikx.androidscreencast.dagger.MainComponentProvider;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
 
-public class Main {
-    private static final Logger LOGGER = LoggerFactory.getLogger(Main.class);
+import static org.slf4j.LoggerFactory.getLogger;
 
-    public static void main(String args[]) {
-        LOGGER.debug("main(String[] args={}) - start", Arrays.toString(args));
+public final class Main {
+
+    private Main() {
+    }
+
+    public static void main(String[] args) {
+        log().debug("Starting Android Screencast with the args: {}", Arrays.toString(args));
         try {
             Application application = MainComponentProvider.mainComponent().application();
             application.init();
             application.start();
         } finally {
-            LOGGER.debug("main(String[] args={}) - end", Arrays.toString(args));
+            log().debug("The application started.");
         }
     }
 
+    private enum LogSingleton {
+        INSTANCE;
+
+        @SuppressWarnings({"NonSerializableFieldInSerializableClass", "ImmutableEnumChecker"})
+        private final Logger value = getLogger(Main.class);
+    }
+
+    private static Logger log() {
+        return LogSingleton.INSTANCE.value;
+    }
 }

@@ -3,9 +3,11 @@ package com.github.xsavikx.androidscreencast.api.image;
 import com.android.ddmlib.RawImage;
 
 /**
- * Modified version of ThirtyTwoBitColorModel from <a href="https://android.googlesource.com/platform/tools/swt/+/master/chimpchat/src/main/java/com/android/chimpchat/adb/image/ThirtyTwoBitColorModel.java">android.chimpchat</a>
+ * Modified version of ThirtyTwoBitColorModel from
+ * <a href="https://android.googlesource.com/platform/tools/swt/+/master/chimpchat/src/main/java/com/android/chimpchat/adb/image/ThirtyTwoBitColorModel.java">android.chimpchat</a>
  */
-public class ThirtyTwoBitColorModel extends AbstractRawImageColorModel {
+final class ThirtyTwoBitColorModel extends AbstractRawImageColorModel {
+
     private final int alphaLength;
     private final int alphaMask;
     private final int alphaOffset;
@@ -19,8 +21,7 @@ public class ThirtyTwoBitColorModel extends AbstractRawImageColorModel {
     private final int redLength;
     private final int redOffset;
 
-    public ThirtyTwoBitColorModel(RawImage rawImage) {
-        super();
+    ThirtyTwoBitColorModel(RawImage rawImage) {
         redOffset = rawImage.red_offset;
         redLength = rawImage.red_length;
         redMask = getMask(redLength);

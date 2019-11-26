@@ -77,6 +77,5 @@ public class AndroidDebugBridgeWrapper {
                 && e.getCause() instanceof IOException
                 && e.getCause().getMessage().contains("Cannot run program")
                 && e.getCause().getMessage().contains("adb");
-
     }
 }

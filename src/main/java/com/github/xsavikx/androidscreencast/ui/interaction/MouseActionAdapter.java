@@ -16,7 +16,8 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 
 @Singleton
-public class MouseActionAdapter extends MouseAdapter {
+public final class MouseActionAdapter extends MouseAdapter {
+
     private final static long ONE_SECOND = 1000L;
     private final JPanelScreen jp;
     private final CommandExecutor commandExecutor;
@@ -27,10 +28,10 @@ public class MouseActionAdapter extends MouseAdapter {
     private long timeFromPress = -1;
 
     @Inject
-    public MouseActionAdapter(final JPanelScreen jp,
-                              final CommandExecutor commandExecutor,
-                              final InputCommandFactory inputCommandFactory,
-                              final Injector injector) {
+    MouseActionAdapter(final JPanelScreen jp,
+                       final CommandExecutor commandExecutor,
+                       final InputCommandFactory inputCommandFactory,
+                       final Injector injector) {
         this.jp = jp;
         this.commandExecutor = commandExecutor;
         this.inputCommandFactory = inputCommandFactory;

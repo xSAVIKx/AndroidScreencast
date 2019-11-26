@@ -6,6 +6,7 @@ import java.io.File;
 import java.util.List;
 
 public interface AndroidDevice {
+
     String executeCommand(String command);
 
     List<FileInfo> list(String path);

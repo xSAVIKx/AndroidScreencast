@@ -6,10 +6,10 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 @Singleton
-public class MultiLineReceiverPrinter extends MultiLineReceiver {
+public final class MultiLineReceiverPrinter extends MultiLineReceiver {
+
     @Inject
     public MultiLineReceiverPrinter() {
-
     }
 
     @Override
@@ -23,5 +23,4 @@ public class MultiLineReceiverPrinter extends MultiLineReceiver {
             System.out.println(elem);
         }
     }
-
 }

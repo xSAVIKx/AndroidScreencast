@@ -9,12 +9,13 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class KeyboardActionListener implements ActionListener {
-    private final int key;
-    private CommandExecutor commandExecutor;
-    private InputCommandFactory inputCommandFactory;
+public final class KeyboardActionListener implements ActionListener {
 
-    public KeyboardActionListener(int key) {
+    private InputCommandFactory inputCommandFactory;
+    private CommandExecutor commandExecutor;
+    private final int key;
+
+    KeyboardActionListener(int key) {
         this.key = key;
     }
 
@@ -39,5 +40,4 @@ public class KeyboardActionListener implements ActionListener {
         }
         return commandExecutor;
     }
-
 }
