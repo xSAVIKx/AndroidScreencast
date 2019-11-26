@@ -6,6 +6,7 @@ import com.github.xsavikx.androidscreencast.api.command.TapCommand;
 import com.github.xsavikx.androidscreencast.api.injector.InputKeyEvent;
 
 public interface InputCommandFactory {
+
     KeyCommand getKeyCommand(int keyCode);
 
     KeyCommand getKeyCommand(InputKeyEvent inputKeyEvent, boolean longpress);

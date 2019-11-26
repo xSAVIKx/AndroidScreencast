@@ -1,8 +1,8 @@
 package com.github.xsavikx.androidscreencast.util;
 
-public class StringUtils {
+public final class StringUtils {
+
     private StringUtils() {
-        //
     }
 
     public static boolean isNotEmpty(final CharSequence charSequence) {

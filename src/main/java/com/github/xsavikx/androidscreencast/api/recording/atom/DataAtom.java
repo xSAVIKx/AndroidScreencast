@@ -6,16 +6,17 @@ import com.github.xsavikx.androidscreencast.api.recording.exception.MaximumAtomS
 import com.github.xsavikx.androidscreencast.exception.IORuntimeException;
 import com.google.common.base.Preconditions;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.imageio.stream.ImageOutputStream;
 import java.io.IOException;
+
+import static org.slf4j.LoggerFactory.getLogger;
 
 /**
  * Data Atom.
  */
 public class DataAtom extends CommonAtom {
-    private static final Logger LOGGER = LoggerFactory.getLogger(DataAtom.class);
+
     private static final int HEADER_SIZE = 1;
     protected final DataAtomOutputStream data;
 
@@ -52,7 +53,7 @@ public class DataAtom extends CommonAtom {
                     finished = true;
                     long sizeAfter = size();
                     if (sizeBefore != sizeAfter) {
-                        LOGGER.warn("Size mismatch. sizeBefore={}, sizeAfter={}.", sizeBefore, sizeAfter);
+                        log().warn("Size mismatch. sizeBefore={}, sizeAfter={}.", sizeBefore, sizeAfter);
                     }
                 }
             } catch (IOException e) {
@@ -78,5 +79,16 @@ public class DataAtom extends CommonAtom {
     @Override
     public long size() {
         return HEADER_ELEMENT_SIZE + data.size();
+    }
+
+    private enum LogSingleton {
+        INSTANCE;
+
+        @SuppressWarnings({"NonSerializableFieldInSerializableClass", "ImmutableEnumChecker"})
+        private final Logger value = getLogger(DataAtom.class);
+    }
+
+    private static Logger log() {
+        return LogSingleton.INSTANCE.value;
     }
 }

@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
-public class JDialogError extends JDialog {
+public final class JDialogError extends JDialog {
 
     private JLabel errorDialogLabel;
     private JTextArea errorDescription;

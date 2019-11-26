@@ -10,12 +10,13 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 
-public class KeyEventDispatcherImpl implements KeyEventDispatcher {
+public final class KeyEventDispatcherImpl implements KeyEventDispatcher {
+
     private final Window window;
     private CommandExecutor commandExecutor;
     private InputCommandFactory inputCommandFactory;
 
-    public KeyEventDispatcherImpl(Window frame) {
+    KeyEventDispatcherImpl(Window frame) {
         this.window = frame;
     }
 

@@ -1,6 +1,7 @@
 package com.github.xsavikx.androidscreencast.exception;
 
 public class AndroidScreenCastRuntimeException extends RuntimeException {
+
     private String additionalInformation;
 
     public AndroidScreenCastRuntimeException() {

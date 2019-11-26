@@ -2,12 +2,12 @@ package com.github.xsavikx.androidscreencast.ui.explorer;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 
-public abstract class LazyMutableTreeNode extends DefaultMutableTreeNode {
+abstract class LazyMutableTreeNode extends DefaultMutableTreeNode {
 
     private static final long serialVersionUID = -6383034137965603498L;
-    protected boolean _loaded = false;
+    private boolean _loaded = false;
 
-    public LazyMutableTreeNode() {
+    LazyMutableTreeNode() {
         super();
     }
 
@@ -40,5 +40,4 @@ public abstract class LazyMutableTreeNode extends DefaultMutableTreeNode {
     public boolean isLoaded() {
         return _loaded;
     }
-
 }

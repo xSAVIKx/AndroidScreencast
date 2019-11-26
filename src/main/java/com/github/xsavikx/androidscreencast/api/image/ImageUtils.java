@@ -10,6 +10,7 @@ import java.util.Hashtable;
  * Modified version of ImageUtils from <a href="https://android.googlesource.com/platform/tools/swt/+/master/chimpchat/src/main/java/com/android/chimpchat/adb/image/ImageUtils.java">android.chimpchat</a>
  */
 public final class ImageUtils {
+
     private static final int SIXTEEN_BIT_IMAGE = 16;
     private static final int THIRTY_TWO_BIT_IMAGE = 32;
     private static final Hashtable<?, ?> EMPTY_HASH = new Hashtable();

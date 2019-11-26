@@ -1,6 +1,7 @@
 package com.github.xsavikx.androidscreencast.api.command;
 
-public class SwipeCommand extends InputCommand {
+public final class SwipeCommand extends InputCommand {
+
     private int x1;
     private int y1;
     private int x2;
@@ -32,5 +33,4 @@ public class SwipeCommand extends InputCommand {
         }
         return stringBuilder.toString();
     }
-
 }

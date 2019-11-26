@@ -2,7 +2,8 @@ package com.github.xsavikx.androidscreencast.api.command;
 
 import com.github.xsavikx.androidscreencast.api.injector.InputKeyEvent;
 
-public class KeyCommand extends InputCommand {
+public final class KeyCommand extends InputCommand {
+
     private int code;
     private boolean longpress;
 
@@ -10,7 +11,7 @@ public class KeyCommand extends InputCommand {
         this.code = keyCode;
     }
 
-    public KeyCommand(InputKeyEvent inputKeyEvent) {
+    private KeyCommand(InputKeyEvent inputKeyEvent) {
         code = inputKeyEvent.getCode();
     }
 
@@ -37,5 +38,4 @@ public class KeyCommand extends InputCommand {
         stringBuilder.append(' ').append(code);
         return stringBuilder.toString();
     }
-
 }

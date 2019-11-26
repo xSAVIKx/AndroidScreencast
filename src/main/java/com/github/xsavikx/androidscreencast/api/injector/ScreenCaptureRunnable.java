@@ -8,7 +8,6 @@ import com.github.xsavikx.androidscreencast.api.image.ImageUtils;
 import com.github.xsavikx.androidscreencast.api.recording.QuickTimeOutputStream;
 import com.github.xsavikx.androidscreencast.exception.IORuntimeException;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -22,10 +21,11 @@ import java.nio.channels.ClosedByInterruptException;
 import java.util.concurrent.TimeUnit;
 
 import static com.github.xsavikx.androidscreencast.configuration.ApplicationConfigurationPropertyKeys.ADB_COMMAND_TIMEOUT_KEY;
+import static org.slf4j.LoggerFactory.getLogger;
 
 @Singleton
-public class ScreenCaptureRunnable implements Runnable {
-    private static final Logger LOGGER = LoggerFactory.getLogger(ScreenCaptureRunnable.class);
+public final class ScreenCaptureRunnable implements Runnable {
+
     private static final int MOV_FPS = 30;
     private static final float MOV_COMPRESSION_RATE = 1f;
     private static final int FRAME_DURATION = 10;
@@ -48,24 +48,24 @@ public class ScreenCaptureRunnable implements Runnable {
 
     @Override
     public void run() {
-        LOGGER.info("Starting screen capturing");
+        log().info("Starting screen capturing.");
         while (!isStopped) {
             try {
                 final RawImage screenshot = getScreenshot();
                 if (screenshot != null) {
                     display(screenshot);
                 } else {
-                    LOGGER.info("Failed to get device screenshot");
+                    log().info("Failed to get device screenshot.");
                 }
             } catch (final ClosedByInterruptException e) {
-                LOGGER.error("ADB Channel closed due to interrupted exception", e);
+                log().error("ADB Channel closed due to interrupted exception.", e);
                 break;
             } catch (final InterruptedException e) {
-                LOGGER.error("Execution of thread was interrupted. Shutting down thread.", e);
+                log().error("Execution of thread was interrupted. Shutting down thread.", e);
                 break;
             }
         }
-        LOGGER.info("Stopping screen capturing");
+        log().info("Stopping screen capturing.");
     }
 
     private RawImage getScreenshot() throws InterruptedException, ClosedByInterruptException {
@@ -77,14 +77,14 @@ public class ScreenCaptureRunnable implements Runnable {
             currentAdbCommandTimeout = defaultAdbCommandTimeout;
         } catch (TimeoutException e) {
             currentAdbCommandTimeout++;
-            LOGGER.warn("Adb command timeout happened. Timeout would be set to {} for the next try.", currentAdbCommandTimeout, e);
+            log().warn("Adb command timeout happened. Timeout would be set to {} for the next try.", currentAdbCommandTimeout, e);
         } catch (AdbCommandRejectedException e) {
-            LOGGER.warn("ADB Command was rejected. Will try again in 100 ms.");
+            log().warn("ADB Command was rejected. Will try again in 100 ms.", e);
             Thread.sleep(100);
         } catch (ClosedByInterruptException e) {
             throw e;
         } catch (IOException e) {
-            LOGGER.warn("IO Exception happened while getting device screenshot. Will try again in 100 ms.");
+            log().warn("IO Exception happened while getting device screenshot. Will try again in 100 ms.", e);
             Thread.sleep(100);
         }
         return rawImage;
@@ -102,7 +102,7 @@ public class ScreenCaptureRunnable implements Runnable {
                 try {
                     qos.writeFrame(image, FRAME_DURATION);
                 } catch (IORuntimeException e) {
-                    LOGGER.error("IO exception during writing video frame happened", e);
+                    log().error("IO exception happened during writing the video frame: {}.", image, e);
                 }
             });
         }
@@ -139,5 +139,16 @@ public class ScreenCaptureRunnable implements Runnable {
 
     public interface ScreenCaptureListener {
         void handleNewImage(Dimension size, BufferedImage image, boolean landscape);
+    }
+
+    private enum LogSingleton {
+        INSTANCE;
+
+        @SuppressWarnings({"NonSerializableFieldInSerializableClass", "ImmutableEnumChecker"})
+        private final Logger value = getLogger(ScreenCaptureRunnable.class);
+    }
+
+    private static Logger log() {
+        return LogSingleton.INSTANCE.value;
     }
 }

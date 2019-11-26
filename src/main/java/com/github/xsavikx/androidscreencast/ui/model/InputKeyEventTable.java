@@ -9,13 +9,13 @@ import javax.swing.table.TableColumnModel;
 import java.awt.*;
 
 @Singleton
-public class InputKeyEventTable extends JTable {
+public final class InputKeyEventTable extends JTable {
     private static final long serialVersionUID = 3978642864003531967L;
 
     private final static int MIN_COLUMN_WIDTH = 20;
 
     @Inject
-    public InputKeyEventTable(InputKeyEventTableModel tableModel) {
+    InputKeyEventTable(InputKeyEventTableModel tableModel) {
         super(tableModel);
         setTableColumnsNames(InputKeyEventTableModel.COLUMN_NAMES);
         setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
@@ -43,5 +43,4 @@ public class InputKeyEventTable extends JTable {
             columnModel.getColumn(column).setPreferredWidth(width);
         }
     }
-
 }
