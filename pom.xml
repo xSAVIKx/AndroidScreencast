@@ -7,11 +7,11 @@
     <name>Android Screencast</name>
     <packaging>jar</packaging>
     <properties>
-        <dagger2.version>2.21</dagger2.version>
-        <ddmlib.version>26.3.2</ddmlib.version>
-        <slf4j.version>1.7.25</slf4j.version>
+        <dagger2.version>2.25.2</dagger2.version>
+        <ddmlib.version>26.5.2</ddmlib.version>
+        <slf4j.version>1.7.29</slf4j.version>
         <logback-classic.version>1.2.3</logback-classic.version>
-        <guava.version>27.1-jre</guava.version>
+        <guava.version>28.1-jre</guava.version>
         <main.class>com.github.xsavikx.androidscreencast.Main</main.class>
         <jdk.version>1.8</jdk.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -64,7 +64,7 @@
         <plugins>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.0</version>
+                <version>3.8.1</version>
                 <configuration>
                     <source>${jdk.version}</source>
                     <target>${jdk.version}</target>
@@ -72,11 +72,11 @@
             </plugin>
             <plugin>
                 <artifactId>maven-source-plugin</artifactId>
-                <version>3.0.1</version>
+                <version>3.1.0</version>
             </plugin>
             <plugin>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.0.1</version>
+                <version>3.1.1</version>
             </plugin>
             <plugin>
                 <artifactId>maven-deploy-plugin</artifactId>
@@ -85,7 +85,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
-                <version>3.1.1</version>
+                <version>3.1.2</version>
                 <configuration>
                     <archive>
                         <manifest>
