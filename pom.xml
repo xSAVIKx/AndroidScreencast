@@ -7,7 +7,7 @@
     <name>Android Screencast</name>
     <packaging>jar</packaging>
     <properties>
-        <dagger2.version>2.25.2</dagger2.version>
+        <dagger2.version>2.24</dagger2.version>
         <ddmlib.version>26.5.2</ddmlib.version>
         <slf4j.version>1.7.29</slf4j.version>
         <logback-classic.version>1.2.3</logback-classic.version>
