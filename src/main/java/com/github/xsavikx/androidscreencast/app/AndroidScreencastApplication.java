@@ -6,16 +6,17 @@ import com.github.xsavikx.androidscreencast.api.injector.Injector;
 import com.github.xsavikx.androidscreencast.configuration.ApplicationConfiguration;
 import com.github.xsavikx.androidscreencast.ui.JFrameMain;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.swing.*;
 import java.awt.*;
 
+import static org.slf4j.LoggerFactory.getLogger;
+
 @Singleton
-public class AndroidScreencastApplication extends SwingApplication {
-    private static final Logger LOGGER = LoggerFactory.getLogger(AndroidScreencastApplication.class);
+public final class AndroidScreencastApplication extends SwingApplication {
+
     private final JFrameMain jFrameMain;
     private final Injector injector;
     private final IDevice iDevice;
@@ -34,9 +35,9 @@ public class AndroidScreencastApplication extends SwingApplication {
 
     @Override
     public void stop() {
-        LOGGER.info("Stopping application");
+        log().info("Stopping application.");
         if (isStopped) {
-            LOGGER.debug("Application is already stopped.");
+            log().warn("Application is already stopped.");
             return;
         }
         injector.stop();
@@ -49,9 +50,9 @@ public class AndroidScreencastApplication extends SwingApplication {
 
     @Override
     public void start() {
-        LOGGER.info("Starting application");
+        log().info("Starting application.");
         if (iDevice == null) {
-            LOGGER.warn("No valid device was chosen. Please try to chose correct one.");
+            log().warn("No valid device was chosen. Please try to chose correct one.");
             stop();
         }
         SwingUtilities.invokeLater(() -> {
@@ -63,5 +64,16 @@ public class AndroidScreencastApplication extends SwingApplication {
 
             jFrameMain.launchInjector();
         });
+    }
+
+    private enum LogSingleton {
+        INSTANCE;
+
+        @SuppressWarnings({"NonSerializableFieldInSerializableClass", "ImmutableEnumChecker"})
+        private final Logger value = getLogger(AndroidScreencastApplication.class);
+    }
+
+    private static Logger log() {
+        return LogSingleton.INSTANCE.value;
     }
 }

@@ -12,7 +12,8 @@ import static com.github.xsavikx.androidscreencast.api.recording.atom.AtomType.W
 /**
  * WideDataAtom can grow larger then 4 gigabytes.
  */
-public class WideDataAtom extends DataAtom {
+public final class WideDataAtom extends DataAtom {
+
     private static final int HEADER_SIZE = 2;
 
     /**

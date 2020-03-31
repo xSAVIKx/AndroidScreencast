@@ -6,7 +6,7 @@ import com.github.xsavikx.androidscreencast.exception.IORuntimeException;
 import java.io.IOException;
 import java.io.OutputStream;
 
-public class OutputStreamShellOutputReceiver implements IShellOutputReceiver {
+public final class OutputStreamShellOutputReceiver implements IShellOutputReceiver {
 
     private OutputStream os;
 
@@ -36,5 +36,4 @@ public class OutputStreamShellOutputReceiver implements IShellOutputReceiver {
     public boolean isCancelled() {
         return false;
     }
-
 }

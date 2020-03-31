@@ -1,7 +1,7 @@
 /* 
  * $Id: SwingWorker.java,v 1.6 2008/07/25 19:32:29 idk Exp $
  * 
- * Copyright @ 2005 Sun Microsystems, Inc. All rights
+ * Copyright © 2005 Sun Microsystems, Inc. All rights
  * reserved. Use is subject to license terms.
  */
 
@@ -39,7 +39,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * <p>
  * <p>
  * {@code SwingWorker} is designed for situations where you need to have a long running task run in a background thread and provide updates to the UI
- * either when done, or while processing. Subclasses of {@code SwingWorker} must implement the {@see #doInBackground} method to perform the background
+ * either when done, or while processing. Subclasses of {@code SwingWorker} must implement the {@link #doInBackground} method to perform the background
  * computation.
  * <p>
  * <p>

@@ -26,7 +26,8 @@ import static com.github.xsavikx.androidscreencast.configuration.ApplicationConf
 import static com.github.xsavikx.androidscreencast.configuration.ApplicationConfigurationPropertyKeys.APP_WINDOW_WIDTH_KEY;
 
 @Singleton
-public class JFrameMain extends JFrame {
+public final class JFrameMain extends JFrame {
+
     private static final long serialVersionUID = -2085909236767692371L;
     private final JPanelScreen jp;
     private final MouseActionAdapter ma;
@@ -35,6 +36,7 @@ public class JFrameMain extends JFrame {
     private final JFrameExplorer frameExplorer;
     private final JDialogExecuteKeyEvent dialogExecuteKeyEvent;
     private transient boolean isDisposed = false;
+
     private JToolBar jtb = new JToolBar();
     private JToolBar jtbHardkeys = new JToolBar();
     private JScrollPane jsp;
@@ -50,9 +52,13 @@ public class JFrameMain extends JFrame {
     private Dimension oldImageDimension;
 
     @Inject
-    public JFrameMain(JPanelScreen jp, Injector injector, MouseActionAdapter ma,
-                      JFrameExplorer frameExplorer, JDialogExecuteKeyEvent dialogExecuteKeyEvent, @Named(APP_WINDOW_WIDTH_KEY) int width,
-                      @Named(APP_WINDOW_HEIGHT_KEY) int height) {
+    JFrameMain(JPanelScreen jp,
+               Injector injector,
+               MouseActionAdapter ma,
+               JFrameExplorer frameExplorer,
+               JDialogExecuteKeyEvent dialogExecuteKeyEvent,
+               @Named(APP_WINDOW_WIDTH_KEY) int width,
+               @Named(APP_WINDOW_HEIGHT_KEY) int height) {
         this.jp = jp;
         this.injector = injector;
         this.ma = ma;
@@ -180,7 +186,7 @@ public class JFrameMain extends JFrame {
 
     public void launchInjector() {
         injector.setScreenCaptureListener((size, image, landscape) -> {
-            if (oldImageDimension == null || !size.equals(oldImageDimension)) {
+            if (!size.equals(oldImageDimension)) {
                 jsp.setPreferredSize(size);
                 JFrameMain.this.pack();
                 oldImageDimension = size;
@@ -197,5 +203,4 @@ public class JFrameMain extends JFrame {
     private void stopRecording() {
         injector.stopRecording();
     }
-
 }

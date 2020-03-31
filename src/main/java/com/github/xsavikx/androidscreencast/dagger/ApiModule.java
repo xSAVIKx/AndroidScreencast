@@ -1,11 +1,14 @@
 package com.github.xsavikx.androidscreencast.dagger;
 
+import com.android.ddmlib.IShellOutputReceiver;
+import com.android.ddmlib.NullOutputReceiver;
 import com.github.xsavikx.androidscreencast.api.AndroidDevice;
 import com.github.xsavikx.androidscreencast.api.AndroidDeviceImpl;
 import com.github.xsavikx.androidscreencast.api.command.executor.CommandExecutor;
 import com.github.xsavikx.androidscreencast.api.command.executor.ShellCommandExecutor;
 import com.github.xsavikx.androidscreencast.api.command.factory.AdbInputCommandFactory;
 import com.github.xsavikx.androidscreencast.api.command.factory.InputCommandFactory;
+import com.github.xsavikx.androidscreencast.api.injector.MultiLineReceiverPrinter;
 import com.github.xsavikx.androidscreencast.configuration.ApplicationConfiguration;
 import dagger.Module;
 import dagger.Provides;
@@ -16,7 +19,6 @@ import javax.inject.Singleton;
 import static com.github.xsavikx.androidscreencast.configuration.ApplicationConfigurationProperty.*;
 import static com.github.xsavikx.androidscreencast.configuration.ApplicationConfigurationPropertyKeys.*;
 
-@Singleton
 @Module
 public class ApiModule {
     @Singleton
@@ -56,5 +58,21 @@ public class ApiModule {
     @Provides
     public static InputCommandFactory inputCommandFactory(AdbInputCommandFactory adbInputCommandFactory) {
         return adbInputCommandFactory;
+    }
+
+    @Singleton
+    @Named(APP_DEBUG_ENABLED_KEY)
+    @Provides
+    public static boolean isDebugEnabled(ApplicationConfiguration applicationConfiguration) {
+        return Boolean.valueOf(applicationConfiguration.getProperty(APP_DEBUG_ENABLED));
+    }
+
+    @Singleton
+    @Provides
+    public static IShellOutputReceiver iShellOutputReceiver(@Named(APP_DEBUG_ENABLED_KEY) boolean isDebugEnabled, MultiLineReceiverPrinter multiLineReceiverPrinter) {
+        if (isDebugEnabled) {
+            return multiLineReceiverPrinter;
+        }
+        return NullOutputReceiver.getReceiver();
     }
 }

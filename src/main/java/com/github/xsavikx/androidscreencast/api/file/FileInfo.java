@@ -9,7 +9,8 @@ import java.io.File;
 import java.io.IOException;
 
 @Singleton
-public class FileInfo {
+public final class FileInfo {
+
     public AndroidDeviceImpl device;
     public String path;
     public String attribs;
@@ -18,7 +19,6 @@ public class FileInfo {
 
     @Inject
     public FileInfo() {
-
     }
 
     public File downloadTemporary() {
@@ -36,5 +36,4 @@ public class FileInfo {
     public String toString() {
         return name;
     }
-
 }

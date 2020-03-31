@@ -29,7 +29,8 @@ import static com.google.common.collect.Lists.newLinkedList;
  * Implementation of QuickTime video encoder.
  * For more information see <a href="developer.apple.com/library/content/documentation/QuickTime/QTFF/QTFFPreface/qtffPreface.html">QuickTime File Format Specification</a>
  */
-public class QuickTimeOutputStream {
+public final class QuickTimeOutputStream {
+
     private static final int UNSPECIFIED = -1;
     private static final float DEFAULT_QUALITY = 0.9f;
     private static final int DEFAULT_TIME_SCALE = 600;
@@ -81,7 +82,7 @@ public class QuickTimeOutputStream {
      *
      * @param file   the output file
      * @param format Selects an encoder for the video format "JPG" or "PNG".
-     * @throws IllegalArgumentException if videoFormat is null or if framerate is <= 0
+     * @throws IllegalArgumentException if videoFormat is null or if framerate is less or equal to 0
      */
     public QuickTimeOutputStream(File file, VideoFormat format) throws IOException {
         checkNotNull(file, "Result file should not be null.");
@@ -138,7 +139,7 @@ public class QuickTimeOutputStream {
      *
      * @throws IllegalStateException if the dimension of the video track has not been specified or determined yet.
      */
-    public void finish() {
+    private void finish() {
         ensureOpen();
         if (state != States.FINISHED) {
             checkState(imgWidth != UNSPECIFIED && imgHeight != UNSPECIFIED,
@@ -448,10 +449,10 @@ public class QuickTimeOutputStream {
     private DataAtom createHandlerAtom(ImageOutputStream out, AtomType componentType) throws IOException {
         DataAtom handlerAtom = new DataAtom(HANDLER, out);
 
-    /*
-     * typedef struct { byte version; byte[3] flags; magic componentType; magic componentSubtype; magic componentManufacturer; int componentFlags; int
-     * componentFlagsMask; cstring componentName; } handlerReferenceAtom;
-     */
+        /*
+         * typedef struct { byte version; byte[3] flags; magic componentType; magic componentSubtype; magic componentManufacturer; int componentFlags; int
+         * componentFlagsMask; cstring componentName; } handlerReferenceAtom;
+         */
         DataAtomOutputStream d = handlerAtom.getOutputStream();
         d.write(0); // version
         // A 1-byte specification of the version of this handler information.
@@ -527,10 +528,10 @@ public class QuickTimeOutputStream {
     private DataAtom createVideoMediaInformationAtom(ImageOutputStream out) throws IOException {
         DataAtom videoMediaInformationAtom = new DataAtom(VIDEO_MEDIA_INFORMATION, out);
 
-    /*
-     * typedef struct { byte version; byte flag1; byte flag2; byte set vmhdFlags flag3; short graphicsMode; ushort[3] opcolor; }
-     * videoMediaInformationHeaderAtom;
-     */
+        /*
+         * typedef struct { byte version; byte flag1; byte flag2; byte set vmhdFlags flag3; short graphicsMode; ushort[3] opcolor; }
+         * videoMediaInformationHeaderAtom;
+         */
         DataAtomOutputStream d = videoMediaInformationAtom.getOutputStream();
         d.write(0); // version
         // One byte that specifies the version of this header atom.
@@ -601,14 +602,14 @@ public class QuickTimeOutputStream {
 
         DataAtom leaf = new DataAtom(DATA_REFERENCE, out);
 
-    /*
-     * typedef struct { ubyte version; ubyte[3] flags; int numberOfEntries; dataReferenceEntry dataReference[numberOfEntries]; } dataReferenceAtom;
-     *
-     * set { dataRefSelfReference=1 // I am not shure if this is the correct value for this flag } drefEntryFlags;
-     *
-     * typedef struct { int size; magic type; byte version; ubyte flag1; ubyte flag2; ubyte set drefEntryFlags flag3; byte[size - 12] data; }
-     * dataReferenceEntry;
-     */
+        /*
+         * typedef struct { ubyte version; ubyte[3] flags; int numberOfEntries; dataReferenceEntry dataReference[numberOfEntries]; } dataReferenceAtom;
+         *
+         * set { dataRefSelfReference=1 // I am not shure if this is the correct value for this flag } drefEntryFlags;
+         *
+         * typedef struct { int size; magic type; byte version; ubyte flag1; ubyte flag2; ubyte set drefEntryFlags flag3; byte[size - 12] data; }
+         * dataReferenceEntry;
+         */
         DataAtomOutputStream d = leaf.getOutputStream();
         d.write(0); // version
         // A 1-byte specification of the version of this data reference atom.
@@ -682,14 +683,14 @@ public class QuickTimeOutputStream {
     private DataAtom createSampleDescriptionAtom(ImageOutputStream out) throws IOException {
         DataAtom sampleDescriptionAtom = new DataAtom(SAMPLE_DESCRIPTION, out);
 
-    /*
-     * typedef struct { byte version; byte[3] flags; int numberOfEntries; sampleDescriptionEntry sampleDescriptionTable[numberOfEntries]; }
-     * sampleDescriptionAtom;
-     *
-     * typedef struct { int size; magic type; byte[6] reserved; // six bytes that must be zero short dataReferenceIndex; // A 16-bit integer that
-     * contains the index of the data reference to use to retrieve data associated with samples that use this sample description. Data references are
-     * stored in data reference atoms. byte[size - 16] data; } sampleDescriptionEntry;
-     */
+        /*
+         * typedef struct { byte version; byte[3] flags; int numberOfEntries; sampleDescriptionEntry sampleDescriptionTable[numberOfEntries]; }
+         * sampleDescriptionAtom;
+         *
+         * typedef struct { int size; magic type; byte[6] reserved; // six bytes that must be zero short dataReferenceIndex; // A 16-bit integer that
+         * contains the index of the data reference to use to retrieve data associated with samples that use this sample description. Data references are
+         * stored in data reference atoms. byte[size - 16] data; } sampleDescriptionEntry;
+         */
         DataAtomOutputStream d = sampleDescriptionAtom.getOutputStream();
         d.write(0); // version
         // A 1-byte specification of the version of this sample description
@@ -1000,12 +1001,12 @@ public class QuickTimeOutputStream {
     private DataAtom createSamplesSizeAtom(ImageOutputStream out) throws IOException {
         DataAtom samplesSizeAtom = new DataAtom(SAMPLE_SIZE, out);
 
-    /*
-     * typedef struct { byte version; byte[3] flags; int sampleSize; int numberOfEntries; sampleSizeTable sampleSizeTable[numberOfEntries]; }
-     * sampleSizeAtom;
-     *
-     * typedef struct { int size; } sampleSizeTable;
-     */
+        /*
+         * typedef struct { byte version; byte[3] flags; int sampleSize; int numberOfEntries; sampleSizeTable sampleSizeTable[numberOfEntries]; }
+         * sampleSizeAtom;
+         *
+         * typedef struct { int size; } sampleSizeTable;
+         */
         DataAtomOutputStream d = samplesSizeAtom.getOutputStream();
         d.write(0); // version
         // A 1-byte specification of the version of this time-to-sample atom.
@@ -1064,11 +1065,11 @@ public class QuickTimeOutputStream {
     private DataAtom create32BitChunkOffsetTableAtom(ImageOutputStream out) throws IOException {
         DataAtom chunkOffsetAtom = new DataAtom(STANDARD_CHUNK_OFFSET_TABLE, out);
 
-      /*
-       * typedef struct { byte version; byte[3] flags; int numberOfEntries; chunkOffsetTable chunkOffsetTable[numberOfEntries]; } chunkOffsetAtom;
-       *
-       * typedef struct { int offset; } chunkOffsetTable;
-       */
+        /*
+         * typedef struct { byte version; byte[3] flags; int numberOfEntries; chunkOffsetTable chunkOffsetTable[numberOfEntries]; } chunkOffsetAtom;
+         *
+         * typedef struct { int offset; } chunkOffsetTable;
+         */
         DataAtomOutputStream d = chunkOffsetAtom.getOutputStream();
         d.write(0); // version
         // A 1-byte specification of the version of this time-to-sample
@@ -1103,11 +1104,11 @@ public class QuickTimeOutputStream {
     private DataAtom create64BitChunkOffsetTableAtom(ImageOutputStream out) throws IOException {
         DataAtom chunkOffsetAtom = new DataAtom(WIDE_CHUNK_OFFSET_TABLE, out);
 
-      /*
-       * typedef struct { byte version; byte[3] flags; int numberOfEntries; chunkOffsetTable chunkOffset64Table[numberOfEntries]; } chunkOffset64Atom;
-       *
-       * typedef struct { long offset; } chunkOffset64Table;
-       */
+        /*
+         * typedef struct { byte version; byte[3] flags; int numberOfEntries; chunkOffsetTable chunkOffset64Table[numberOfEntries]; } chunkOffset64Atom;
+         *
+         * typedef struct { long offset; } chunkOffset64Table;
+         */
         DataAtomOutputStream d = chunkOffsetAtom.getOutputStream();
         d.write(0); // version
         // A 1-byte specification of the version of this time-to-sample
@@ -1146,11 +1147,11 @@ public class QuickTimeOutputStream {
 
         DataAtom samplesToChunksMappingAtom = new DataAtom(SAMPLE_TO_CHUNK_MAPPING, out);
 
-    /*
-     * typedef struct { byte version; byte[3] flags; int numberOfEntries; sampleToChunkTable sampleToChunkTable[numberOfEntries]; } sampleToChunkAtom;
-     *
-     * typedef struct { int firstChunk; int samplesPerChunk; int sampleDescription; } sampleToChunkTable;
-     */
+        /*
+         * typedef struct { byte version; byte[3] flags; int numberOfEntries; sampleToChunkTable sampleToChunkTable[numberOfEntries]; } sampleToChunkAtom;
+         *
+         * typedef struct { int firstChunk; int samplesPerChunk; int sampleDescription; } sampleToChunkTable;
+         */
         DataAtomOutputStream d = samplesToChunksMappingAtom.getOutputStream();
         d.write(0); // version
         // A 1-byte specification of the version of this time-to-sample atom.
@@ -1193,11 +1194,11 @@ public class QuickTimeOutputStream {
 
         DataAtom timeToSampleAtom = new DataAtom(TIME_TO_SAMPLE_MAPPING, out);
 
-    /*
-     * typedef struct { byte version; byte[3] flags; int numberOfEntries; timeToSampleTable timeToSampleTable[numberOfEntries]; } timeToSampleAtom;
-     *
-     * typedef struct { int sampleCount; int sampleDuration; } timeToSampleTable;
-     */
+        /*
+         * typedef struct { byte version; byte[3] flags; int numberOfEntries; timeToSampleTable timeToSampleTable[numberOfEntries]; } timeToSampleAtom;
+         *
+         * typedef struct { int sampleCount; int sampleDuration; } timeToSampleTable;
+         */
         DataAtomOutputStream d = timeToSampleAtom.getOutputStream();
         d.write(0); // version
         // A 1-byte specification of the version of this time-to-sample atom.
@@ -1465,7 +1466,7 @@ public class QuickTimeOutputStream {
      * @throws IllegalArgumentException if the duration is less than 1.
      * @throws IORuntimeException       if writing the image failed.
      */
-    public void writeFrame(InputStream in, int duration) {
+    private void writeFrame(InputStream in, int duration) {
         checkArgument(duration >= 0, "duration should be greater than 0, but was %s", duration);
         ensureOpen();
         ensureStarted();
@@ -1487,11 +1488,11 @@ public class QuickTimeOutputStream {
 
     private void writeProlog() {
         try {
-    /*
-     * File type atom
-     *
-     * typedef struct { magic brand; bcd4 versionYear; bcd2 versionMonth; bcd2 versionMinor; magic[4] compatibleBrands; } ftypAtom;
-     */
+            /*
+             * File type atom
+             *
+             * typedef struct { magic brand; bcd4 versionYear; bcd2 versionMonth; bcd2 versionMinor; magic[4] compatibleBrands; } ftypAtom;
+             */
             DataAtom ftypAtom = new DataAtom(FILE_TYPE, out);
             DataAtomOutputStream d = ftypAtom.getOutputStream();
             d.writeType(QUICK_TIME); // brand
@@ -1547,7 +1548,7 @@ public class QuickTimeOutputStream {
          * @param offset   Offset of the sample relative to the start of the QuickTime file.
          * @param length   Data length of the sample.
          */
-        public Sample(int duration, long offset, long length) {
+        Sample(int duration, long offset, long length) {
             this.duration = duration;
             this.offset = offset;
             this.length = length;

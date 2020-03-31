@@ -2,7 +2,6 @@ AndroidScreencast
 =================
 
 [![Build Status Travis-CI][travis_badge]][travis]&nbsp;
-[![Dependency Status][versioneye_badge]][versioneye]&nbsp;
 [![Codacy Badge][codacy_badge]][codacy]&nbsp;
 [![Join the chat at https://gitter.im/AndroidScreencast/Lobby][gitter_badge]][gitter]&nbsp;
 [![Apache License][license_badge]][license]
@@ -80,9 +79,9 @@ adb.device.timeout=30
 #maximum time to execute adb command (in seconds)
 adb.command.timeout=5
 #initial application window width (in pixels)
-default.window.width=1024
+app.window.width=1024
 #initial application window height (in pixels)
-default.window.height=768
+app.window.height=768
 #Defines whether application should look 'natively' to OS. Possible values: true/false
 app.native.look=false
 ```

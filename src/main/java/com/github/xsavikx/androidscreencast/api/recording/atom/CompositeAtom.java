@@ -15,7 +15,8 @@ import static com.google.common.collect.Lists.newLinkedList;
 /**
  * A CompositeAtom contains an ordered list of Atoms.
  */
-public class CompositeAtom extends CommonAtom {
+public final class CompositeAtom extends CommonAtom {
+
     private static final int HEADER_SIZE = 1;
     private final List<Atom> children;
 

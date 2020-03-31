@@ -9,7 +9,8 @@ import java.awt.image.Raster;
 /**
  * Abstract color model for adb RawImage
  */
-public abstract class AbstractRawImageColorModel extends ColorModel {
+abstract class AbstractRawImageColorModel extends ColorModel {
+
     private static final int PIXEL_BITS = 32;
     private static final boolean HAS_ALPHA = true;
     private static final boolean IS_ALPHA_PRE_MULTIPLIED = false;
@@ -17,7 +18,7 @@ public abstract class AbstractRawImageColorModel extends ColorModel {
             8, 8, 8, 8,
     };
 
-    public AbstractRawImageColorModel() {
+    AbstractRawImageColorModel() {
         super(PIXEL_BITS, BITS, ColorSpace.getInstance(ColorSpace.CS_sRGB),
                 HAS_ALPHA, IS_ALPHA_PRE_MULTIPLIED, Transparency.TRANSLUCENT,
                 DataBuffer.TYPE_BYTE);

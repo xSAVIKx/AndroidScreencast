@@ -48,14 +48,14 @@ public abstract class LazyLoadingTreeNode extends DefaultMutableTreeNode impleme
     /**
      * @return <code>true</code> if there are some childrens
      */
-    protected boolean areChildrenLoaded() {
+    private boolean areChildrenLoaded() {
         return getChildCount() > 0 && getAllowsChildren();
     }
 
     /**
      * @return a new Loading please wait node
      */
-    protected MutableTreeNode createLoadingNode() {
+    private MutableTreeNode createLoadingNode() {
         return new DefaultMutableTreeNode("Loading Please Wait ...", false);
     }
 
@@ -65,7 +65,7 @@ public abstract class LazyLoadingTreeNode extends DefaultMutableTreeNode impleme
      * @param tree the tree
      * @return the newly created SwingWorker
      */
-    protected com.github.xsavikx.androidscreencast.ui.worker.SwingWorker<MutableTreeNode[], ?> createSwingWorker(final JTree tree) {
+    private com.github.xsavikx.androidscreencast.ui.worker.SwingWorker<MutableTreeNode[], ?> createSwingWorker(final JTree tree) {
 
         com.github.xsavikx.androidscreencast.ui.worker.SwingWorker<MutableTreeNode[], ?> worker = new com.github.xsavikx.androidscreencast.ui.worker.SwingWorker<MutableTreeNode[], Object>() {
 
@@ -113,7 +113,7 @@ public abstract class LazyLoadingTreeNode extends DefaultMutableTreeNode impleme
      * @param tree the tree
      * @return the Created nodes
      */
-    public abstract MutableTreeNode[] loadChildren(JTree tree);
+    abstract MutableTreeNode[] loadChildren(JTree tree);
 
     /**
      * If the node is cancelable an escape Action is registered in the tree's InputMap and ActionMap that will cancel the execution
@@ -121,7 +121,7 @@ public abstract class LazyLoadingTreeNode extends DefaultMutableTreeNode impleme
      * @param tree   the tree
      * @param worker the worker to cancel
      */
-    protected void registerSwingWorkerForCancel(JTree tree, com.github.xsavikx.androidscreencast.ui.worker.SwingWorker<MutableTreeNode[], ?> worker) {
+    private void registerSwingWorkerForCancel(JTree tree, com.github.xsavikx.androidscreencast.ui.worker.SwingWorker<MutableTreeNode[], ?> worker) {
         if (!cancelable) {
             return;
         }
@@ -142,7 +142,7 @@ public abstract class LazyLoadingTreeNode extends DefaultMutableTreeNode impleme
     /**
      * Need some improvement ... This method should restore the Node initial state if the worker if canceled
      */
-    protected void reset() {
+    private void reset() {
         DefaultTreeModel defaultModel = (DefaultTreeModel) tree.getModel();
         int childCount = getChildCount();
         if (childCount > 0) {
@@ -158,7 +158,7 @@ public abstract class LazyLoadingTreeNode extends DefaultMutableTreeNode impleme
      *
      * @param nodes new nodes
      */
-    protected void setChildren(MutableTreeNode... nodes) {
+    private void setChildren(MutableTreeNode... nodes) {
         TreeModel model = tree.getModel();
         if (model instanceof DefaultTreeModel) {
             DefaultTreeModel defaultModel = (DefaultTreeModel) model;
@@ -219,7 +219,7 @@ public abstract class LazyLoadingTreeNode extends DefaultMutableTreeNode impleme
      * @param tree
      * @param worker
      */
-    protected void unRegisterSwingWorkerForCancel(JTree tree, com.github.xsavikx.androidscreencast.ui.worker.SwingWorker<MutableTreeNode[], ?> worker) {
+    private void unRegisterSwingWorkerForCancel(JTree tree, com.github.xsavikx.androidscreencast.ui.worker.SwingWorker<MutableTreeNode[], ?> worker) {
         if (!cancelable) {
             return;
         }
@@ -266,14 +266,14 @@ public abstract class LazyLoadingTreeNode extends DefaultMutableTreeNode impleme
         /**
          * Add a Cancelable SwingWorker
          */
-        public void addSwingWorker(com.github.xsavikx.androidscreencast.ui.worker.SwingWorker<MutableTreeNode[], ?> worker) {
+        void addSwingWorker(com.github.xsavikx.androidscreencast.ui.worker.SwingWorker<MutableTreeNode[], ?> worker) {
             workers.add(worker);
         }
 
         /**
          * Remove a SwingWorker
          */
-        public void removeSwingWorker(com.github.xsavikx.androidscreencast.ui.worker.SwingWorker<MutableTreeNode[], ?> worker) {
+        void removeSwingWorker(com.github.xsavikx.androidscreencast.ui.worker.SwingWorker<MutableTreeNode[], ?> worker) {
             workers.remove(worker);
         }
 

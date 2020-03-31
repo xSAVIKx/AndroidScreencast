@@ -9,12 +9,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Singleton
-public class InputKeyEventTableModel extends AbstractTableModel {
+public final class InputKeyEventTableModel extends AbstractTableModel {
+
     private static final long serialVersionUID = 1553313932570896541L;
     private final static String INDEX_COLUMN_NAME = "#";
     private final static String TITLE_COLUMN_NAME = "title";
     private final static String DESCRIPTION_COLUMN_NAME = "description";
-    public static final String[] COLUMN_NAMES = {
+    static final String[] COLUMN_NAMES = {
             INDEX_COLUMN_NAME, TITLE_COLUMN_NAME, DESCRIPTION_COLUMN_NAME
     };
 
@@ -22,7 +23,7 @@ public class InputKeyEventTableModel extends AbstractTableModel {
     private int rowCount = 0;
 
     @Inject
-    public InputKeyEventTableModel(InputKeyEvent[] initialData) {
+    InputKeyEventTableModel(InputKeyEvent[] initialData) {
         initData(initialData);
     }
 
@@ -54,5 +55,4 @@ public class InputKeyEventTableModel extends AbstractTableModel {
     public Object getValueAt(int rowIndex, int columnIndex) {
         return data.get(rowIndex).get(columnIndex);
     }
-
 }

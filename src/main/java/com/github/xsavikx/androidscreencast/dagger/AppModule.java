@@ -9,7 +9,6 @@ import dagger.Provides;
 
 import javax.inject.Singleton;
 
-@Singleton
 @Module
 public class AppModule {
     @Singleton

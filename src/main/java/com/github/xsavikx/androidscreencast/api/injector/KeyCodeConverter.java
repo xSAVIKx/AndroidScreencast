@@ -1,15 +1,18 @@
 package com.github.xsavikx.androidscreencast.api.injector;
 
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.awt.event.KeyEvent;
 
-public class KeyCodeConverter {
-    private static final Logger LOGGER = LoggerFactory.getLogger(KeyCodeConverter.class);
+import static org.slf4j.LoggerFactory.getLogger;
+
+public final class KeyCodeConverter {
+
+    private KeyCodeConverter() {
+    }
 
     public static int getKeyCode(KeyEvent e) {
-        LOGGER.debug("getKeyCode(KeyEvent e={}) - start", e);
+        log().debug("Getting key code for event: {}.", e);
         int code = InputKeyEvent.KEYCODE_UNKNOWN.getCode();
         char c = e.getKeyChar();
         int keyCode = e.getKeyCode();
@@ -17,8 +20,18 @@ public class KeyCodeConverter {
         if (inputKeyEvent != null) {
             code = inputKeyEvent.getCode();
         }
-        LOGGER.debug("Received KeyEvent={}. Produced KeyCode={}", String.valueOf(e), code);
+        log().debug("Received KeyEvent={}. Produced KeyCode={}", e, code);
         return code;
     }
 
+    private enum LogSingleton {
+        INSTANCE;
+
+        @SuppressWarnings({"NonSerializableFieldInSerializableClass", "ImmutableEnumChecker"})
+        private final Logger value = getLogger(KeyCodeConverter.class);
+    }
+
+    private static Logger log() {
+        return LogSingleton.INSTANCE.value;
+    }
 }

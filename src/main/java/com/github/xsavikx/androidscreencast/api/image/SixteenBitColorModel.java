@@ -3,7 +3,7 @@ package com.github.xsavikx.androidscreencast.api.image;
 /**
  * Modified version of SixteenBitColorModel from <a href="https://android.googlesource.com/platform/tools/swt/+/master/chimpchat/src/main/java/com/android/chimpchat/adb/image/SixteenBitColorModel.java">android.chimpchat</a>
  */
-public class SixteenBitColorModel extends AbstractRawImageColorModel {
+public final class SixteenBitColorModel extends AbstractRawImageColorModel {
 
     @Override
     protected int getPixel(byte[] data) {

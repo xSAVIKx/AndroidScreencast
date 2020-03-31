@@ -13,7 +13,8 @@ import javax.swing.border.TitledBorder;
 import java.awt.*;
 
 @Singleton
-public class JDialogExecuteKeyEvent extends JDialog {
+public final class JDialogExecuteKeyEvent extends JDialog {
+
     private static final long serialVersionUID = -4152020879675916776L;
     private static final int HEIGHT = 600;
     private static final int WIDTH = 800;
@@ -34,14 +35,16 @@ public class JDialogExecuteKeyEvent extends JDialog {
     private final InputCommandFactory inputCommandFactory;
 
     @Inject
-    public JDialogExecuteKeyEvent(CommandExecutor commandExecutor, InputKeyEventTable commandListTable, InputCommandFactory inputCommandFactory) {
+    JDialogExecuteKeyEvent(CommandExecutor commandExecutor,
+                           InputKeyEventTable commandListTable,
+                           InputCommandFactory inputCommandFactory) {
         this.commandExecutor = commandExecutor;
         this.commandListTable = commandListTable;
         this.inputCommandFactory = inputCommandFactory;
         init();
     }
 
-    public void open() {
+    void open() {
         setVisible(true);
     }
 

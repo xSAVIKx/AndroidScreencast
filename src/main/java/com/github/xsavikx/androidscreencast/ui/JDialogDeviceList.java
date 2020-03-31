@@ -9,7 +9,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-public class JDialogDeviceList extends JDialog implements ActionListener {
+public final class JDialogDeviceList extends JDialog implements ActionListener {
 
     private static final long serialVersionUID = -3719844308147203239L;
     private static final String DEFAULT_HOST = "127.0.0.1";

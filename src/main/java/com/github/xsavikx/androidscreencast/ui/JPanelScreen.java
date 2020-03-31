@@ -7,7 +7,8 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 
 @Singleton
-public class JPanelScreen extends JPanel {
+public final class JPanelScreen extends JPanel {
+
     private static final long serialVersionUID = -2034873107028503004L;
     private float coef = 1;
     private double origX;
@@ -16,7 +17,7 @@ public class JPanelScreen extends JPanel {
     private BufferedImage image = null;
 
     @Inject
-    public JPanelScreen() {
+    JPanelScreen() {
         setFocusable(true);
     }
 
@@ -27,7 +28,7 @@ public class JPanelScreen extends JPanel {
         return p2;
     }
 
-    public void handleNewImage(final Dimension size, final BufferedImage image) {
+    void handleNewImage(final Dimension size, final BufferedImage image) {
         this.size = size;
         this.image = image;
         repaint();
@@ -50,5 +51,4 @@ public class JPanelScreen extends JPanel {
     private boolean isNotInitialized() {
         return size == null || size.height == 0 || size.width == 0;
     }
-
 }

@@ -5,7 +5,8 @@ import javax.inject.Singleton;
 import java.io.File;
 
 @Singleton
-public class Injector {
+public final class Injector {
+
     private final ScreenCaptureRunnable screenCaptureRunnable;
     private final Thread screenCaptureThread;
 
@@ -39,5 +40,4 @@ public class Injector {
     public void toggleOrientation() {
         screenCaptureRunnable.toggleOrientation();
     }
-
 }

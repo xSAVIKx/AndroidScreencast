@@ -7,6 +7,7 @@ import java.io.FilterOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -14,13 +15,13 @@ import java.util.GregorianCalendar;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
-public class DataAtomOutputStream extends FilterOutputStream {
+public final class DataAtomOutputStream extends FilterOutputStream {
 
-    protected static final long MAC_TIMESTAMP_EPOCH = new GregorianCalendar(1904, Calendar.JANUARY, 1).getTimeInMillis();
+    private static final long MAC_TIMESTAMP_EPOCH = new GregorianCalendar(1904, Calendar.JANUARY, 1).getTimeInMillis();
     /**
      * The number of bytes written to the data output stream so far. If this counter overflows, it will be wrapped to Integer.MAX_VALUE.
      */
-    protected long written;
+    private long written;
 
     public DataAtomOutputStream(OutputStream out) {
         super(out);
@@ -29,7 +30,7 @@ public class DataAtomOutputStream extends FilterOutputStream {
     /**
      * Increases the written counter by the specified value until it reaches Long.MAX_VALUE.
      */
-    protected void incCount(int value) {
+    private void incCount(int value) {
         long temp = written + value;
         if (temp < 0) {
             temp = Long.MAX_VALUE;
@@ -59,7 +60,7 @@ public class DataAtomOutputStream extends FilterOutputStream {
      * @see java.io.FilterOutputStream#out
      */
     @Override
-    public synchronized void write(byte b[], int off, int len) throws IOException {
+    public synchronized void write(byte[] b, int off, int len) throws IOException {
         out.write(b, off, len);
         incCount(len);
     }
@@ -87,7 +88,7 @@ public class DataAtomOutputStream extends FilterOutputStream {
      * @throws IOException if an I/O error occurs.
      * @see java.io.FilterOutputStream#out
      */
-    public void writeBCD2(int v) throws IOException {
+    void writeBCD2(int v) throws IOException {
         out.write(((v % 100 / 10) << 4) | (v % 10));
         incCount(1);
     }
@@ -99,7 +100,7 @@ public class DataAtomOutputStream extends FilterOutputStream {
      * @throws IOException if an I/O error occurs.
      * @see java.io.FilterOutputStream#out
      */
-    public void writeBCD4(int v) throws IOException {
+    void writeBCD4(int v) throws IOException {
         out.write(((v % 10000 / 1000) << 4) | (v % 1000 / 100));
         out.write(((v % 100 / 10) << 4) | (v % 10));
         incCount(2);
@@ -113,7 +114,7 @@ public class DataAtomOutputStream extends FilterOutputStream {
      * @throws IOException if an I/O error occurs.
      * @see java.io.FilterOutputStream#out
      */
-    public final void writeByte(int v) throws IOException {
+    final void writeByte(int v) throws IOException {
         out.write(v);
         incCount(1);
     }
@@ -125,7 +126,7 @@ public class DataAtomOutputStream extends FilterOutputStream {
      * @throws IOException if an I/O error occurs.
      * @see java.io.FilterOutputStream#out
      */
-    public void writeFixed16D16(double f) throws IOException {
+    void writeFixed16D16(double f) throws IOException {
         double v = (f >= 0) ? f : -f;
 
         int wholePart = (int) v;
@@ -145,7 +146,7 @@ public class DataAtomOutputStream extends FilterOutputStream {
      * @throws IOException if an I/O error occurs.
      * @see java.io.FilterOutputStream#out
      */
-    public void writeFixed2D30(double f) throws IOException {
+    void writeFixed2D30(double f) throws IOException {
         double v = (f >= 0) ? f : -f;
 
         int wholePart = (int) v;
@@ -212,7 +213,7 @@ public class DataAtomOutputStream extends FilterOutputStream {
      * @param date
      * @throws java.io.IOException
      */
-    public void writeMacTimestamp(Date date) throws IOException {
+    void writeMacTimestamp(Date date) throws IOException {
         long millis = date.getTime();
         long qtMillis = millis - MAC_TIMESTAMP_EPOCH;
         long qtSeconds = qtMillis / 1000;
@@ -248,7 +249,7 @@ public class DataAtomOutputStream extends FilterOutputStream {
      * @param length the fixed size in bytes
      * @throws java.io.IOException
      */
-    public void writePString(String s, int length) throws IOException {
+    void writePString(String s, int length) throws IOException {
         if (s.length() > length) {
             throw new IllegalArgumentException("String too long for PString of length " + length);
         }
@@ -276,7 +277,7 @@ public class DataAtomOutputStream extends FilterOutputStream {
      * @param v The value
      * @throws java.io.IOException
      */
-    public void writeShort(int v) throws IOException {
+    void writeShort(int v) throws IOException {
         out.write((v >> 8) & 0xff);
         out.write((v >>> 0) & 0xff);
         incCount(2);
@@ -290,7 +291,7 @@ public class DataAtomOutputStream extends FilterOutputStream {
     private void writeType(String type) throws IOException {
         checkArgument(type.length() == 4, "Type string must have exactly 4 characters. type=%s", type);
         try {
-            out.write(type.getBytes("ASCII"), 0, 4);
+            out.write(type.getBytes(StandardCharsets.US_ASCII), 0, 4);
             incCount(4);
         } catch (UnsupportedEncodingException e) {
             throw new InternalError(e.toString());
@@ -321,7 +322,7 @@ public class DataAtomOutputStream extends FilterOutputStream {
         incCount(4);
     }
 
-    public void writeUShort(int v) throws IOException {
+    void writeUShort(int v) throws IOException {
         out.write((v >> 8) & 0xff);
         out.write((v >>> 0) & 0xff);
         incCount(2);
@@ -335,5 +336,4 @@ public class DataAtomOutputStream extends FilterOutputStream {
             throw new IORuntimeException(e);
         }
     }
-
 }
