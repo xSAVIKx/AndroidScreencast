@@ -8,10 +8,10 @@
     <packaging>jar</packaging>
     <properties>
         <dagger2.version>2.24</dagger2.version>
-        <ddmlib.version>26.5.2</ddmlib.version>
-        <slf4j.version>1.7.29</slf4j.version>
+        <ddmlib.version>27.0.0</ddmlib.version>
+        <slf4j.version>1.7.30</slf4j.version>
         <logback-classic.version>1.2.3</logback-classic.version>
-        <guava.version>28.1-jre</guava.version>
+        <guava.version>29.0-jre</guava.version>
         <main.class>com.github.xsavikx.androidscreencast.Main</main.class>
         <jdk.version>1.8</jdk.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -85,7 +85,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
-                <version>3.1.2</version>
+                <version>3.2.0</version>
                 <configuration>
                     <archive>
                         <manifest>
