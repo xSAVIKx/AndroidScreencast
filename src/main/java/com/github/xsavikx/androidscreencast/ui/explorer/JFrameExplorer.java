@@ -22,9 +22,9 @@ public final class JFrameExplorer extends JFrame {
 
     private static final long serialVersionUID = -5209265873286028854L;
     private final AndroidDevice androidDevice;
-    private JTree jt;
+    private final JTree jt;
     private JList<Object> jListFichiers;
-    private Map<String, List<FileInfo>> cache = new LinkedHashMap<>();
+    private final Map<String, List<FileInfo>> cache = new LinkedHashMap<>();
 
     @Inject
     JFrameExplorer(AndroidDevice androidDevice) {

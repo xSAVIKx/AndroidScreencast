@@ -24,11 +24,11 @@ public abstract class LazyLoadingTreeNode extends DefaultMutableTreeNode impleme
     /**
      * The JTree containing this Node
      */
-    private JTree tree;
+    private final JTree tree;
     /**
      * Can the worker be Canceled ?
      */
-    private boolean cancelable;
+    private final boolean cancelable;
 
     /**
      * Default Constructor
@@ -243,7 +243,7 @@ public abstract class LazyLoadingTreeNode extends DefaultMutableTreeNode impleme
         /**
          * the SwingWorkers
          */
-        private List<com.github.xsavikx.androidscreencast.ui.worker.SwingWorker<MutableTreeNode[], ?>> workers = new ArrayList<>();
+        private final List<com.github.xsavikx.androidscreencast.ui.worker.SwingWorker<MutableTreeNode[], ?>> workers = new ArrayList<>();
 
         /**
          * Default constructor

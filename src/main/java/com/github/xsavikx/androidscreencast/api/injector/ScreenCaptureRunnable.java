@@ -31,7 +31,7 @@ public final class ScreenCaptureRunnable implements Runnable {
     private static final int FRAME_DURATION = 10;
     private final IDevice device;
     private final long defaultAdbCommandTimeout;
-    private Dimension size;
+    private final Dimension size;
     private QuickTimeOutputStream qos = null;
     private boolean landscape = false;
     private ScreenCaptureListener listener = null;

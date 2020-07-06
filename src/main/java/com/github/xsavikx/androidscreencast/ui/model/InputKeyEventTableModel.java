@@ -19,7 +19,7 @@ public final class InputKeyEventTableModel extends AbstractTableModel {
             INDEX_COLUMN_NAME, TITLE_COLUMN_NAME, DESCRIPTION_COLUMN_NAME
     };
 
-    private List<List<Object>> data = new ArrayList<>();
+    private final List<List<Object>> data = new ArrayList<>();
     private int rowCount = 0;
 
     @Inject

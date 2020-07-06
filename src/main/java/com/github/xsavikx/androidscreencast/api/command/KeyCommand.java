@@ -4,7 +4,7 @@ import com.github.xsavikx.androidscreencast.api.injector.InputKeyEvent;
 
 public final class KeyCommand extends InputCommand {
 
-    private int code;
+    private final int code;
     private boolean longpress;
 
     public KeyCommand(int keyCode) {

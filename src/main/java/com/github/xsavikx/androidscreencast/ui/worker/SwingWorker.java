@@ -1,6 +1,6 @@
-/* 
+/*
  * $Id: SwingWorker.java,v 1.6 2008/07/25 19:32:29 idk Exp $
- * 
+ *
  * Copyright © 2005 Sun Microsystems, Inc. All rights
  * reserved. Use is subject to license terms.
  */
@@ -251,11 +251,11 @@ public abstract class SwingWorker<T, V> implements Future<T>, Runnable {
                 }
             };
 
-      /*
-       * We want a to have no more than MAX_WORKER_THREADS running threads.
-       *
-       * We want a worker thread to wait no longer than 1 second for new tasks before terminating.
-       */
+            /*
+             * We want a to have no more than MAX_WORKER_THREADS running threads.
+             *
+             * We want a worker thread to wait no longer than 1 second for new tasks before terminating.
+             */
             executorService = new ThreadPoolExecutor(0, MAX_WORKER_THREADS, 5L, TimeUnit.SECONDS,
                     new LinkedBlockingQueue<Runnable>(), threadFactory) {
 
@@ -281,17 +281,17 @@ public abstract class SwingWorker<T, V> implements Future<T>, Runnable {
 
                 @Override
                 public void execute(Runnable command) {
-          /*
-           * ThreadPoolExecutor first tries to run task in a corePool. If all threads are busy it tries to add task to the waiting queue. If it fails
-           * it run task in maximumPool.
-           *
-           * We want corePool to be 0 and maximumPool to be MAX_WORKER_THREADS We need to change the order of the execution. First try corePool then
-           * try maximumPool pool and only then store to the waiting queue. We can not do that because we would need access to the private methods.
-           *
-           * Instead we enlarge corePool to MAX_WORKER_THREADS before the execution and shrink it back to 0 after. It does pretty much what we need.
-           *
-           * While we changing the corePoolSize we need to stop running worker threads from accepting new tasks.
-           */
+                    /*
+                     * ThreadPoolExecutor first tries to run task in a corePool. If all threads are busy it tries to add task to the waiting queue. If it fails
+                     * it run task in maximumPool.
+                     *
+                     * We want corePool to be 0 and maximumPool to be MAX_WORKER_THREADS We need to change the order of the execution. First try corePool then
+                     * try maximumPool pool and only then store to the waiting queue. We can not do that because we would need access to the private methods.
+                     *
+                     * Instead we enlarge corePool to MAX_WORKER_THREADS before the execution and shrink it back to 0 after. It does pretty much what we need.
+                     *
+                     * While we changing the corePoolSize we need to stop running worker threads from accepting new tasks.
+                     */
 
                     // we need atomicity for the execute method.
                     executeLock.lock();
@@ -557,9 +557,9 @@ public abstract class SwingWorker<T, V> implements Future<T>, Runnable {
      * @return the current state
      */
     public final StateValue getState() {
-    /*
-     * DONE is a special case to keep getState and isDone is sync
-     */
+        /*
+         * DONE is a special case to keep getState and isDone is sync
+         */
         if (isDone()) {
             return StateValue.DONE;
         } else {
@@ -718,7 +718,8 @@ public abstract class SwingWorker<T, V> implements Future<T>, Runnable {
         /**
          * Initial {@code SwingWorker} state.
          */
-        PENDING, /**
+        PENDING,
+        /**
          * {@code SwingWorker} is {@code STARTED} before invoking {@code doInBackground}.
          */
         STARTED,
@@ -747,10 +748,10 @@ public abstract class SwingWorker<T, V> implements Future<T>, Runnable {
                 }
             } finally {
                 if (i < args.size()) {
-          /*
-           * there was an exception schedule all the unhandled items for the next time
-           */
-                    Runnable argsTail[] = new Runnable[args.size() - i];
+                    /*
+                     * there was an exception schedule all the unhandled items for the next time
+                     */
+                    Runnable[] argsTail = new Runnable[args.size() - i];
                     for (int j = 0; j < argsTail.length; j++) {
                         argsTail[j] = args.get(i + j);
                     }

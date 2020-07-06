@@ -79,7 +79,7 @@ public enum InputKeyEvent {
     KEYCODE_EQUALS(70, "Key code constant: '=' key. ", '='),
     KEYCODE_LEFT_BRACKET(71, "Key code constant: '[' key. ", '['),
     KEYCODE_RIGHT_BRACKET(72, "Key code constant: ']' key. ", ']'),
-    KEYCODE_BACKSLASH(73, "Key code constant: '\' key. ", '\\'),
+    KEYCODE_BACKSLASH(73, "Key code constant: '' key. ", '\\'),
     KEYCODE_SEMICOLON(74, "Key code constant: ';' key. ", ';'),
     KEYCODE_APOSTROPHE(75, "Key code constant: ''' (apostrophe) key. ", '\''),
     KEYCODE_SLASH(76, "Key code constant: '/' key. ", '/'),
@@ -268,10 +268,10 @@ public enum InputKeyEvent {
     KEYCODE_HELP(259, "Key code constant: Help key. ");
 
     private static final Set<InputKeyEvent> eventsWithCharacters = fillEventsWithCharacters();
-    private static Set<InputKeyEvent> eventsWithKeyCodes = fillEventsWithKeyCodes();
+    private static final Set<InputKeyEvent> eventsWithKeyCodes = fillEventsWithKeyCodes();
     private int keyCode;
-    private int code;
-    private String description;
+    private final int code;
+    private final String description;
     private char characterToReplace;
 
     InputKeyEvent(int code, String description) {

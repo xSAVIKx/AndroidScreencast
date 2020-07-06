@@ -71,7 +71,7 @@ public final class QuickTimeOutputStream {
     /**
      * List of video frames.
      */
-    private LinkedList<Sample> videoFrames;
+    private final LinkedList<Sample> videoFrames;
     /**
      * This atom holds the movie frames.
      */
@@ -1531,15 +1531,15 @@ public final class QuickTimeOutputStream {
         /**
          * Offset of the sample relative to the start of the QuickTime file.
          */
-        private long offset;
+        private final long offset;
         /**
          * Data length of the sample.
          */
-        private long length;
+        private final long length;
         /**
          * The duration of the sample in time scale units.
          */
-        private int duration;
+        private final int duration;
 
         /**
          * Creates a new sample.

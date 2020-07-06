@@ -8,7 +8,7 @@ import java.io.OutputStream;
 
 public final class OutputStreamShellOutputReceiver implements IShellOutputReceiver {
 
-    private OutputStream os;
+    private final OutputStream os;
 
     public OutputStreamShellOutputReceiver(OutputStream os) {
         this.os = os;

@@ -6,7 +6,7 @@ import java.io.IOException;
 
 public final class FilterImageOutputStream extends FilterOutputStream {
 
-    private ImageOutputStream imgOut;
+    private final ImageOutputStream imgOut;
 
     public FilterImageOutputStream(ImageOutputStream iOut) {
         super(null);
