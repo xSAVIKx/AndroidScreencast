@@ -1,11 +1,21 @@
-package com.github.xsavikx.androidscreencast.ui.worker;
-
 /*
- * $Id: AccumulativeRunnable.java,v 1.3 2008/07/25 19:32:29 idk Exp $
+ * Copyright 2020 Yurii Serhiichuk
  *
- * Copyright @ 2005 Sun Microsystems, Inc. All rights
- * reserved. Use is subject to license terms.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
  */
+
+package com.github.xsavikx.androidscreencast.ui.worker;
 
 import javax.swing.*;
 import java.util.ArrayList;
