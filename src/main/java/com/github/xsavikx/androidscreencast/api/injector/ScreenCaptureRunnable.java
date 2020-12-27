@@ -117,7 +117,8 @@ public final class ScreenCaptureRunnable implements Runnable {
         if (qos != null) {
             SwingUtilities.invokeLater(() -> {
                 try {
-                    qos.writeFrame(image, FRAME_DURATION);
+                    if (qos != null)
+                        qos.writeFrame(image, FRAME_DURATION);
                 } catch (IORuntimeException e) {
                     log().error("IO exception happened during writing the video frame: {}.", image, e);
                 }
