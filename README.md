@@ -1,13 +1,13 @@
 AndroidScreencast
 =================
 
-[![Build Status Travis-CI][travis_badge]][travis]&nbsp;
+[![Build Status GitHub Actions][actions_badge]][actions]&nbsp;
 [![Codacy Badge][codacy_badge]][codacy]&nbsp;
 [![Join the chat at https://gitter.im/AndroidScreencast/Lobby][gitter_badge]][gitter]&nbsp;
 [![Apache License][license_badge]][license]
 
-[travis_badge]: https://travis-ci.org/xSAVIKx/AndroidScreencast.svg?branch=master
-[travis]: https://travis-ci.org/xSAVIKx/AndroidScreencast
+[actions_badge]: https://github.com/xSAVIKx/AndroidScreencast/workflows/CI/badge.svg?branch=master
+[actions]: https://github.com/xSAVIKx/AndroidScreencast/actions
 
 [versioneye_badge]: https://www.versioneye.com/user/projects/58a746d8b4d2a20055fcb887/badge.svg?style=flat
 [versioneye]: https://www.versioneye.com/user/projects/58a746d8b4d2a20055fcb887
