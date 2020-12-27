@@ -43,25 +43,26 @@ This project gives the opportunity to use your phone even with a broken screen.
 ## Configuration
 
 There are 2 ways to run application:
-1. Run ADB server on your own
-2. Provide correct `app.properties` file
+
+1. Run ADB server on your own.
+2. Provide a correct `app.properties` file.
 
 ### Run ADB server on your own
 
-In order to run server on your own you have to run already installed (or one from our 
-OS-specific bundle) `adb` with following command:
+In order to run server on your own you have to run already installed (or one from our OS-specific bundle) `adb` with
+following command:
 
-```
+```bash
 adb start-server
 ```
 
 **Note**:
 
-If `app.properties` will have `adb.path` filled - AndroidScreencast will shutdown ADB server 
-on application termination.
+If `app.properties` will have `adb.path` filled, AndroidScreencast will shutdown the ADB server on application
+termination.
 
-Additionally, in order to use, for example, remote ADB server with ssh forwarding you should not 
-use `app.properties` or `adb.path` property should be commented.
+Additionally, in order to use for example remote ADB server with ssh forwarding you should not use `app.properties`
+or `adb.path` property should be commented.
 
 ### Provide correct `app.properties` file
 
@@ -78,7 +79,7 @@ Both absolute and relative paths are supported.
 
 Example of valid `app.properties` could be find [here](app.properties).
 
-Also we have got some valid OS-specific examples:
+Also, we have got some valid OS-specific examples:
 
 * [OSX app.properties](adb/macosx/app.properties)
 * [Windows app.properties](adb/windows/app.properties)
@@ -112,7 +113,7 @@ app.native.look=false
 
 Application is available using Java web start technology via [androidscreencast.jnlp][jnlp].
 
-[jnlp]: http://xsavikx.github.io/AndroidScreencast/jnlp/androidscreencast.jnlp
+[jnlp]: https://xsavikx.github.io/AndroidScreencast/jnlp/androidscreencast.jnlp
 
 ### Java security configuration
 
@@ -136,7 +137,7 @@ replacing `VERSION` with the current version.
 
 For example, `java -jar target/androidscreencast-0.0.10s-executable.jar`.
 
-Additionally OS-packages would be created with ADB executables bundled:
+Additionally, OS-packages would be created with ADB executables bundled:
 
 * `androidscreencast-VERSION-windows.zip`
 * `androidscreencast-VERSION-linux.tar.gz`
