@@ -6,7 +6,7 @@ AndroidScreencast
 [![Join the chat at https://gitter.im/AndroidScreencast/Lobby][gitter_badge]][gitter]&nbsp;
 [![Apache License][license_badge]][license]
 
-[actions_badge]: https://github.com/xSAVIKx/AndroidScreencast/workflows/CI/badge.svg?branch=master
+[actions_badge]: https://github.com/xSAVIKx/AndroidScreencast/workflows/CI/badge.svg
 [actions]: https://github.com/xSAVIKx/AndroidScreencast/actions
 
 [versioneye_badge]: https://www.versioneye.com/user/projects/58a746d8b4d2a20055fcb887/badge.svg?style=flat
