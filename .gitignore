@@ -162,3 +162,6 @@ buildNumber.properties
 .mvn/timing.properties
 
 !.mvn/wrapper/maven-wrapper.jar
+
+# Do not ignore JNLP jars.
+!docs/jnlp/*.jar
