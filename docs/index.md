@@ -10,6 +10,10 @@ AndroidScreencast was developed to view and control your android device from a P
 
 This project gives the opportunity to use your phone even with a broken screen.
 
+![AndroidScreencast - Main screen](./assets/main.png)
+
+![AndroidScreencast - Execute command](./assets/exec-command.png)
+
 ## Features
 
 - No client needed
@@ -40,12 +44,14 @@ To use JNLP, please follow this article: [How can I configure the Exception Site
 
 # Requirements
 
-Currently AndroidScreencast works directly with `adb input` program through `ddmlib` and abuse functionality of:
+Currently, AndroidScreencast works directly with `adb input` program through `ddmlib` and uses functionality of:
+
 - `adb input key`
 - `adb input tap`
 - `adb input swipe`
 
-Regarding this point, to use AndroidScreencast you need Smartphone running on Android with specific `input` program version. `adb input tap` and `adb input swipe` were introduced in [Android 4.1.1][Android_4_1_1_Input].
+Regarding this point, to use AndroidScreencast you need Smartphone running on Android with specific `input`
+program version. `adb input tap` and `adb input swipe` were introduced in [Android 4.1.1][Android_4_1_1_Input].
 
 So, right now AndroidScreencast support all Android versions equal or greater than Android 4.1.1.
 
