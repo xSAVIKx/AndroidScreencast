@@ -1,3 +1,20 @@
+/*
+ * Copyright 2020 Yurii Serhiichuk
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+
 package com.github.xsavikx.androidscreencast.ui;
 
 import com.android.ddmlib.IDevice;
@@ -15,16 +32,16 @@ public final class JDialogDeviceList extends JDialog implements ActionListener {
     private static final String DEFAULT_HOST = "127.0.0.1";
     private static final int DEFAULT_PORT = 1324;
 
-    private JTextField jtfHost = new JTextField(DEFAULT_HOST);
-    private JFormattedTextField jftfPort = new JFormattedTextField(DEFAULT_PORT);
-    private JList<IDevice> jlDevices = new JList<>();
-    private JPanel jpAgent = new JPanel();
-    private JPanel jpButtons = new JPanel();
-    private JButton jbOk = new JButton("OK");
-    private JButton jbQuit = new JButton("Quit");
+    private final JTextField jtfHost = new JTextField(DEFAULT_HOST);
+    private final JFormattedTextField jftfPort = new JFormattedTextField(DEFAULT_PORT);
+    private final JList<IDevice> jlDevices = new JList<>();
+    private final JPanel jpAgent = new JPanel();
+    private final JPanel jpButtons = new JPanel();
+    private final JButton jbOk = new JButton("OK");
+    private final JButton jbQuit = new JButton("Quit");
 
     private boolean cancelled = false;
-    private IDevice[] devices;
+    private final IDevice[] devices;
 
     public JDialogDeviceList(IDevice[] devices) {
         super();
