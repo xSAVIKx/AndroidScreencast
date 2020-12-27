@@ -129,10 +129,9 @@ public final class ScreenCaptureRunnable implements Runnable {
         this.listener = listener;
     }
 
-
     public void startRecording(final File file) {
         try {
-            qos = new QuickTimeOutputStream(file, QuickTimeOutputStream.VideoFormat.JPG);
+            qos = new QuickTimeOutputStream(file, QuickTimeOutputStream.VideoFormat.PNG);
             qos.setVideoCompressionQuality(MOV_COMPRESSION_RATE);
             qos.setTimeScale(MOV_FPS);
         } catch (final IOException e) {
