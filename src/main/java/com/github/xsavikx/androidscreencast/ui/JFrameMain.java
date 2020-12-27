@@ -1,3 +1,20 @@
+/*
+ * Copyright 2020 Yurii Serhiichuk
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+
 package com.github.xsavikx.androidscreencast.ui;
 
 import com.github.xsavikx.androidscreencast.api.injector.Injector;
@@ -37,18 +54,18 @@ public final class JFrameMain extends JFrame {
     private final JDialogExecuteKeyEvent dialogExecuteKeyEvent;
     private transient boolean isDisposed = false;
 
-    private JToolBar jtb = new JToolBar();
-    private JToolBar jtbHardkeys = new JToolBar();
+    private final JToolBar jtb = new JToolBar();
+    private final JToolBar jtbHardkeys = new JToolBar();
     private JScrollPane jsp;
-    private JButton jbExplorer = new JButton("Explore");
-    private JButton jbExecuteKeyEvent = new JButton("Execute keycode");
-    private JButton jbKbHome = new JButton("Home");
-    private JButton jbKbMenu = new JButton("Menu");
-    private JButton jbKbBack = new JButton("Back");
-    private JButton jbKbSearch = new JButton("Search");
-    private JButton jbKbPhoneOn = new JButton("Call");
-    private JButton jbKbPhoneOff = new JButton("End call");
-    private JButton jbRecord = new JButton("Start record");
+    private final JButton jbExplorer = new JButton("Explore");
+    private final JButton jbExecuteKeyEvent = new JButton("Execute keycode");
+    private final JButton jbKbHome = new JButton("Home");
+    private final JButton jbKbMenu = new JButton("Menu");
+    private final JButton jbKbBack = new JButton("Back");
+    private final JButton jbKbSearch = new JButton("Search");
+    private final JButton jbKbPhoneOn = new JButton("Call");
+    private final JButton jbKbPhoneOff = new JButton("End call");
+    private final JButton jbRecord = new JButton("Start record");
     private Dimension oldImageDimension;
 
     @Inject
