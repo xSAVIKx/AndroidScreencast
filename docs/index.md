@@ -18,9 +18,7 @@ Commands execution screen:
 
 ![AndroidScreencast - Execute command](./assets/exec-command.png)
 
-Video recorded by the app:
-
-<video src="{{ site.baseurl }}/assets/androidscreencast.mov" type="video/mp4"/></video>
+Video recorded by the app available [here](./assets/androidscreencast.mov).
 
 ## Features
 
