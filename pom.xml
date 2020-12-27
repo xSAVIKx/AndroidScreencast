@@ -51,10 +51,8 @@
         </dependency>
         <dependency>
             <groupId>com.google.dagger</groupId>
-            <artifactId>dagger-compiler</artifactId>
+            <artifactId>dagger-producers</artifactId>
             <version>${dagger2.version}</version>
-            <optional>true</optional>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.google.guava</groupId>
@@ -70,6 +68,13 @@
                 <configuration>
                     <source>${jdk.version}</source>
                     <target>${jdk.version}</target>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>com.google.dagger</groupId>
+                            <artifactId>dagger-compiler</artifactId>
+                            <version>${dagger2.version}</version>
+                        </path>
+                    </annotationProcessorPaths>
                 </configuration>
             </plugin>
             <plugin>
