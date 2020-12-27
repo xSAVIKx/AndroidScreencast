@@ -21,7 +21,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.github.xsavikx</groupId>
     <artifactId>androidscreencast</artifactId>
-    <version>0.1</version>
+    <version>0.1.1-SNAPSHOT</version>
     <name>Android Screencast</name>
     <packaging>jar</packaging>
     <properties>
