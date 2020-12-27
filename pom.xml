@@ -7,15 +7,17 @@
     <name>Android Screencast</name>
     <packaging>jar</packaging>
     <properties>
-        <dagger2.version>2.24</dagger2.version>
-        <ddmlib.version>27.0.0</ddmlib.version>
+        <dagger2.version>2.30.1</dagger2.version>
+        <ddmlib.version>27.1.1</ddmlib.version>
         <slf4j.version>1.7.30</slf4j.version>
         <logback-classic.version>1.2.3</logback-classic.version>
-        <guava.version>29.0-jre</guava.version>
+        <guava.version>30.1-jre</guava.version>
+
         <main.class>com.github.xsavikx.androidscreencast.Main</main.class>
         <jdk.version>1.8</jdk.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
         <adb.folder>${project.basedir}/adb</adb.folder>
         <adb.folder.linux>${adb.folder}/linux</adb.folder.linux>
         <adb.folder.windows>${adb.folder}/windows</adb.folder.windows>
@@ -97,7 +99,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>3.2.1</version>
+                <version>3.2.4</version>
                 <executions>
                     <execution>
                         <phase>package</phase>
