@@ -10,9 +10,17 @@ AndroidScreencast was developed to view and control your android device from a P
 
 This project gives the opportunity to use your phone even with a broken screen.
 
+The main screen:
+
 ![AndroidScreencast - Main screen](./assets/main.png)
 
+Commands execution screen:
+
 ![AndroidScreencast - Execute command](./assets/exec-command.png)
+
+Video recorded by the app:
+
+<video src="{{ site.baseurl }}/assets/androidscreencast.mov" type="video/mp4"/></video>
 
 ## Features
 
