@@ -33,20 +33,12 @@ Video recorded by the app available [here](./assets/androidscreencast.mov).
 
 [wiki]: https://github.com/xSAVIKx/AndroidScreencast/wiki
 
-## JNLP
+## Download
 
-Application is available using Java web start technology via [androidscreencast.jnlp][jnlp].
+Download a packaged build from the [releases page][releases]. Each release
+provides an executable JAR and archives for Linux, macOS, and Windows.
 
-[jnlp]: https://xsavikx.github.io/AndroidScreencast/jnlp/androidscreencast.jnlp
-
-### Java security configuration
-
-Due to Java security restriction policy, that was updated in java 7 and is restricted even more in java 8, we're now not
-able to run JNLP without some security "hacks".
-
-To use JNLP, please follow this article: [How can I configure the Exception Site List?][exception]
-
-[exception]: https://www.java.com/en/download/faq/exception_sitelist.xml
+[releases]: https://github.com/xSAVIKx/AndroidScreencast/releases
 
 # Requirements
 
