@@ -220,7 +220,7 @@
             <url>https://maven.google.com/</url>
         </repository>
     </repositories>
-    <url>http://xsavikx.github.io/AndroidScreencast</url>
+    <url>https://github.com/xSAVIKx/AndroidScreencast</url>
     <ciManagement>
         <url>https://travis-ci.org/xSAVIKx/AndroidScreencast</url>
         <system>Travis-CI</system>
