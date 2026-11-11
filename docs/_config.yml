@@ -4,8 +4,9 @@ google_analytics: UA-30116628-1
 show_downloads: true
 theme: jekyll-theme-cayman
 
-gems:
+plugins:
   - jekyll-mentions
+  - jekyll-sitemap
 
 site:
   github:
