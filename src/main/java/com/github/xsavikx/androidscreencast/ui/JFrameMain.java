@@ -164,7 +164,7 @@ public final class JFrameMain extends JFrame {
 
     private ActionListener createRecordActionListener() {
         return new ActionListener() {
-            private final Path tmpDir = Files.createTempDir().toPath();
+            private Path tmpDir;
             private boolean recording = false;
             private File tmpVideoFile;
 
@@ -174,6 +174,9 @@ public final class JFrameMain extends JFrame {
                     if (!recording) {
                         recording = true;
                         jbRecord.setText("Stop record");
+                        if (tmpDir == null) {
+                            tmpDir = java.nio.file.Files.createTempDirectory("androidScreenCast");
+                        }
                         tmpVideoFile = java.nio.file.Files.createTempFile(tmpDir, "androidScreenCast", ".mov.tmp").toFile();
                         startRecording(tmpVideoFile);
                     } else {
