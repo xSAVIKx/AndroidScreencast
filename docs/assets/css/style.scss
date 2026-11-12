@@ -1,0 +1,17 @@
+---
+---
+
+// Darker text colours than the theme defaults, for a WCAG AA contrast ratio
+// of at least 4.5:1 on a white background.
+$section-headings-color: #127f49;
+$blockquote-text-color: #6a777d;
+
+// docs/_sass/jekyll-theme-cayman.scss overrides the theme partial. It does not
+// import Google Fonts, because the layout loads them without render blocking.
+@import 'jekyll-theme-cayman';
+
+// The screenshots have width and height attributes. Keep their aspect ratio
+// when max-width scales them down.
+.main-content img {
+  height: auto;
+}
