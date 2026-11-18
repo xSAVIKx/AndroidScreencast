@@ -1,0 +1,45 @@
+/*! ys-tokens 1.0.0 ys-jekyll-cayman.css sha256:0dea519cf7e6757a
+ * Shared identity of Yurii Serhiichuk's web properties: neutrals, fonts, spacing.
+ * Generated from https://github.com/xSAVIKx/xSAVIKx.github.io/tree/main/identity. Do not edit.
+ * Source: https://xsavikx.github.io/identity/ys-jekyll-cayman.css
+ */
+:root {
+  --ys-bg: #f8fafc;
+  --ys-surface: #ffffff;
+  --ys-surface-2: #f1f5f9;
+  --ys-text: #0f172a;
+  --ys-muted: #475569;
+  --ys-border: #e2e8f0;
+  --ys-border-strong: #64748b;
+  --ys-accent: #1d4ed8;
+  --ys-accent-solid: #2563eb;
+  --ys-on-accent: #ffffff;
+}
+:root {
+  --ys-font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", "Liberation Sans", Arial, sans-serif;
+  --ys-font-mono: ui-monospace, SFMono-Regular, "SF Mono", "Cascadia Mono", Menlo, Consolas, "DejaVu Sans Mono", "Liberation Mono", monospace;
+  --ys-space-1: 0.25rem;
+  --ys-space-2: 0.5rem;
+  --ys-space-3: 0.75rem;
+  --ys-space-4: 1rem;
+  --ys-space-5: 1.25rem;
+  --ys-space-6: 1.5rem;
+  --ys-space-8: 2rem;
+  --ys-space-10: 2.5rem;
+  --ys-space-12: 3rem;
+  --ys-radius-sm: 6px;
+  --ys-radius-md: 10px;
+  --ys-radius-lg: 14px;
+  --ys-radius-pill: 999px;
+  --ys-tap: 44px;
+  --ys-focus-width: 3px;
+}
+
+/* Adapter: Jekyll cayman. Put in assets/css/style.scss after: @import "{{ site.theme }}";
+ * Only the page body. The gradient header, its buttons and the link colour stay the project's own. */
+body { background: var(--ys-bg); color: var(--ys-text); font-family: var(--ys-font-sans); }
+.main-content { color: var(--ys-text); }
+.main-content code, .main-content pre { font-family: var(--ys-font-mono); background: var(--ys-surface-2); color: var(--ys-text); border-color: var(--ys-border); }
+.main-content blockquote { color: var(--ys-muted); border-left-color: var(--ys-border-strong); }
+.main-content table th, .main-content table td { border-color: var(--ys-border); }
+.site-footer { border-top-color: var(--ys-border); color: var(--ys-muted); }

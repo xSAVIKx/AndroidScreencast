@@ -1,17 +1,30 @@
 ---
 ---
 
-// Darker text colours than the theme defaults, for a WCAG AA contrast ratio
-// of at least 4.5:1 on a white background.
-$section-headings-color: #127f49;
-$blockquote-text-color: #6a777d;
+// Map the neutral colours of the cayman theme to the shared identity.
+// The brand colours stay: the gradient header, its buttons and the links.
+$body-text-color: var(--ys-text);
+$blockquote-text-color: var(--ys-muted);
+$code-bg-color: var(--ys-surface-2);
+$code-text-color: var(--ys-text);
+$border-color: var(--ys-border);
+$table-border-color: var(--ys-border);
+$hr-border-color: var(--ys-border);
+
+// The theme green #159957 has a contrast of 3.67:1 on white. This shade
+// has 4.53:1 on the slate page and 4.74:1 on white.
+$section-headings-color: #12844b;
 
 // docs/_sass/jekyll-theme-cayman.scss overrides the theme partial. It does not
-// import Google Fonts, because the layout loads them without render blocking.
-@import 'jekyll-theme-cayman';
+// import Google Fonts. The site uses system fonts only.
+@import "{{ site.theme }}";
 
 // The screenshots have width and height attributes. Keep their aspect ratio
 // when max-width scales them down.
 .main-content img {
   height: auto;
 }
+
+// Shared identity of Yurii Serhiichuk's web properties. The file is a copy
+// of ys-jekyll-cayman.css from the hub. Do not edit it.
+@import "ys-jekyll-cayman";
