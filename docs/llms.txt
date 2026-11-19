@@ -1,0 +1,16 @@
+# AndroidScreencast
+
+> AndroidScreencast is a Java desktop application to view and control an Android device from a PC over adb. It needs no client app on the phone, so it also works with a broken screen.
+
+Features: tap and swipe gestures, typing with the PC keyboard, landscape mode, a file browser for the phone, and screen video recording. It requires Android 4.1.1 or later, because it uses `adb input tap` and `adb input swipe`.
+
+## Docs
+
+- [Project site](https://xsavikx.github.io/AndroidScreencast/): Description, screenshots and requirements.
+- [Wiki](https://github.com/xSAVIKx/AndroidScreencast/wiki): Usage notes.
+
+## Source and downloads
+
+- [Repository](https://github.com/xSAVIKx/AndroidScreencast): Java source and build instructions.
+- [Latest release](https://github.com/xSAVIKx/AndroidScreencast/releases/latest): Executable JAR downloads.
+- [Author](https://serhiichuk.dev/): Yurii Serhiichuk.
