@@ -1,13 +1,21 @@
 title: AndroidScreencast
 description: View and control your android device on PC
-google_analytics: UA-30116628-1
 show_downloads: true
 theme: jekyll-theme-cayman
 
-gems:
+plugins:
   - jekyll-mentions
+  - jekyll-sitemap
 
 site:
   github:
     zip_url: https://github.com/xSAVIKx/AndroidScreencast/zipball/master
     tar_url: https://github.com/xSAVIKx/AndroidScreencast/tarball/master
+
+# jekyll-seo-tag: use the main screenshot as the social preview image.
+# With an image, jekyll-seo-tag also emits twitter:card summary_large_image.
+defaults:
+  - scope:
+      path: ""
+    values:
+      image: /assets/main.png
