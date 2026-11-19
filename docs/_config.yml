@@ -3,8 +3,9 @@ description: View and control your android device on PC
 show_downloads: true
 theme: jekyll-theme-cayman
 
-gems:
+plugins:
   - jekyll-mentions
+  - jekyll-sitemap
 
 site:
   github:
