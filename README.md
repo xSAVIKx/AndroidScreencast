@@ -1,19 +1,8 @@
 AndroidScreencast
 =================
 
-[![Build Status GitHub Actions][actions_badge]][actions]&nbsp;
-[![Codacy Badge][codacy_badge]][codacy]&nbsp;
 [![Join the chat at https://gitter.im/AndroidScreencast/Lobby][gitter_badge]][gitter]&nbsp;
 [![Apache License][license_badge]][license]
-
-[actions_badge]: https://github.com/xSAVIKx/AndroidScreencast/workflows/CI/badge.svg
-[actions]: https://github.com/xSAVIKx/AndroidScreencast/actions
-
-[versioneye_badge]: https://www.versioneye.com/user/projects/58a746d8b4d2a20055fcb887/badge.svg?style=flat
-[versioneye]: https://www.versioneye.com/user/projects/58a746d8b4d2a20055fcb887
-
-[codacy_badge]: https://api.codacy.com/project/badge/Grade/064bbd2582b544bb9659a01a2872317c
-[codacy]: https://www.codacy.com/app/xSAVIKx/AndroidScreencast?utm_source=github.com&utm_medium=referral&utm_content=xSAVIKx/AndroidScreencast&utm_campaign=badger
 
 [license_badge]: https://img.shields.io/badge/license-Apache%20License%202.0-blue.svg?style=flat
 [license]: http://www.apache.org/licenses/LICENSE-2.0
@@ -21,11 +10,13 @@ AndroidScreencast
 [gitter_badge]: https://badges.gitter.im/AndroidScreencast/Lobby.svg?style=flat
 [gitter]: https://gitter.im/AndroidScreencast/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge
 
-# Description
+View and control an Android device from your desktop over `adb`. There is nothing to install on the
+phone, so you can use it even when the phone screen is broken.
 
-AndroidScreencast was developed to view and control your android device from a PC.
+**[Download the latest release](https://github.com/xSAVIKx/AndroidScreencast/releases/latest)**
+(you need Java 8 or newer)
 
-This project gives the opportunity to use your phone even with a broken screen.
+![AndroidScreencast main screen](docs/assets/main.png)
 
 ## Features
 
@@ -169,11 +160,10 @@ Also, to run AndroidScreencast you will need *adb* installed (or you can use bun
 # Similar Projects
 
 * [Seven Square][seven_square] - QT implementation of Android Screencast (actively developed)
-* [Droid@Screen][droid_at_screen] - implementation of Android Screencast in Java 
-    (fancy one, last release in 2013)
+* Droid@Screen - implementation of Android Screencast in Java
+    (last release in 2013, the project site is gone)
 * [Android Screen Monitor][android_screen_monitor] - implementation of Android Screencast in Java 
     (latest release in 2013)
 
 [seven_square]: https://github.com/yangh/sevensquare
-[droid_at_screen]: http://droid-at-screen.org/droid-at-screen/
 [android_screen_monitor]: https://github.com/adakoda/android-screen-monitor
