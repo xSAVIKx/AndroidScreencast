@@ -12,13 +12,13 @@ This project gives the opportunity to use your phone even with a broken screen.
 
 The main screen:
 
-![AndroidScreencast - Main screen](./assets/main.png)
+<picture><source srcset="./assets/main.webp" type="image/webp"><img src="./assets/main.png" alt="AndroidScreencast - Main screen" width="615" height="850"></picture>
 
 Commands execution screen:
 
-![AndroidScreencast - Execute command](./assets/exec-command.png)
+<picture><source srcset="./assets/exec-command.webp" type="image/webp"><img src="./assets/exec-command.png" alt="AndroidScreencast - Execute command" width="717" height="846"></picture>
 
-Video recorded by the app available [here](./assets/androidscreencast.mov).
+[Video recorded by the app](./assets/androidscreencast.mov) is available.
 
 ## Features
 
@@ -63,7 +63,7 @@ So, right now AndroidScreencast support all Android versions equal or greater th
 
 Also, to run AndroidScreencast you will need *adb* installed (or you can use bundled in OS bundles adb).
 
-[Android_4_1_1_Input]: http://grepcode.com/file/repository.grepcode.com/java/ext/com.google.android/android/4.1.1_r1/com/android/commands/input/Input.java#Input
+[Android_4_1_1_Input]: https://android.googlesource.com/platform/frameworks/base/+/refs/tags/android-4.1.1_r1/cmds/input/src/com/android/commands/input/Input.java
 
 # More info
 
