@@ -1,4 +1,4 @@
-/*! ys-tokens 1.0.0 ys-jekyll-cayman.css sha256:0dea519cf7e6757a
+/*! ys-tokens 1.2.0 ys-jekyll-cayman.css sha256:92184a651e9c9fd0
  * Shared identity of Yurii Serhiichuk's web properties: neutrals, fonts, spacing.
  * Generated from https://github.com/xSAVIKx/xSAVIKx.github.io/tree/main/identity. Do not edit.
  * Source: https://xsavikx.github.io/identity/ys-jekyll-cayman.css
@@ -33,6 +33,43 @@
   --ys-radius-pill: 999px;
   --ys-tap: 44px;
   --ys-focus-width: 3px;
+  --ys-focus-offset: 2px;
+  --ys-underline-offset: 0.2em;
+  --ys-underline-thickness: max(1px, 0.0625em);
+}
+/* Print: white paper, black text. A dark page prints with the light colours. */
+@media print {
+  :root {
+    color-scheme: light;
+    --ys-bg: #ffffff;
+    --ys-surface: #ffffff;
+    --ys-surface-2: #f1f5f9;
+    --ys-text: #000000;
+    --ys-muted: #475569;
+    --ys-border: #e2e8f0;
+    --ys-border-strong: #64748b;
+    --ys-accent: #1d4ed8;
+    --ys-accent-solid: #2563eb;
+    --ys-on-accent: #ffffff;
+  }
+}
+
+/* Shared rules (since 1.1.0). Each adapter bundle has them. They are safe on every stack. */
+/* Footer line (1.1.0): the old form of the link to the hub. It stays for the sites that use it. New pages use .ys-back-link. */
+.ys-footer-line { display: block; margin: var(--ys-space-4) 0 0; color: var(--ys-muted); font: 0.8125rem/1.5 var(--ys-font-sans); }
+.ys-footer-line a { color: inherit; text-decoration: underline; text-underline-offset: var(--ys-underline-offset); text-decoration-thickness: var(--ys-underline-thickness); }
+/* Back link (since 1.2.0): the "More projects" link to the hub. Opt-in: put the class on the <a>.
+ * The link is a touch target of at least 44 px by 44 px. The ring uses --ys-focus-color, or the colour of the link. */
+.ys-back-link { display: inline-flex; align-items: center; justify-content: center; box-sizing: border-box; min-width: var(--ys-tap); min-height: var(--ys-tap); padding: 0 var(--ys-space-2); color: var(--ys-muted); font: 0.8125rem/1.5 var(--ys-font-sans); text-decoration: underline; text-underline-offset: var(--ys-underline-offset); text-decoration-thickness: var(--ys-underline-thickness); }
+.ys-back-link:focus-visible { outline: var(--ys-focus-width) solid var(--ys-focus-color, currentColor); outline-offset: var(--ys-focus-offset); border-radius: var(--ys-radius-sm); }
+/* Reduced motion: no smooth scroll. The identity adds no animation and no transition of its own. */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto !important; }
+}
+@media print {
+  .ys-footer-line a[href^="http"]::after { content: " (" attr(href) ")"; }
+  .ys-back-link[href^="http"]::after { content: " (" attr(href) ")"; }
+  .ys-print-hide { display: none !important; }
 }
 
 /* Adapter: Jekyll cayman. Put in assets/css/style.scss after: @import "{{ site.theme }}";
@@ -43,3 +80,9 @@ body { background: var(--ys-bg); color: var(--ys-text); font-family: var(--ys-fo
 .main-content blockquote { color: var(--ys-muted); border-left-color: var(--ys-border-strong); }
 .main-content table th, .main-content table td { border-color: var(--ys-border); }
 .site-footer { border-top-color: var(--ys-border); color: var(--ys-muted); }
+/* Focus ring (since 1.1.0). Cayman has no focus rule of its own. Set --ys-focus-color to the accent of the project. */
+:focus-visible { outline: var(--ys-focus-width) solid var(--ys-focus-color, var(--ys-text)); outline-offset: var(--ys-focus-offset); }
+@media print {
+  /* Only the page body. The header stays the project's own, on paper also. */
+  .main-content a[href^="http"]::after { content: " (" attr(href) ")"; font-weight: 400; overflow-wrap: anywhere; }
+}
